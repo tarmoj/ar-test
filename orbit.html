@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AR.js demo orbit</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    
+    <script> 
+/*
+Not needed -  orbit can be realized wit rotating a parent entruty :)
+let planet = null, box=null;
+
+window.onload = () => {
+
+    //box = createBox("b1", -10, 5, -50);
+    //planet = createSphere("s1", 10,5, -50, 4); 
+    
+    //testOrbit();
+}
+
+
+let previousAngle = Math.PI; // (180 deg)
+const FULL_CIRCLE = 2*Math.PI;
+
+let timer = 0;
+
+function testOrbit()  {
+    const circleTime = 36*1000;
+    const segmentCount = 16;
+    const R = 80;
+    
+    const entity = document.querySelector("#earth");
+    
+    timer = setInterval( () => orbitMove(80, -FULL_CIRCLE/segmentCount, entity, circleTime/segmentCount), circleTime/segmentCount);
+    
+}
+
+function stopOrbit() {
+    clearInterval(timer);
+}
+
+
+// kind of works, on computer stops on points, of phone OK.
+function orbitMove(radius, angleDelta, entity, animationTime=1000 ) { // moves (animation) the entity to next x and z on the orbit according to given angle after given time. The height (y) stays the same;
+    let angle = previousAngle + angleDelta;
+    if (angle>FULL_CIRCLE) angle -= FULL_CIRCLE;
+    if (angle<0) angle = FULL_CIRCLE + angle;
+    const x = radius * Math.sin(angle);
+    const z = radius * Math.cos(angle);
+    console.log("x, z:",x,z);
+    previousAngle = angle;
+    
+    if (entity) {
+        console.log("Set entity position to", x, z);
+        //entity.setAttribute("position", {x:x, z:z});
+        entity.setAttribute('animation',   { property: "position", dur: animationTime, easing: "linear",  to: {x:x, z:z}, loop: "once", autoplay: true, enabled: true});
+    }
+}
+
+     
+
+function randColor() { return '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6); }
+    
+
+
+function createBox(id, x,y,z) {
+
+    let box = document.createElement('a-box');
+    box.id = id;
+    box.setAttribute('scale', '5 5 5');
+    box.setAttribute('position',  {x:x, y:y, z:z} );
+    box.setAttribute('material', {color: randColor(), opacity: 0.5} );
+    
+    box.setAttribute('animation', { property: "rotation", dur: 3000, to: "360 360 360", loop: true, easing: "linear", autoplay: true, enabled: true});
+   
+    console.log("new box:", box);
+
+    addEntity(box);
+    
+    return box;
+}
+
+function addEntity(entity) {
+    entity.addEventListener('loaded', () => { // not sure if this is needed for now
+        window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
+    });
+    document.querySelector('a-scene').appendChild(entity);
+}    
+
+*/
+    
+    </script>
+
+</head>
+
+<body style='margin: 0; overflow: hidden;'>
+    <a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+		embedded
+		arjs='sourceType: webcam; debugUIEnabled: false;'>
+		  <a-assets>
+            <a-asset-item autoload id="earthModel" src="planets/Earth_1_12756.glb"></a-asset-item>
+            <a-asset-item autoload id="marsModel" src="planets/Mars_1_6792.glb"></a-asset-item>
+
+          </a-assets>
+
+            
+            
+            <a-box id="box"  
+                position="-10 5 -50"
+                scale="5 5 5"
+                material = "color: lightgreen; opacity: 0.5"
+                animation="property: rotation; dur: 3000; to: 360 360 360; loop: true; easing: linear"
+            >
+            </a-box>
+
+            <a-sphere
+                id="central"
+                material="color: red; opacity: 0.6" 
+                radius="1.2" position="0 5 -80" 
+                gps-entity-place="latitude: 58.3844; longitude: 26.7218;"
+                >
+            </a-sphere>
+
+             <a-sphere
+                id="sphere2"
+                material="color: lightblue; opacity: 0.6" 
+                radius="4" position="10 5 -50" 
+                animation="property: position; dur: 3000; from: 10 5 -50; to: 20 5 -80; loop: true; easing: linear"
+                gps-entity-place="latitude: 58.3844; longitude: 26.7218;"
+    
+                
+                >
+            </a-sphere>
+            
+            <a-entity id="earthContainer" rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 60000">
+                <a-entity id="earth" gltf-model="#earthModel" position="-20 5 -80"
+            animation__rotation = "property: rotation; dur: 2000; to: 0 360 0; loop: true; easing: linear"
+                scale = "0.01 0.01 0.01"
+                ></a-entity>
+            </a-entity>
+            
+            <a-entity id="marsContainer" rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 113000">
+                <a-entity id="mars" gltf-model="#marsModel" position="0 8 -160"
+            animation__rotation = "property: rotation; dur: 2000; to: 0 360 0; loop: true; easing: linear"
+                scale = "0.01 0.01 0.01"
+                ></a-entity>
+            </a-entity>
+
+        <!--<a-camera gps-camera="simulateLatitude: 58.3840; simulateLongitude: 26.7218;" rotation-reader>-->
+        <a-camera>
+		</a-camera>
+	</a-scene>
+</body>
+</html>

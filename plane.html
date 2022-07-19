@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AR.js demo images (plane)</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+</head>
+
+<script>
+
+let planes = []; // maybe necessary for some handling but not now...
+
+const imageNames = ["m1", "m3", "m4", "m17", "M81", "m82", "m92"];
+
+window.onload = () => {
+
+    // first create assets (img elements appendChilde to a-assets    
+
+    timer = setInterval(() => {
+        const d = new Date();
+        const seconds = d.getSeconds();
+        createRandomPlane();
+        const maxImages = 30;
+        if (planes.length>=maxImages) { 
+            clearAll()
+        }
+        
+     }
+     , 1000);
+}
+
+function clearAll() {
+    const scene = document.getElementById('scene');
+    const elements = scene.getElementsByTagName('a-plane');
+    console.log("elements", elements);
+    while (elements.length > 0) { 
+        elements[0].remove(); 
+    } 
+    planes = [] ; // not sure why we need those...
+}
+
+
+function randInt(from, to) {
+    const result = Math.round( from + (to-from)*Math.random()); 
+    return result;
+}
+
+function randomSource() { 
+    const index = Math.floor(Math.random()*imageNames.length)
+    const src = "#"+imageNames[index];
+    return src;
+}
+
+function randomPosition() {
+    const x = randInt(-50, 50), y=randInt(3, 50); z = randInt(-100, -20);
+    return {x:x, y:y, z:z};
+}
+
+function createAssets() {
+
+}
+
+function createRandomPlane()  {
+
+
+    let plane = document.createElement('a-plane');
+
+    plane.setAttribute('position', randomPosition() );
+    plane.setAttribute('src', randomSource() );
+    plane.setAttribute("geometry", {width: 4, height:4 });
+    plane.setAttribute("rotation", {z: randInt(-10, 10) });
+    plane.setAttribute("visible", false);
+    console.log("new object:", plane);
+    
+    plane.addEventListener('loaded', () => { // not sure if this is needed for now
+        //window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
+        plane.setAttribute("visible", true);
+    });
+    
+    // try not adding loaded event listener (as was doen in test.html
+    document.querySelector('a-scene').appendChild(plane);
+
+    planes.push(plane);
+}
+
+
+</script>
+
+
+<body style='margin: 0; overflow: hidden;'>
+    <a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+		embedded
+		arjs='sourceType: webcam; debugUIEnabled: false;'>
+		  <a-assets>
+            <img id="M81" src="images/M81v.png">
+            <img id="m1" src="images/m1.png">
+            <img id="m3" src="images/m3.png">
+            <img id="m4" src="images/m4.png">
+            <img id="m17" src="images/m17.png">
+            <img id="m82" src="images/m82.png">
+            <img id="m92" src="images/m92.png">
+            
+            <video id="kasemets" autoplay loop="true" src="images/kasemets-clip.mp4" preload="auto"></video>
+                     
+          </a-assets>
+          
+          
+          <a-plane id="plane1" src="images/M81v.png" height="4" width="6" position="-5 5 -30"></a-plane>
+          <a-video src="#kasemets" width="4" height="2.25" position="0 6 -20"></a-video>
+            
+
+<!--        <a-camera gps-camera="simulateLatitude: 58.3840; simulateLongitude: 26.7218;" rotation-reader>-->
+         <a-camera>
+
+		</a-camera>
+	</a-scene>
+</body>
+</html>

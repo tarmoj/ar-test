@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AR.js demo</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    
+    <!--Näitest:
+    <script src='https://aframe.io/releases/0.9.2/aframe.min.js'></script>
+    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>-->
+    
+    <script>
+    
+const cameraLatitude =  41.890339,  cameraLongitude = 12.492586;   
+
+let timer = 0; 
+    
+window.onload = () => {
+
+     for (let i=0; i<4; i++) {
+        addEntity( createRandomBox("box"+(i+1)) );
+        addEntity( createRandomSphere("sphere"+(i+1)) );
+     }
+     
+     
+     const that= this;
+     
+     timer = setInterval(() => {
+        const d = new Date();
+        const seconds = d.getSeconds();
+        const type = (seconds>=30) ? "box" : "sphere";
+        if (seconds%2!==0) { // new element every odd second
+            if (seconds>=30) {
+                addEntity(createRandomBox())
+            } else {
+                addEntity(createRandomSphere())
+            }
+        }
+        
+        if (seconds==40) { // slight overlap
+            clearAll("a-sphere");
+        }
+        if (seconds==10) {
+            clearAll("a-box"); 
+        }
+     }
+     , 1000);
+};
+
+function clearAll(tag) {
+    const scene = document.getElementById('scene');
+    const elements = scene.getElementsByTagName(tag);
+    console.log("elements", elements);
+    while (elements.length > 0) { 
+        elements[0].remove(); 
+    }
+}
+
+function randInt(from, to) {
+    const result = Math.round( from + (to-from)*Math.random()); 
+    return result;
+}
+
+function randColor() { return '#'+(0x1000000+Math.random()*0xffffff).toString(16).substr(1,6); }
+
+function randomPosition() {
+    const x = randInt(-50, 50), y=randInt(10, 80); z = (Math.random()>=0.5) ? randInt(20, 100) : randInt(-100, -20);
+     return {x:x, y:y, z:z};
+}
+
+function createRandomSphere(id) {
+
+    let sphere = document.createElement('a-sphere');
+    sphere.setAttribute('id', id);
+    sphere.setAttribute('radius', randInt(2, 10).toString());
+    sphere.setAttribute('position', randomPosition() );
+    sphere.setAttribute('material', {color: randColor()} );
+   
+    console.log("new object:", sphere,);
+
+    return sphere;
+     
+}
+
+
+function createRandomBox(id) {
+
+    let box = document.createElement('a-box');
+    box.setAttribute('id', id);
+    box.setAttribute('scale', '5 5 5');
+    box.setAttribute('position', randomPosition() );
+    box.setAttribute('material', {color: randColor()} );
+   
+    console.log("new object:", box);
+
+    return box;
+}
+
+function addEntity(entity) {
+    entity.addEventListener('loaded', () => { // not sure if this is needed for now
+        window.dispatchEvent(new CustomEvent('gps-entity-place-loaded'))
+    });
+    document.querySelector('a-scene').appendChild(entity);
+}
+
+
+    
+    
+    </script>
+    
+</head>
+
+<body style='margin: 0; overflow: hidden;'>
+
+    <a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+		embedded
+		arjs='sourceType: webcam; debugUIEnabled: false;'>
+
+        <a-box 
+            id="greenBox"
+            material="color: green; opacity: 0.6" 
+            scale="5 5 5" position="0 10 0" 
+            gps-entity-place="latitude: 58.3844; longitude: 26.7216;">
+        </a-box>
+<!--        <a-camera gps-camera="simulateLatitude: 58.3840; simulateLongitude: 26.7218;" rotation-reader>-->
+		<a-camera>
+		</a-camera>
+	</a-scene>
+</body>
+</html>
+

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AR.js demo Harmonices Mundi</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="websocket.js"></script>
+
+    <script >
+
+
+        const earthYear = 60; // in seconds for a full circle
+        const  earthDay =  2; // in seconds for a full rotation
+        const earthDistance = 200; // in 3d meters for z
+
+        let eventCounter = 0;
+
+        // see for data: https://nssdc.gsfc.nasa.gov/planetary/factsheet/
+
+
+        const planetData = {
+            // factor for distance in square root
+            "earth": { distance: earthDistance, orbitTime: earthYear, rotationTime: earthDay  },
+            "mercury": { distance: earthDistance*Math.sqrt(0.38), orbitTime: earthYear*0.24, rotationTime: earthDay*59  },
+            "venus": { distance: earthDistance*0.72, orbitTime: earthYear*0.61, rotationTime: earthDay*244  }, // NB! Venus rotates counterclockwise
+            "mars": { distance: earthDistance*1.88, orbitTime: earthYear*1.88, rotationTime: earthDay*1.02  },
+            "jupiter": { distance: earthDistance*Math.sqrt(5.2), orbitTime: earthYear*11.86, rotationTime: earthDay*0.41  },
+            "saturn": { distance: earthDistance*Math.sqrt(9.57), orbitTime: earthYear*29, rotationTime: earthDay*0.45  }
+        }
+
+
+        class Planet {
+            constructor(planet, id, speedFactor=1) { // perhaps add customAnimation?
+                if (!planetData[planet]) {
+                    console.log("Planet not found:", planet );
+                    return;
+                }
+                const { distance, orbitTime, rotationTime  } = planetData[planet];
+                console.log(planet, distance, orbitTime, rotationTime)
+                this.planetContainer = document.createElement("a-entity");
+                this.planetContainer.id = id ? id : planet;
+                this.planetContainer.setAttribute('position', {y: 8} );
+
+                this.planetContainer.setAttribute('animation',   { property: "rotation", dur: orbitTime/speedFactor*1000, easing: "linear",  to: {x:0, y: -360, z:0}, loop: true});
+
+
+                this.planetEntity = document.createElement("a-entity");
+                // TODO: check if name is in available planets, perhaps a catalogue with various data...
+                this.planetEntity.setAttribute("gltf-model", "#"+planet + "Model");
+                this.planetEntity.setAttribute("position", {x:-20, y:0, z: 0-distance});
+                const rotationEnd = planet === "venus" ? -360 : 360;
+                this.planetEntity.setAttribute("animation", {property:"rotation", dur: rotationTime/speedFactor*1000, to: {y: rotationEnd},
+                    loop:true, easing: "linear"  });
+                this.planetEntity.setAttribute("scale", "0.01 0.01 0.01");
+
+                this.planetContainer.appendChild(this.planetEntity);
+                document.querySelector('a-scene').appendChild(this.planetContainer);
+
+                console.log("Created planet: ", this.planetContainer);
+            }
+
+            remove = () => {
+                this.planetContainer.remove();
+            }
+        }
+        const planets = [];
+
+        function startPlanets(planetArray=Object.keys(planetData) ) { // array of planets to be started
+
+            for (let planet of planetArray ) {
+                planets.push(new Planet(planet));
+            }
+        }
+
+        function startExtra() { // starts extra speedups as in minute 8 (max)
+            planets.push(new Planet("mercury", "m2", 2) );
+            planets.push(new Planet("mercury", "m4", 4) );
+            planets.push(new Planet("venus", "v2", 2) );
+            planets.push(new Planet("jupiter", "j12", 0.5) );
+            planets.push(new Planet("saturn", "s12", 0.5) );
+            planets.push(new Planet("saturn", "s14", 0.25) );
+            planets.push(new Planet("mercury", "m8", 8) );
+            planets.push(new Planet("saturn", "s18", 0.125) );
+        }
+
+        function removeAll() {
+            for (let planet of planets) {
+                planet.remove();
+            }
+            planets.length = 0; // clear array
+        }
+
+        function removePlanet(id) {
+            const planet = planets.find(p => p.planetContainer.id===id) || document.querySelector("#"+id);
+            console.log("Trying to remove: ",planet);
+            if (planet) {
+                planet.remove();
+                planets.splice(planets.indexOf(planet), 1);
+            }
+        }
+
+        function wsMessageCallback(time, timeString) {
+
+            if (time>=0 && eventCounter<1) {
+                planets.push(new Planet("earth"));
+                eventCounter=1;
+            } else if (time>=60 && eventCounter<2) {
+                planets.push(new Planet("venus"));
+                eventCounter=2;
+            } else if (time>=120 && eventCounter<3) {
+                planets.push(new Planet("mercury"));
+                eventCounter=3;
+            } else if (time>=180 && eventCounter<4) {
+                planets.push(new Planet("mars"));
+                eventCounter=4;
+            } else if (time>=240 && eventCounter<5) {
+                planets.push(new Planet("jupiter"));
+                eventCounter=5;
+            } else if (time>=300 && eventCounter<6) {
+                planets.push(new Planet("saturn"));
+                eventCounter=6;
+            } else if (time>=360 && eventCounter<7) {
+                planets.push(new Planet("mercury", "m2", 2));
+                planets.push(new Planet("venus", "v2", 2));
+                planets.push(new Planet("jupiter", "j12", 0.5));
+                planets.push(new Planet("saturn", "s12", 0.5));
+
+                eventCounter = 7;
+            } else if (time>=420 && eventCounter<8) {
+                planets.push(new Planet("mercury", "m4", 4));
+                planets.push(new Planet("jupiter", "j14", 0.25));
+                planets.push(new Planet("saturn", "s14", 0.25));
+
+                eventCounter = 8;
+            } else if (time>=480 && eventCounter<9) { // 8:00
+                planets.push(new Planet("mercury", "m8", 8));
+                planets.push(new Planet("saturn", "s18", 1/8));
+                eventCounter = 9;
+            } else if (time>=540 && eventCounter<10) { // 9:00
+                removePlanet("saturn");
+                removePlanet("jupiter");
+                removePlanet("venus");
+                removePlanet("mercury");
+                eventCounter = 10;
+            } else if (time>=600 && eventCounter<11) { // 10:00
+                removePlanet("v2");
+                removePlanet("s12");
+                removePlanet("j12");
+                removePlanet("v2");
+                planets.push(new Planet("venus", "v4", 4));
+                eventCounter = 11;
+            } else if (time>=630 && eventCounter<12) { // 10:30
+                removePlanet("v4");
+                planets.push(new Planet("venus", "v8", 8));
+                eventCounter = 12;
+            } else if (time>=660 && eventCounter<13) { // 11:00
+                removePlanet("s14");
+                eventCounter = 13;
+            } else if (time>=730 && eventCounter<14) { // 12:00
+                removeAll();
+                eventCounter = 14;
+
+            }
+
+
+            document.querySelector("#timeLabel").setAttribute("value", timeString + " " + eventCounter); // not sure if eventCounter is good
+
+            }
+        // function wsStopCallback() {
+        //     removeAll();
+        //     eventCounter = 0;
+        //     time = -1;
+        // }
+        let timer;
+
+        window.onload = () => {
+
+            eventCounter = 0;
+            time = -5;
+            document.querySelector("a-scene").addEventListener('loaded',
+                function () {
+                console.log("scene loaded");
+                timer = setInterval( () => {  // quick workaround for ws / wss missing from vClick server
+                    time++;
+                    const minutes = Math.floor(time/60);
+                    const seconds = time % 60;
+                    wsMessageCallback(time, minutes.toString().padStart(2, "0") + ":" +  seconds.toString().padStart(2, "0"));
+                }, 1000  );
+                //startPlanets();
+                // SHOOT! vClick does not work with wss...
+                //doConnect(); // this starts also time check callback
+                //startPlanets(["earth"]);
+                //setTimeout( ()=>startExtra(), 60000   );
+
+            } );
+
+        }
+
+
+
+
+
+
+    </script>
+
+</head>
+
+<body style='margin: 0; overflow: hidden;'>
+<a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+        embedded
+        arjs='sourceType: webcam; debugUIEnabled: false;'>
+    <a-assets>
+        <a-asset-item autoload id="earthModel" src="planets/Earth_1_12756.glb"></a-asset-item>
+        <a-asset-item autoload id="marsModel" src="planets/Mars_1_6792.glb"></a-asset-item>
+        <a-asset-item autoload id="mercuryModel" src="planets/Mercury_1_4878.glb"></a-asset-item>
+        <a-asset-item autoload id="venusModel" src="planets/Venus_1_12103.glb"></a-asset-item>
+        <a-asset-item autoload id="jupiterModel" src="planets/Jupiter_1_142984.glb"></a-asset-item>
+        <a-asset-item autoload id="saturnModel" src="planets/Saturn_1_120536.glb"></a-asset-item>
+
+    </a-assets>
+
+
+<!--    <a-sphere position="0 5 -80" material="color:red; opacity: 0.5"  radius="1" ></a-sphere>-->
+    <a-text id="timeLabel" position="0 2.5 -10" value="Start vClick server time to start" align="center"></a-text>
+
+
+    <!--    <a-entity id="earthContainer" rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 60000">-->
+<!--        <a-entity id="earth" gltf-model="#earthModel" position="-20 5 -80"-->
+<!--                  animation__rotation="property: rotation; dur: 2000; to: 0 360 0; loop: true; easing: linear"-->
+<!--                  scale="0.01 0.01 0.01"-->
+<!--        ></a-entity>-->
+<!--    </a-entity>-->
+
+
+
+    <!--<a-camera gps-camera="simulateLatitude: 58.3840; simulateLongitude: 26.7218;" rotation-reader>-->
+    <a-camera>
+    </a-camera>
+</a-scene>
+</body>
+</html>
