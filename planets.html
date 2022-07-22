@@ -6,7 +6,7 @@
     <title>AR.js demo Harmonices Mundi</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-    <script src="websocket.js"></script>
+<!--    <script src="websocket.js"></script>-->
 
     <script >
 
@@ -21,7 +21,7 @@
 
 
         const planetData = {
-            // factor for distance in square root
+            // NB! factor for distance in square root -  otherwise visually too close/far
             "earth": { distance: earthDistance, orbitTime: earthYear, rotationTime: earthDay  },
             "mercury": { distance: earthDistance*Math.sqrt(0.38), orbitTime: earthYear*0.24, rotationTime: earthDay*59  },
             "venus": { distance: earthDistance*0.72, orbitTime: earthYear*0.61, rotationTime: earthDay*244  }, // NB! Venus rotates counterclockwise
