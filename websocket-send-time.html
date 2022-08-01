@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8">
-    <title>Websocket test</title>
-<!--        <script src="websocket.js"></script>-->
-  </head>
-  <body>
-  <button id="startButton" onclick="startClock()">Start</button>
-  <button id="stopButton" onclick="stopClock()">Stop</button>
-  <br />
-  Time: <label id="timeLabel"></label>
+<head>
+  <meta charset="utf-8">
+  <title>Websocket test</title>
+
   <script>
     let time = 0, ticker=0;
+
+    function setStatus(status) {
+      document.querySelector("#status").innerHTML=status;
+    }
+
     const socket = new WebSocket("wss://data.elektron.art");
 
     socket.addEventListener("message", (event) => {
       console.log("Message received: ", JSON.parse(event.data));
     });
 
+    socket.addEventListener("open", () => {
+      setStatus("Connected");
+    });
+
 
     ["close", "error"].forEach( event => socket.addEventListener( event, (event) => {
       console.log("Error or disconnect", event.data);
-      stopClock(); // temporary
+      setStatus("disconnected");
+      stopClock();
     }) );
 
     function sendTime() {
@@ -34,6 +38,9 @@
     }
 
     function startClock() {
+      const startTime = parseInt(document.querySelector("#minutes").value)*60 + parseInt(document.querySelector("#seconds").value)
+      console.log("Start from second: ", startTime);
+      time = startTime;
       sendTime();
       ticker = setInterval( ()=> {
                 time++;
@@ -52,5 +59,19 @@
 
 
   </script>
+
+</head>
+  <body>
+    <h2>Timetrip - Send time</h2>
+    Start time from: <input id="minutes" type="text" size="1" value="00"/> :
+    <input id="seconds" type="text" size="1" value="00"/>
+    <br />
+    <button id="startButton" onclick="startClock()">Start</button>
+    <button id="stopButton" onclick="stopClock()">Stop</button>
+    <br />
+    Time: <label id="timeLabel"></label>
+    <br />
+    Websocket status:<label id="status">unknown</label>
+
   </body>
 </html>

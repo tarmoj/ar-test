@@ -3,9 +3,11 @@
 let websocket = null;
 let time = -1;
 
+// TODO: REWRITE according to websocket-test
+
 function doConnect()
 {
-    websocket = new WebSocket("ws://live.uuu.ee:6006/ws");
+    websocket = new WebSocket("wss://data.elektron.art");
     websocket.onopen = function(evt) { onOpen(evt) };
     websocket.onclose = function(evt) { onClose(evt) };
     websocket.onmessage = function(evt) { onMessage(evt) };
@@ -29,10 +31,16 @@ function onClose(evt)
     // connectButton.innerHTML = "Connect";
 }
 
-function onMessage(evt)
+function onMessage(event)
 {
     //console.log("response: " + evt.data + '\n');
-    const mess_array = evt.data.split(" ");
+    const data = JSON.parse(event.data);
+    console.log("Data: ", data);
+    if (data.hasOwnProperty("TT_time")) {
+        console.log("Time is in seconds: ", data.TT_time )
+    }
+
+    const mess_array = console.log();
     // let's assume it is time
     //console.log(mess_array[0]);
     let timeString = "xx:xx"
@@ -44,12 +52,6 @@ function onMessage(evt)
         if (wsMessageCallback) {
             wsMessageCallback(time, timeString);
         }
-    }
-
-    if (mess_array[0] == "n") {	// notification
-        mess_array.splice(0,1); // get rid of the "n" and join word intro string back again
-        const message = mess_array.join(" ");
-        //notification(message);
     }
 }
 
