@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Websocket test</title>
+<!--        <script src="websocket.js"></script>-->
+  </head>
+  <body>
+  <h2>Elektron websocket test</h2>
+  Time: <label id="timeLabel"></label>
+
+  <script>
+    const socket = new WebSocket("wss://data.elektron.art");
+
+    socket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+      console.log(data);
+      if (data.TT_time) {
+        document.querySelector("#timeLabel").innerHTML = data.TT_time.toString();
+      }
+    });
+
+
+  </script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="">
+  <head>
+    <meta charset="utf-8">
+    <title>Websocket test</title>
+<!--        <script src="websocket.js"></script>-->
+  </head>
+  <body>
+  <button id="startButton" onclick="startClock()">Start</button>
+  <button id="stopButton" onclick="stopClock()">Stop</button>
+  <br />
+  Time: <label id="timeLabel"></label>
+  <script>
+    let time = 0, ticker=0;
+    const socket = new WebSocket("wss://data.elektron.art");
+
+    socket.addEventListener("message", (event) => {
+      console.log("Message received: ", JSON.parse(event.data));
+    });
+
+
+    ["close", "error"].forEach( event => socket.addEventListener( event, (event) => {
+      console.log("Error or disconnect", event.data);
+      stopClock(); // temporary
+    }) );
+
+    function sendTime() {
+      if (socket.readyState===WebSocket.OPEN) {
+        socket.send(JSON.stringify({ TT_time: time }));
+      } else {
+        console.log("Socket is not open");
+      }
+      document.querySelector("#timeLabel").innerHTML = time.toString();
+    }
+
+    function startClock() {
+      sendTime();
+      ticker = setInterval( ()=> {
+                time++;
+                sendTime();
+              }, 1000
+      );
+    }
+
+    function stopClock() {
+      if (ticker>0) {
+        clearInterval(ticker);
+      }
+      time = 0;
+    }
+
+
+
+  </script>
+  </body>
+</html>
