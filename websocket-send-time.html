@@ -3,37 +3,19 @@
 <head>
   <meta charset="utf-8">
   <title>Websocket test</title>
+  <script src="websocket.js"></script>
 
   <script>
     let time = 0, ticker=0;
 
-    function setStatus(status) {
-      document.querySelector("#status").innerHTML=status;
-    }
 
-    const socket = new WebSocket("wss://data.elektron.art");
+   function wsClosedCallback() {
+     stopClock();
+   }
 
-    socket.addEventListener("message", (event) => {
-      console.log("Message received: ", JSON.parse(event.data));
-    });
-
-    socket.addEventListener("open", () => {
-      setStatus("Connected");
-    });
-
-
-    ["close", "error"].forEach( event => socket.addEventListener( event, (event) => {
-      console.log("Error or disconnect", event.data);
-      setStatus("disconnected");
-      stopClock();
-    }) );
 
     function sendTime() {
-      if (socket.readyState===WebSocket.OPEN) {
-        socket.send(JSON.stringify({ TT_time: time }));
-      } else {
-        console.log("Socket is not open");
-      }
+      doSend(JSON.stringify({ TT_time: time }));
       document.querySelector("#timeLabel").innerHTML = time.toString();
     }
 
@@ -57,6 +39,7 @@
     }
 
 
+  window.onload = () => doConnect();
 
   </script>
 
@@ -72,6 +55,8 @@
     Time: <label id="timeLabel"></label>
     <br />
     Websocket status:<label id="status">unknown</label>
+  <br />
+  <button id="connectButton" onclick="doConnect()">Connect</button>
 
   </body>
 </html>

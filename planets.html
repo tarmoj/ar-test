@@ -6,7 +6,7 @@
     <title>AR.js demo Harmonices Mundi</title>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-<!--    <script src="websocket.js"></script>-->
+    <script src="websocket.js"></script>
 
     <script >
 
@@ -123,10 +123,17 @@
             }
         }
 
+        function secondsToTimeString(time) {
+            const minutes =  Math.floor(time/60).toString();
+            const seconds = (time%60).toString();
+            const timeString = minutes.padStart(2, "0") + ":" +  seconds.padStart(2, "0");
+            return timeString;
+        }
 
-
-        function wsMessageCallback(time, timeString) {
-
+        function wsMessageCallback(data) {
+            if (data.TT_time) {
+                time = data.TT_time;
+            }
 
             if (time>=0 && eventCounter<1) {
                 startPlanet("earth");
@@ -187,7 +194,7 @@
                 removeAll();
                 eventCounter = 14;
             }
-            document.querySelector("#timeLabel").setAttribute("value", timeString + " " + eventCounter); // not sure if eventCounter is good
+            document.querySelector("#timeLabel").setAttribute("value", secondsToTimeString(time) + " " + eventCounter); // not sure if eventCounter is good
         }
 
         let timer;
@@ -200,17 +207,17 @@
                 function () {
                 console.log("scene loaded");
                 createPlanets();
-                timer = setInterval( () => {  // quick workaround for ws / wss missing from vClick server
-                    time++;
-                    const minutes = Math.floor(time/60);
-                    const seconds = time % 60;
-                    wsMessageCallback(time, minutes.toString().padStart(2, "0") + ":" +  seconds.toString().padStart(2, "0"));
-                }, 1000  );
-                //startPlanets();
+                // timer for testing without ws messages
+                // timer = setInterval( () => {  // quick workaround for ws / wss missing from vClick server
+                //     time++;
+                //     const minutes = Math.floor(time/60);
+                //     const seconds = time % 60;
+                //     wsMessageCallback(time, minutes.toString().padStart(2, "0") + ":" +  seconds.toString().padStart(2, "0"));
+                // }, 1000  );
+
                 // SHOOT! vClick does not work with wss...
-                //doConnect(); // this starts also time check callback
-                //startPlanets(["earth"]);
-                //setTimeout( ()=>startExtra(), 60000   );
+                doConnect(); // via data.elektron.art
+
 
             } );
 
@@ -243,7 +250,7 @@
 
 
 <!--    <a-sphere position="0 5 -80" material="color:red; opacity: 0.5"  radius="1" ></a-sphere>-->
-    <a-text id="timeLabel" position="0 2.5 -10" value="Start vClick server time to start" align="center"></a-text>
+    <a-text id="timeLabel" position="0 2.5 -10" value="Start ws timer to start" align="center"></a-text>
 
 
     <!--    <a-entity id="earthContainer" rotation="0 0 0" animation="property: rotation; to: 0 -360 0; loop: true; dur: 60000">-->
