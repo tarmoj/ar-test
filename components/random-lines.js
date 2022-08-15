@@ -1,8 +1,6 @@
-function generatePoints(randomness = 0.5) {
-  const maxDegrees = 360 * 8;
-  const pointsCount = 100;
-  const radius = 20;
-  return range(0, maxDegrees, maxDegrees / pointsCount)
+function generatePoints(degrees, radius, randomness) {
+  const pointsCount = Math.floor(degrees / 3);
+  return range(0, degrees, degrees / pointsCount)
     .map((angle) => [
       ...pol2car(angle, radius), // returning [x,y]
       0,
@@ -19,12 +17,27 @@ function flattenPoints(points) {
 }
 
 AFRAME.registerComponent("random-lines", {
+  schema: {
+    opacity: { type: "number", default: 1 },
+    degrees: { type: "number", default: 360 },
+    radius: { type: "number", default: 20 },
+    randomness: { type: "number", default: 0.08 },
+  },
   init: function () {
-    const points = generatePoints();
+    const points = generatePoints(
+      this.data.degrees,
+      this.data.radius,
+      this.data.randomness
+    );
     const lines = document.createElement("a-lines");
     lines.setAttribute("points", flattenPoints(points));
     lines.setAttribute("color", "white");
-    lines.setAttribute("opacity", 0.8);
+    lines.setAttribute("opacity", this.data.opacity);
+    lines.setAttribute("rotation", {
+      x: 90,
+      y: 0,
+      z: 0,
+    });
     this.el.appendChild(lines);
   },
 });
