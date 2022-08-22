@@ -12,24 +12,21 @@
 
     <script type="module">
       import { createApp } from "https://unpkg.com/petite-vue?module";
-      import {
-        generatePlanet,
-        generatePlanetContainer,
-      } from "./lib/planets.js";
+      import { generatePlanet } from "./lib/planets.js";
 
       const planets = {
-        earth: {
-          planet: generatePlanet("earth", 3),
-          container: generatePlanetContainer("earth", 3),
-        },
-        jupiter: {
-          planet: generatePlanet("jupiter"),
-          container: generatePlanetContainer("jupiter"),
-        },
+        earth: generatePlanet("earth"),
+        mercury: generatePlanet("mercury"),
+        venus: generatePlanet("venus"),
+        mars: generatePlanet("mars"),
+        jupiter: generatePlanet("jupiter"),
+        saturn: generatePlanet("saturn"),
       };
 
       createApp({
         planets,
+        angle: 90,
+        z: 0.01,
       }).mount();
     </script>
   </head>
@@ -47,38 +44,52 @@
           src="planets2/jupiter.gltf"
         ></a-asset-item>
       </a-assets>
-      <a-entity>
-        <!-- <a-entity v-for="p in planets">
+      <a-entity
+        :position="{ x: 0, y: 0, z: -40}"
+        :rotation="{ x: angle, y: 0, z: 0}"
+        :scale="{x: z, y: z, z: z}"
+      >
+        <a-entity
+          v-for="p in planets"
+          :position="p.outside.position"
+          :scale="p.outside.scale"
+          :animation="p.outside.animation"
+        >
+          <a-entity
+            rotation="90 0 0"
+            opacity="0.1"
+            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: '5', radialPosition: String(p.inside.position.z), radialVelocity: '-0.1..0.1'}"
+          ></a-entity>
           <a-entity
             gltf-model="#jupiter"
-            :position="{ x: 0, y: 0, z: -20}"
-            :scale="p.planet.scale"
-            :animation="p.planet.animation"
+            :position="p.inside.position"
+            :scale="p.inside.scale"
+            :animation="p.inside.animation"
           ></a-entity>
-        </a-entity> -->
-
-        <a-entity
-          light="type: directional; color: #FFF; intensity: 5"
-          position="0 0 5"
-        ></a-entity>
+        </a-entity>
       </a-entity>
 
-      <a-entity
-        gltf-model="#jupiter"
-        :position="{ x: 0, y: 0, z: -20}"
-        :scale="{ x: 0.01, y: 0.01, z: 0.01}"
-        :animation="planets.earth.planet.animation"
-      ></a-entity>
+      <!-- <a-entity
+        position="0 0 -40"
+        :sprite-particles="{ radialType: 'circleXY', spawnRate: 200, lifeTime: '50', radialPosition: String(10)}"
+      ></a-entity> -->
 
       <a-entity
-        position="0 0 40"
-        sprite-particles="radialType: circleXY; spawnRate: 500; lifeTime: 5; radialPosition: 3; radialVelocity: 0..0.1; angularVelocity: 0 2 0;"
+        light="type: directional; color: #FFF; intensity: 5"
+        position="0 0 5"
       ></a-entity>
-
-      <a-camera></a-camera>
+      <a-camera near="0.000001"></a-camera>
     </a-scene>
-    <pre style="z-index: 1000; position: fixed; top: 0; left: 0">
-{{ planets }}</pre
-    >
+    <div style="z-index: 1000; position: fixed; top: 0; left: 0">
+      <input type="range" v-model.number="angle" max="90" />
+      <input
+        type="range"
+        v-model.number="z"
+        :min="0.01 - 0.01"
+        :max="0.01 + 0.01"
+        step="any"
+      />
+      <pre style="color: white">{{ planets }}</pre>
+    </div>
   </body>
 </html>
