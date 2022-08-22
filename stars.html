@@ -15,7 +15,7 @@
         const startTime = 0; // starting time of the section. may be something else later, like 12*60
 
         const events = [
-            {time: 1, action: () => createStar("s1", -20, 3, -40, 0.5)}, // time in seconds
+            {time: 1, action: () => createStar("s1", -20, 3, -40, 0.5, "galaxy1")}, // time in seconds
             {time: 3, action: () => createStar("s2", -10, 5, -60, 0.5)},
             {time: 6, action: () => createStar("s3", 10, 10, -80, 0.5) },
             {time: 9, action: () => removeStar("s1") } ,
@@ -139,11 +139,11 @@
                     console.log("scene loaded");
 
                     // timer for testing without ws messages
-                    timer = setInterval( () => {  // quick workaround for ws / wss missing from vClick server
-                        time++;
-
-                        wsMessageCallback({"TT_time": time});
-                    }, 1000  );
+                    // timer = setInterval( () => {  // quick workaround for ws / wss missing from vClick server
+                    //     time++;
+                    //
+                    //     wsMessageCallback({"TT_time": time});
+                    // }, 1000  );
 
                     // to work with the websocket Time:
                     //doConnect(); // via data.elektron.art
@@ -167,15 +167,32 @@
         embedded
         arjs='sourceType: webcam; debugUIEnabled: false;'>
     <a-assets>
-        <a-asset-item autoload id="sun" src="3d/Sun_1_1391000.glb"></a-asset-item>
+        <a-asset-item autoload id="messier1" src="3d/messier1.glb"></a-asset-item>
         <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>
+        <img id="m92" src="images/m92.png">
+        <img  id="transparent1" src="images/heic0918a-transparent.png">
+        <img  id="M18" src="images/heic0918a.jpg">
 
     </a-assets>
 
 
 <!--    <a-sphere position="0 5 -80" material="color:red; opacity: 0.5"  radius="1" ></a-sphere>-->
     <a-text id="timeLabel" position="0 2.5 -10" value="Start ws timer to start" align="center"></a-text>
-<!--    <a-entity id="test" gltf-model="#testModel" position="-20 5 -80" scale="1 1 1"></a-entity>-->
+<!--   <a-entity id="galaxy" gltf-model="#messier1"-->
+<!--             rotation="45 45 0"-->
+<!--             position="-20 5 -80"-->
+<!--             scale="0.01 0.01 0.01">-->
+<!--   </a-entity>-->
+
+    <a-image src="#transparent1"
+             rotation="45 0 0"
+             position="-20 5 -50"
+             scale="50 50 50"
+             animation__move = "property:position; dur: 20000; to: 0 100 -999"
+             animation__rotation = "property:rotation; dur: 30000; to: 45 0 360; loop:true; easing: linear"
+    ></a-image>
+
+
 
     <!--<a-camera gps-camera="simulateLatitude: 58.3840; simulateLongitude: 26.7218;" rotation-reader>-->
     <a-camera>
