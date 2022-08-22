@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>AR.js demo Stars</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
+    <script src="./utils.js"></script>
+    <script src="./components/random-lines.js"></script>
+
+    <script type="module">
+      import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+      import { generatePlanet } from "./lib/planets.js";
+
+      const planets = {
+        mercury: generatePlanet("mercury"),
+        venus: generatePlanet("venus"),
+        earth: generatePlanet("earth"),
+        mars: generatePlanet("mars"),
+        jupiter: generatePlanet("jupiter"),
+        saturn: generatePlanet("saturn"),
+      };
+
+      const p = reactive({
+        radialType: "circleXY",
+        spawnRate: 200,
+        lifeTime: "50",
+        radialPosition: "10",
+        radialVelocity: "0..0.1",
+        angularVelocity: "0 0 0",
+      });
+
+      createApp({
+        angle: -80,
+        p,
+      }).mount();
+    </script>
+  </head>
+  <body style="margin: 0; overflow: hidden">
+    <a-scene
+      id="scene"
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+      <a-entity
+        position="0 0 -40"
+        :rotation="{ x: angle, y: 0, z: 0}"
+        :sprite-particles="p"
+      ></a-entity>
+
+      <a-camera near="0.000001"></a-camera>
+    </a-scene>
+    <div style="z-index: 1000; position: fixed; top: 0; left: 0">
+      <input type="range" v-model.number="angle" min="-90" max="0" />
+      <input type="text" v-model.string="p.radialType" />
+      <input type="range" v-model.string="p.spawnRate" max="1000" />
+      <input
+        type="range"
+        v-model.string="p.radialPosition"
+        max="20"
+        step="any"
+      />
+      <input type="text" v-model.string="p.radialVelocity" />
+      <input type="text" v-model.string="p.angularVelocity" />
+    </div>
+    <pre
+      style="
+        z-index: 1000;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        height: 80vh;
+        overflow: auto;
+      "
+    >
+      {{ p }}
+    </pre>
+  </body>
+</html>
