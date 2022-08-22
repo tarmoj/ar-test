@@ -58,7 +58,7 @@
           <a-entity
             rotation="90 0 0"
             opacity="0.1"
-            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: '5', radialPosition: String(p.inside.position.z), radialVelocity: '-0.1..0.1'}"
+            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), opacity: String(0.2)}"
           ></a-entity>
           <a-entity
             gltf-model="#jupiter"
@@ -85,8 +85,8 @@
       <input
         type="range"
         v-model.number="z"
-        :min="0.01 - 0.01"
-        :max="0.01 + 0.01"
+        :min="0.005"
+        :max="0.01 + 0.1"
         step="any"
       />
       <pre style="color: white">{{ planets }}</pre>
