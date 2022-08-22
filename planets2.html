@@ -7,6 +7,24 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
+    <script type="module">
+      import { createApp } from "https://unpkg.com/petite-vue?module";
+      import {
+        generatePlanet,
+        generatePlanetContainer,
+      } from "./lib/planets.js";
+
+      const planets = {
+        earth: {
+          planet: generatePlanet("earth"),
+          container: generatePlanetContainer("earth"),
+        },
+      };
+
+      createApp({
+        planets,
+      }).mount();
+    </script>
   </head>
   <body style="margin: 0; overflow: hidden">
     <a-scene
@@ -23,20 +41,9 @@
         ></a-asset-item>
       </a-assets>
       <a-entity>
-        <a-entity v-for="planet in planets" :animation="planet.animation">
-          <a-entity
-            gltf-model="#jupiter"
-            :position="planet.position"
-            :scale="planet.scale"
-          ></a-entity>
+        <a-entity v-for="p in planets" :position="p.container.position">
+          <a-entity gltf-model="#jupiter" :scale="p.planet.scale"></a-entity>
         </a-entity>
-        <!-- <a-entity
-          v-for="planet in planets"
-          gltf-model="#jupiter"
-          :position="planet.position"
-          scale="0.02 0.02 0.02"
-          animation="dur: 20000; property: rotation; to: 0 -360 0; loop: true; easing: linear;"
-        ></a-entity> -->
         <a-entity
           light="type: directional; color: #FFF; intensity: 5"
           position="0 0 5"
@@ -44,36 +51,8 @@
       </a-entity>
       <a-camera></a-camera>
     </a-scene>
+    <pre style="z-index: 1000; position: fixed; top: 0; left: 0">
+{{ planets }}</pre
+    >
   </body>
-  <script type="module">
-    import { createApp } from "https://unpkg.com/petite-vue?module";
-
-    createApp({
-      planets: [
-        {
-          position: "-5 0 -40",
-          scale: { x: 0.02, y: 0.02, z: 0.02 },
-          animation: {
-            dur: 20000,
-            property: "rotation",
-            to: "0 0 -360",
-            loop: true,
-            easing: "linear",
-          },
-        },
-        {
-          position: "-15 0 -40",
-          scale: { x: 0.02, y: 0.02, z: 0.02 },
-          animation: {
-            dur: 20000,
-            property: "rotation",
-            to: "0 0 -360",
-            loop: true,
-            easing: "linear",
-          },
-        },
-      ],
-      show: true,
-    }).mount();
-  </script>
 </html>
