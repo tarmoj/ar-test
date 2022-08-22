@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>AR.js demo Stars</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
+    <script src="./utils.js"></script>
+    <script src="./components/random-lines.js"></script>
+
+    <script type="module">
+      import { createApp } from "https://unpkg.com/petite-vue?module";
+      import { generatePlanet } from "./lib/planets.js";
+
+      const planets = {
+        earth: generatePlanet("earth"),
+        mercury: generatePlanet("mercury"),
+        venus: generatePlanet("venus"),
+        mars: generatePlanet("mars"),
+        jupiter: generatePlanet("jupiter"),
+        saturn: generatePlanet("saturn"),
+      };
+
+      createApp({
+        planets,
+        angle: 90,
+        z: 0.01,
+      }).mount();
+    </script>
+  </head>
+  <body style="margin: 0; overflow: hidden">
+    <a-scene
+      id="scene"
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+      <a-assets>
+        <a-asset-item
+          autoload
+          id="jupiter"
+          src="planets2/jupiter.gltf"
+        ></a-asset-item>
+      </a-assets>
+      <a-entity
+        :position="{ x: 0, y: 0, z: -40}"
+        :rotation="{ x: angle, y: 0, z: 0}"
+        :scale="{x: z, y: z, z: z}"
+      >
+        <a-entity
+          v-for="p in planets"
+          :position="p.outside.position"
+          :scale="p.outside.scale"
+          :animation="p.outside.animation"
+        >
+          <a-entity
+            rotation="90 0 0"
+            opacity="0.1"
+            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), opacity: String(0.2)}"
+          ></a-entity>
+          <a-entity
+            gltf-model="#jupiter"
+            :position="p.inside.position"
+            :scale="p.inside.scale"
+            :animation="p.inside.animation"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <!-- <a-entity
+        position="0 0 -40"
+        :sprite-particles="{ radialType: 'circleXY', spawnRate: 200, lifeTime: '50', radialPosition: String(10)}"
+      ></a-entity> -->
+
+      <a-entity
+        light="type: directional; color: #FFF; intensity: 5"
+        position="0 0 5"
+      ></a-entity>
+      <a-camera near="0.000001"></a-camera>
+    </a-scene>
+    <div style="z-index: 1000; position: fixed; top: 0; left: 0">
+      <input type="range" v-model.number="angle" max="90" />
+      <input
+        type="range"
+        v-model.number="z"
+        :min="0.005"
+        :max="0.01 + 0.1"
+        step="any"
+      />
+      <pre style="color: white">{{ planets }}</pre>
+    </div>
+  </body>
+</html>
