@@ -8,6 +8,31 @@
       body {
         font-family: sans-serif;
         font-size: 14px;
+        color: white;
+      }
+      input[type="text"] {
+        display: block;
+        width: 50px;
+        font-size: 10px;
+      }
+      input[type="range"] {
+        display: block;
+        -webkit-appearance: none;
+        background: gray;
+        height: 1px;
+        position: relative;
+        outline: none;
+        width: 100%;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: 1px solid gray;
+        height: 16px;
+        width: 16px;
+        border-radius: 1000px;
+        background: white;
+        cursor: pointer;
       }
     </style>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
@@ -26,21 +51,25 @@
 
       const data = {
         radialType: "circleXY",
-        spawnRate: "200",
-        lifeTime: { from: 0, to: 50 },
-        radialPosition: { from: 9, to: 11 },
-        radialVelocity: { from: 0, to: 1 },
-        angularVelocity: "0 0 1",
-        acceleration: "0 0 0",
-        radialAcceleration: "0 0 0",
-        angularAcceleration: "0 0 0",
+        spawnRate: "2000",
+        lifeTime: ["10", "100"],
+        radialPosition: ["8", "10"],
+        radialVelocity: ["0", "0.4"],
+        angularVelocity: ["0", "0", "0"],
+        acceleration: ["0", "0", "0"],
+        radialAcceleration: ["0", "0", "0"],
+        angularAcceleration: ["0", "0", "0"],
+        scale: "1",
       };
 
       const normalizeData = (data) => {
         return Object.fromEntries(
           Object.entries(data).map(([key, value]) => {
-            if (value.from !== undefined && value.to !== undefined) {
-              value = `${value.from}..${value.to}`;
+            if (Array.isArray(value) && value.length === 2) {
+              value = value.join("..");
+            }
+            if (Array.isArray(value) && value.length === 3) {
+              value = value.join(" ");
             }
             return [key, value];
           })
@@ -49,7 +78,7 @@
 
       const isNumber = (value) => !isNaN(parseFloat(value));
 
-      createApp({ fields, data, normalizeData, isNumber, angle: 65 }).mount();
+      createApp({ fields, data, normalizeData, isNumber, angle: 80 }).mount();
     </script>
   </head>
   <body style="margin: 0; overflow: hidden">
@@ -78,35 +107,35 @@
       />
       <div v-for="field, key in data" style="padding-bottom: 8px">
         {{ key }}
-        <div v-if="data[key].from !== undefined">
-          <input v-model="data[key].from" />
-          <input
-            v-if="isNumber(data[key].from)"
-            type="range"
-            v-model="data[key].from"
-            step="0.01"
-          />
-        </div>
-        <div v-if="data[key].to !== undefined">
-          <input v-model="data[key].to" />
-          <input
-            v-if="isNumber(data[key].to)"
-            type="range"
-            v-model="data[key].to"
-          />
+        <div v-if="Array.isArray(field)">
+          <div
+            v-for="col,i in field"
+            style="display: flex; align-items: center; gap: 8px"
+          >
+            <input type="text" v-model="data[key][i]" />
+            <input
+              v-if="isNumber(data[key][i])"
+              type="range"
+              v-model="data[key][i]"
+              min="-200"
+              max="200"
+              step="0.1"
+            />
+          </div>
         </div>
         <div v-else>
-          <input v-model="data[key]" />
+          <input type="text" v-model="data[key]" />
           <input
             v-if="isNumber(data[key])"
             type="range"
             v-model="data[key]"
-            min="-10"
-            max="1000"
+            min="-200"
+            max="200"
+            step="0.1"
           />
         </div>
       </div>
-      <pre>{{ normalizeData(data) }}</pre>
+      <!-- <pre>{{ normalizeData(data) }}</pre> -->
     </div>
   </body>
 </html>
