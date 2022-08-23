@@ -185,7 +185,7 @@
         v-model.number="r.time"
         @input="onInput"
         :max="sec('28:00')"
-        style="width: 3s00px"
+        style="width: 300px"
       />
       <p style="height: 32px">
         <button v-show="r.time == sec('28:00')" @click="onReset">
@@ -202,7 +202,6 @@
         messiermusics
       </div>
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
-      <pre style="overflow: auto; height: 300px">{{ r.planets }}</pre>
     </div>
     <a-scene
       vr-mode-ui="enabled: false"
@@ -248,6 +247,7 @@
           :position="p.outside.position"
           :scale="p.outside.scale"
           :animation="p.outside.animation"
+          :visible="p.visible"
         >
           <a-entity
             rotation="90 0 0"
@@ -263,6 +263,30 @@
           ></a-entity>
         </a-entity>
       </a-entity>
+
+      <a-text
+        :visible="r.cometonics.visible"
+        position="0 -1 -20"
+        value="cometonics"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
+
+      <a-text
+        :visible="r.messiermusics.visible"
+        position="0 0 -20"
+        value="messiermusics"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
+
+      <a-text
+        :visible="r.bigbang.visible"
+        position="0 1 -20"
+        value="bigbang"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
 
       <a-entity
         light="type: directional; color: #FFF; intensity: 5"
