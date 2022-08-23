@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>AR.js demo Stars</title>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+
+
+</head>
+
+<body style='margin: 0; overflow: hidden;'>
+<a-scene
+        id="scene"
+        vr-mode-ui="enabled: false"
+        embedded
+        arjs='sourceType: webcam; debugUIEnabled: false;'>
+    <a-assets>
+        <a-asset-item autoload id="messier" src="3d/galaxy_1.glb"></a-asset-item>
+        <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>
+        <img id="m92" src="images/m92.png">
+        <img  id="transparent1" src="images/heic0918a-transparent.png">
+        <img  id="M18" src="images/heic0918a.jpg">
+
+    </a-assets>
+
+
+<!--    <a-sphere position="0 5 -80" material="color:red; opacity: 0.5"  radius="1" ></a-sphere>-->
+    <a-text id="timeLabel" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>
+   <a-entity id="galaxy" gltf-model="#messier"
+             rotation="0 0 0"
+             position="-20 5 -100"
+             scale="0.5 0.5 0.5">
+   </a-entity>
+
+<!--    <a-image src="#transparent1"-->
+<!--             rotation="45 0 0"-->
+<!--             position="-20 5 -50"-->
+<!--             scale="50 50 50"-->
+<!--             animation__move = "property:position; dur: 20000; to: 0 100 -999"-->
+<!--             animation__rotation = "property:rotation; dur: 30000; to: 45 0 360; loop:true; easing: linear"-->
+<!--    ></a-image>-->
+
+
+
+    <!--<a-camera gps-camera="simulateLatitude: 58.3840; simulateLongitude: 26.7218;" rotation-reader>-->
+    <a-camera>
+    </a-camera>
+</a-scene>
+</body>
+</html>
