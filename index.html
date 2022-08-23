@@ -7,38 +7,41 @@
     <style>
       body {
         font-family: sans-serif;
+        color: white;
       }
     </style>
     <script src="https://unpkg.com/es-module-shims@1.5.17/dist/es-module-shims.js"></script>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
     <script src="./lib/websocket.js"></script>
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+      import { generatePlanet } from "./lib/planets.js";
 
       const planets = {
-        mercury: { visible: false },
-        venus: { visible: false },
-        earth: { visible: false },
-        mars: { visible: false },
-        jupiter: { visible: false },
-        saturn: { visible: false },
+        mercury: generatePlanet("mercury"),
+        venus: generatePlanet("venus"),
+        earth: generatePlanet("earth"),
+        mars: generatePlanet("mars"),
+        jupiter: generatePlanet("jupiter"),
+        saturn: generatePlanet("saturn"),
 
-        mercury_m2: { visible: false, speed: 2 },
-        venus_v2: { visible: false, speed: 2 },
-        jupiter_j12: { visible: false, speed: 0.5 },
-        saturn_s12: { visible: false, speed: 0.5 },
+        mercury_m2: generatePlanet("mercury", 2),
+        venus_v2: generatePlanet("venus", 2),
+        jupiter_j12: generatePlanet("jupiter", 1 / 2),
+        saturn_s12: generatePlanet("saturn", 1 / 2),
 
-        mercury_m4: { visible: false, speed: 4 },
-        jupiter_j14: { visible: false, speed: 1 / 4 },
-        saturn_s14: { visible: false, speed: 1 / 4 },
+        mercury_m4: generatePlanet("mercury", 4),
+        jupiter_j14: generatePlanet("jupiter", 1 / 4),
+        saturn_s14: generatePlanet("saturn", 1 / 4),
 
-        mercury_m8: { visible: false, speed: 8 },
-        saturn_s18: { visible: false, speed: 1 / 8 },
+        mercury_m8: generatePlanet("mercury", 8),
+        saturn_s18: generatePlanet("saturn", 1 / 8),
 
-        venus_v4: { visible: false, speed: 4 },
-        venus_v8: { visible: false, speed: 8 },
+        venus_v4: generatePlanet("venus", 4),
+        venus_v8: generatePlanet("venus", 8),
       };
 
       const cometonics = { visible: false };
@@ -182,7 +185,7 @@
         v-model.number="r.time"
         @input="onInput"
         :max="sec('28:00')"
-        style="width: 200px"
+        style="width: 3s00px"
       />
       <p style="height: 32px">
         <button v-show="r.time == sec('28:00')" @click="onReset">
@@ -199,12 +202,73 @@
         messiermusics
       </div>
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
+      <pre style="overflow: auto; height: 300px">{{ r.planets }}</pre>
     </div>
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
+      <a-assets>
+        <a-asset-item
+          autoload
+          id="mercury"
+          src="planets2/mercury.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="jupiter"
+          src="planets2/jupiter.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="earth"
+          src="planets2/earth.glb"
+        ></a-asset-item>
+        <a-asset-item autoload id="mars" src="planets2/mars.glb"></a-asset-item>
+        <a-asset-item
+          autoload
+          id="venus"
+          src="planets2/venus.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="saturn"
+          src="planets2/saturn.glb"
+        ></a-asset-item>
+      </a-assets>
+
+      <a-entity
+        :position="{ x: 0, y: 0, z: -40}"
+        :rotation="{ x: 90, y: 0, z: 0}"
+        :scale="{x: 0.01, y: 0.01, z: 0.01}"
+      >
+        <a-entity
+          v-for="p,key in r.planets"
+          :position="p.outside.position"
+          :scale="p.outside.scale"
+          :animation="p.outside.animation"
+        >
+          <a-entity
+            rotation="90 0 0"
+            opacity="0.1"
+            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '.2'}"
+          ></a-entity>
+          <a-entity
+            :gltf-model="p.inside.model"
+            :position="p.inside.position"
+            :rotation="p.inside.rotation"
+            :scale="p.inside.scale"
+            :animation="p.inside.animation"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <a-entity
+        light="type: directional; color: #FFF; intensity: 5"
+        position="0 0 5"
+      ></a-entity>
+
       <a-camera></a-camera>
     </a-scene>
   </body>
