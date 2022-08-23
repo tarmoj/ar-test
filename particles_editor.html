@@ -14,6 +14,11 @@
         display: block;
         width: 50px;
         font-size: 10px;
+        color: white;
+        background-color: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 1px;
+        padding: 4px;
       }
       input[type="range"] {
         display: block;
@@ -60,6 +65,8 @@
         radialAcceleration: ["0", "0", "0"],
         angularAcceleration: ["0", "0", "0"],
         scale: "1",
+        trailLifeTime: "10",
+        trailInterval: "0",
       };
 
       const normalizeData = (data) => {
