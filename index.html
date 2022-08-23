@@ -47,6 +47,7 @@
       const cometonics = { visible: false };
       const messiermusics = { visible: false };
       const bigbang = { visible: false };
+      const part2 = { visible: false };
       /*
         planets.push(new Planet("mercury", "m2", 2));
         planets.push(new Planet("venus", "v2", 2));
@@ -71,6 +72,7 @@
         cometonics,
         messiermusics,
         bigbang,
+        part2,
       });
 
       // let t = 0;
@@ -151,13 +153,16 @@
         } else if (r.time >= sec("15:40") && r.eventCounter < 16) {
           r.messiermusics.visible = true;
           r.eventCounter = 16;
-        } else if (r.time >= sec("26:00") && r.eventCounter < 17) {
+        } else if (r.time >= sec("25:30") && r.eventCounter < 17) {
           r.bigbang.visible = true;
           r.eventCounter = 17;
-        } else if (r.time >= sec("28:00") && r.eventCounter < 18) {
+        } else if (r.time >= sec("27:30") && r.eventCounter < 18) {
           r.bigbang.visible = false;
           r.messiermusics.visible = false;
           r.eventCounter = 18;
+        } else if (r.time >= sec("28:00") && r.eventCounter < 19) {
+          r.part2.visible = true;
+          r.eventCounter = 19;
         }
       };
 
@@ -167,6 +172,7 @@
       const onReset = () => {
         r.time = 0;
         r.eventCounter = 0;
+        r.part2.visible = false;
       };
 
       createApp({
@@ -202,6 +208,7 @@
         messiermusics
       </div>
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
+      <div :style="{opacity: r.part2.visible ? 1 : 0.2}">part 2</div>
     </div>
     <a-scene
       vr-mode-ui="enabled: false"
@@ -284,6 +291,14 @@
         :visible="r.bigbang.visible"
         position="0 1 -20"
         value="bigbang"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
+
+      <a-text
+        :visible="r.part2.visible"
+        position="0 2 -20"
+        value="Part 2"
         align="center"
         animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
       ></a-text>
