@@ -19,13 +19,21 @@
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
+      const fields = {
+        spawnRate: { min: 0 },
+        lifeTime: { min: 0 },
+      };
+
       const data = {
         radialType: "circleXY",
         spawnRate: "200",
-        lifeTime: "50",
+        lifeTime: { from: 0, to: 50 },
         radialPosition: { from: 9, to: 11 },
         radialVelocity: { from: 0, to: 1 },
         angularVelocity: "0 0 1",
+        acceleration: "0 0 0",
+        radialAcceleration: "0 0 0",
+        angularAcceleration: "0 0 0",
       };
 
       const normalizeData = (data) => {
@@ -41,15 +49,33 @@
 
       const isNumber = (value) => !isNaN(parseFloat(value));
 
-      createApp({
-        data,
-        normalizeData,
-        isNumber,
-      }).mount();
+      createApp({ fields, data, normalizeData, isNumber, angle: 65 }).mount();
     </script>
   </head>
-  <body>
-    <div>
+  <body style="margin: 0; overflow: hidden">
+    <a-scene
+      id="scene"
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+      <a-entity
+        :rotation="{x: -angle, y: 0, z: 0}"
+        position="0 0 -40"
+        :sprite-particles="normalizeData(data)"
+      ></a-entity>
+
+      <a-camera></a-camera>
+    </a-scene>
+
+    <div style="position: fixed; top: 16px; left: 16px">
+      <p>Rotation: {{ angle }}deg</p>
+      <input
+        type="range"
+        v-model.number="angle"
+        max="90"
+        style="margin-bottom: 8px"
+      />
       <div v-for="field, key in data" style="padding-bottom: 8px">
         {{ key }}
         <div v-if="data[key].from !== undefined">
@@ -58,6 +84,7 @@
             v-if="isNumber(data[key].from)"
             type="range"
             v-model="data[key].from"
+            step="0.01"
           />
         </div>
         <div v-if="data[key].to !== undefined">
@@ -70,7 +97,13 @@
         </div>
         <div v-else>
           <input v-model="data[key]" />
-          <input v-if="isNumber(data[key])" type="range" v-model="data[key]" />
+          <input
+            v-if="isNumber(data[key])"
+            type="range"
+            v-model="data[key]"
+            min="-10"
+            max="1000"
+          />
         </div>
       </div>
       <pre>{{ normalizeData(data) }}</pre>
