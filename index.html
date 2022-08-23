@@ -176,33 +176,36 @@
   </head>
 
   <body style="margin: 24px; overflow: hidden">
-    <input
-      type="range"
-      v-model.number="r.time"
-      @input="onInput"
-      :max="sec('28:00')"
-      style="width: 50vw"
-    />
-    <button v-show="r.time == sec('28:00')" @click="onReset">
-      Back to start
-    </button>
-    <div>{{ secondsToTimeString(r.time) }} / {{ r.eventCounter }}</div>
-    <p />
-    <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.2}">
-      {{ key }}
+    <div style="position: fixed; top: 16px; left: 16px; z-index: 10000">
+      <input
+        type="range"
+        v-model.number="r.time"
+        @input="onInput"
+        :max="sec('28:00')"
+        style="width: 200px"
+      />
+      <p style="height: 32px">
+        <button v-show="r.time == sec('28:00')" @click="onReset">
+          Back to start
+        </button>
+      </p>
+      <div>{{ secondsToTimeString(r.time) }} / {{ r.eventCounter }}</div>
+      <p />
+      <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.2}">
+        {{ key }}
+      </div>
+      <div :style="{opacity: r.cometonics.visible ? 1 : 0.2}">cometonics</div>
+      <div :style="{opacity: r.messiermusics.visible ? 1 : 0.2}">
+        messiermusics
+      </div>
+      <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
     </div>
-    <div :style="{opacity: r.cometonics.visible ? 1 : 0.2}">cometonics</div>
-    <div :style="{opacity: r.messiermusics.visible ? 1 : 0.2}">
-      messiermusics
-    </div>
-    <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
-    <!-- <a-scene
-      id="scene"
+    <a-scene
       vr-mode-ui="enabled: false"
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
       <a-camera></a-camera>
-    </a-scene> -->
+    </a-scene>
   </body>
 </html>
