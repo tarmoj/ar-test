@@ -62,7 +62,7 @@
 
         */
       const r = reactive({
-        time: null,
+        time: 0,
         eventCounter: 0,
         planets,
         cometonics,
@@ -140,34 +140,52 @@
           Object.keys(r.planets).forEach(
             (key) => (r.planets[key].visible = false)
           );
-          cometonics.visible = true;
+          r.cometonics.visible = true;
           r.eventCounter = 14;
         } else if (r.time >= sec("15:30") && r.eventCounter < 15) {
-          cometonics.visible = false;
+          r.cometonics.visible = false;
           r.eventCounter = 15;
         } else if (r.time >= sec("15:40") && r.eventCounter < 16) {
-          messiermusics.visible = true;
+          r.messiermusics.visible = true;
           r.eventCounter = 16;
         } else if (r.time >= sec("26:00") && r.eventCounter < 17) {
-          bigbang.visible = true;
+          r.bigbang.visible = true;
           r.eventCounter = 17;
         } else if (r.time >= sec("28:00") && r.eventCounter < 18) {
-          bigbang.visible = false;
-          messiermusics.visible = true;
+          r.bigbang.visible = false;
+          r.messiermusics.visible = false;
           r.eventCounter = 18;
         }
       };
 
       doConnect(onMessage);
 
-      createApp({ r }).mount();
+      const onInput = (e) => onMessage({ TT_time: parseInt(e.target.value) });
+      const onReset = () => {
+        r.time = 0;
+        r.eventCounter = 0;
+      };
+
+      createApp({
+        r,
+        onInput,
+        onReset,
+      }).mount();
     </script>
     <script></script>
   </head>
 
   <body style="margin: 24px; overflow: hidden">
-    {{ sec("28:00") }}
-    <input type="range" v-model.number="r.time" :max="sec('28:00')" />
+    <input
+      type="range"
+      v-model.number="r.time"
+      @input="onInput"
+      :max="sec('28:00')"
+      style="width: 50vw"
+    />
+    <button v-show="r.time == sec('28:00')" @click="onReset">
+      Back to start
+    </button>
     <div>{{ secondsToTimeString(r.time) }} / {{ r.eventCounter }}</div>
     <p />
     <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.2}">
