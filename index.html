@@ -51,8 +51,6 @@
         nebulas: { visible: false },
         galaxies: { visible: false },
         superclusters: { visible: false },
-        radiogalaxies: { visible: false },
-        quasars: { visible: false },
       };
 
       const galactic = {
@@ -210,10 +208,21 @@
         r.part2.visible = false;
       };
 
+      const exampleParticles = {
+        lifeTime: "5..100",
+        spawnRate: "200",
+        radialType: "sphere",
+        radialPosition: "0.5",
+        radialVelocity: ".1",
+        scale: ".5",
+        opacity: ".5",
+      };
+
       createApp({
         r,
         onInput,
         onReset,
+        exampleParticles,
       }).mount();
     </script>
     <script></script>
@@ -308,35 +317,33 @@
         </a-entity>
       </a-entity>
 
-      <a-text
-        :visible="r.cometonics.visible"
-        :position="{x: -5, y: 0, z: -20}"
-        value="cometonics"
-        align="center"
-      ></a-text>
+      <a-entity :visible="r.cometonics.visible" position="0 0 -20">
+        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <a-text value="cometonics" align="center"></a-text>
+      </a-entity>
 
-      <a-text
+      <a-entity
         v-for="m,key,i in r.messier"
         :visible="m.visible"
-        :position="{x: -2, y: -i, z: -20}"
-        :value="key"
-        align="center"
-      ></a-text>
+        :position="{x: -2, y: -i + 3, z: -20}"
+      >
+        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <a-text :value="key" align="center"></a-text>
+      </a-entity>
 
-      <a-text
+      <a-entity
         v-for="g,key,i in r.galactic"
         :visible="g.visible"
-        :position="{x: 2, y: -i, z: -20}"
-        :value="key"
-        align="center"
-      ></a-text>
+        :position="{x: 2, y: -i + 1, z: -20}"
+      >
+        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <a-text :value="key" align="center"></a-text>
+      </a-entity>
 
-      <a-text
-        :visible="r.bigbang.visible"
-        :position="{x: 5, y: 0, z: -20}"
-        value="bigbang"
-        align="center"
-      ></a-text>
+      <a-entity :visible="r.bigbang.visible" :position="{x: 5, y: 0, z: -20}">
+        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <a-text value="bigbang" align="center"></a-text>
+      </a-entity>
 
       <a-entity
         light="type: directional; color: #FFF; intensity: 5"
