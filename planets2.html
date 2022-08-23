@@ -15,9 +15,9 @@
       import { generatePlanet } from "./lib/planets.js";
 
       const planets = {
-        earth: generatePlanet("earth"),
         mercury: generatePlanet("mercury"),
         venus: generatePlanet("venus"),
+        earth: generatePlanet("earth"),
         mars: generatePlanet("mars"),
         jupiter: generatePlanet("jupiter"),
         saturn: generatePlanet("saturn"),
@@ -38,12 +38,45 @@
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
       <a-assets>
+        <!-- <a-asset-item autoload id="sun" src="planets2/sun.glb"></a-asset-item> -->
+        <a-asset-item
+          autoload
+          id="mercury"
+          src="planets2/mercury.glb"
+        ></a-asset-item>
         <a-asset-item
           autoload
           id="jupiter"
-          src="planets2/jupiter.gltf"
+          src="planets2/jupiter.glb"
         ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="earth"
+          src="planets2/earth.glb"
+        ></a-asset-item>
+        <a-asset-item autoload id="mars" src="planets2/mars.glb"></a-asset-item>
+        <a-asset-item
+          autoload
+          id="venus"
+          src="planets2/venus.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="saturn"
+          src="planets2/saturn.glb"
+        ></a-asset-item>
+        <!-- <a-asset-item
+          autoload
+          id="nepture"
+          src="planets2/neptune.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="uranus"
+          src="planets2/uranus.glb"
+        ></a-asset-item> -->
       </a-assets>
+
       <a-entity
         :position="{ x: 0, y: 0, z: -40}"
         :rotation="{ x: angle, y: 0, z: 0}"
@@ -61,8 +94,9 @@
             :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), opacity: String(0.2)}"
           ></a-entity>
           <a-entity
-            gltf-model="#jupiter"
+            :gltf-model="p.inside.model"
             :position="p.inside.position"
+            :rotation="p.inside.rotation"
             :scale="p.inside.scale"
             :animation="p.inside.animation"
           ></a-entity>
@@ -89,7 +123,18 @@
         :max="0.01 + 0.1"
         step="any"
       />
-      <pre style="color: white">{{ planets }}</pre>
     </div>
+    <pre
+      style="
+        z-index: 1000;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        height: 80vh;
+        overflow: auto;
+      "
+    >
+      {{ planets }}
+    </pre>
   </body>
 </html>

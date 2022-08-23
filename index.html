@@ -1,63 +1,299 @@
-<!--generate with command: tree -H '.' -L 1 &#45;&#45;noreport &#45;&#45;charset utf-8 -o index.html-->
-
 <!DOCTYPE html>
 <html>
-<head>
- <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
- <meta name="Author" content="Made by 'tree'">
- <meta name="GENERATOR" content="$Version: $ tree v1.7.0 (c) 1996 - 2014 by Steve Baker, Thomas Moore, Francesc Rocher, Florian Sesser, Kyosuke Tokoro $">
- <title>Directory Tree</title>
- <style type="text/css">
-  <!-- 
-  BODY { font-family : ariel, monospace, sans-serif; }
-  P { font-weight: normal; font-family : ariel, monospace, sans-serif; color: black; background-color: transparent;}
-  B { font-weight: normal; color: black; background-color: transparent;}
-  A:visited { font-weight : normal; text-decoration : none; background-color : transparent; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:link    { font-weight : normal; text-decoration : none; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:hover   { color : #000000; font-weight : normal; text-decoration : underline; background-color : yellow; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  A:active  { color : #000000; font-weight: normal; background-color : transparent; margin : 0px 0px 0px 0px; padding : 0px 0px 0px 0px; display: inline; }
-  .VERSION { font-size: small; font-family : arial, sans-serif; }
-  .NORM  { color: black;  background-color: transparent;}
-  .FIFO  { color: purple; background-color: transparent;}
-  .CHAR  { color: yellow; background-color: transparent;}
-  .DIR   { color: blue;   background-color: transparent;}
-  .BLOCK { color: yellow; background-color: transparent;}
-  .LINK  { color: aqua;   background-color: transparent;}
-  .SOCK  { color: fuchsia;background-color: transparent;}
-  .EXEC  { color: green;  background-color: transparent;}
-  -->
- </style>
-</head>
-<body>
-	<h1>Directory Tree</h1><p>
-	<a href=".">.</a><br>
-	├── <a href="./3d/">3d</a><br>
-	├── <a href="./aframe-demo.html">aframe-demo.html</a><br>
-	├── <a href="./_config.yml">_config.yml</a><br>
-	├── <a href="./dist/">dist</a><br>
-	├── <a href="./images/">images</a><br>
-	├── <a href="./index.html">index.html</a><br>
-	├── <a href="./orbit.html">orbit.html</a><br>
-	├── <a href="./orbit_javascript_move.html">orbit_javascript_move.html</a><br>
-	├── <a href="./plane.html">plane.html</a><br>
-	├── <a href="./planets/">planets</a><br>
-	├── <a href="./planets.html">planets.html</a><br>
-	├── <a href="./stars.html">stars.html</a><br>
-	├── <a href="./test.html">test.html</a><br>
-	├── <a href="./websocket.js">websocket.js</a><br>
-	├── <a href="./websocket-send-time.html">websocket-send-time.html</a><br>
-	└── <a href="./websocket-test.html">websocket-test.html</a><br>
-	<br><br>
-	</p>
-	<p>
-	<br><br>
-	</p>
-	<hr>
-	<p class="VERSION">
-		 tree v1.7.0 © 1996 - 2014 by Steve Baker and Thomas Moore <br>
-		 HTML output hacked and copyleft © 1998 by Francesc Rocher <br>
-		 JSON output hacked and copyleft © 2014 by Florian Sesser <br>
-		 Charsets / OS/2 support © 2001 by Kyosuke Tokoro
-	</p>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>AR.js demo Stars</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        color: white;
+      }
+    </style>
+    <script src="https://unpkg.com/es-module-shims@1.5.17/dist/es-module-shims.js"></script>
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
+    <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
+    <script src="./lib/websocket.js"></script>
+    <script type="module">
+      import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+      import { generatePlanet } from "./lib/planets.js";
+
+      const planets = {
+        mercury: generatePlanet("mercury"),
+        venus: generatePlanet("venus"),
+        earth: generatePlanet("earth"),
+        mars: generatePlanet("mars"),
+        jupiter: generatePlanet("jupiter"),
+        saturn: generatePlanet("saturn"),
+
+        mercury_m2: generatePlanet("mercury", 2),
+        venus_v2: generatePlanet("venus", 2),
+        jupiter_j12: generatePlanet("jupiter", 1 / 2),
+        saturn_s12: generatePlanet("saturn", 1 / 2),
+
+        mercury_m4: generatePlanet("mercury", 4),
+        jupiter_j14: generatePlanet("jupiter", 1 / 4),
+        saturn_s14: generatePlanet("saturn", 1 / 4),
+
+        mercury_m8: generatePlanet("mercury", 8),
+        saturn_s18: generatePlanet("saturn", 1 / 8),
+
+        venus_v4: generatePlanet("venus", 4),
+        venus_v8: generatePlanet("venus", 8),
+      };
+
+      const cometonics = { visible: false };
+      const messiermusics = { visible: false };
+      const bigbang = { visible: false };
+      /*
+        planets.push(new Planet("mercury", "m2", 2));
+        planets.push(new Planet("venus", "v2", 2));
+        planets.push(new Planet("jupiter", "j12", 0.5));
+        planets.push(new Planet("saturn", "s12", 0.5));
+
+        planets.push(new Planet("mercury", "m4", 4));
+        planets.push(new Planet("jupiter", "j14", 0.25));
+        planets.push(new Planet("saturn", "s14", 0.25));
+
+        planets.push(new Planet("mercury", "m8", 8));
+        planets.push(new Planet("saturn", "s18", 1 / 8));
+
+        planets.push(new Planet("venus", "v4", 4));
+        planets.push(new Planet("venus", "v8", 8));
+
+        */
+      const r = reactive({
+        time: 0,
+        eventCounter: 0,
+        planets,
+        cometonics,
+        messiermusics,
+        bigbang,
+      });
+
+      // let t = 0;
+      // setInterval(() => {
+      //   websocket.send(JSON.stringify({ TT_time: t++ }));
+      // }, 25);
+
+      const onMessage = (data) => {
+        r.time = data.TT_time;
+        if (r.time >= 0 && r.eventCounter < 1) {
+          r.planets.earth.visible = true;
+          r.eventCounter = 1;
+        } else if (r.time >= 60 && r.eventCounter < 2) {
+          r.planets.venus.visible = true;
+          r.eventCounter = 2;
+        } else if (r.time >= 120 && r.eventCounter < 3) {
+          r.planets.mercury.visible = true;
+          r.eventCounter = 3;
+        } else if (r.time >= 180 && r.eventCounter < 4) {
+          r.planets.mars.visible = true;
+          r.eventCounter = 4;
+        } else if (r.time >= 240 && r.eventCounter < 5) {
+          r.planets.jupiter.visible = true;
+          r.eventCounter = 5;
+        } else if (r.time >= 300 && r.eventCounter < 6) {
+          r.planets.saturn.visible = true;
+          r.eventCounter = 6;
+        } else if (r.time >= 360 && r.eventCounter < 7) {
+          r.planets.mercury_m2.visible = true;
+          r.planets.venus_v2.visible = true;
+          r.planets.jupiter_j12.visible = true;
+          r.planets.saturn_s12.visible = true;
+          r.eventCounter = 7;
+        } else if (r.time >= 420 && r.eventCounter < 8) {
+          r.planets.mercury_m4.visible = true;
+          r.planets.jupiter_j14.visible = true;
+          r.planets.saturn_s14.visible = true;
+          r.eventCounter = 8;
+        } else if (r.time >= 480 && r.eventCounter < 9) {
+          // 8:00
+          r.planets.mercury_m8.visible = true;
+          r.planets.saturn_s18.visible = true;
+          r.eventCounter = 9;
+        } else if (r.time >= 540 && r.eventCounter < 10) {
+          // 9:00
+          r.planets.saturn.visible = false;
+          r.planets.jupiter.visible = false;
+          r.planets.venus.visible = false;
+          r.planets.mercury.visible = false;
+          r.eventCounter = 10;
+        } else if (r.time >= 600 && r.eventCounter < 11) {
+          // 10:00
+          r.planets.venus_v2.visible = false;
+          r.planets.saturn_s12.visible = false;
+          r.planets.jupiter_j12.visible = false;
+          r.planets.venus_v2.visible = false;
+          r.planets.venus_v4.visible = true;
+          r.eventCounter = 11;
+        } else if (r.time >= 630 && r.eventCounter < 12) {
+          // 10:30
+          r.planets.venus_v4.visible = false;
+          r.planets.venus_v8.visible = true;
+          r.eventCounter = 12;
+        } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
+          // 11:00
+          r.planets.saturn_s14.visible = false;
+          r.eventCounter = 13;
+        } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
+          // Hide all planets
+          Object.keys(r.planets).forEach(
+            (key) => (r.planets[key].visible = false)
+          );
+          r.cometonics.visible = true;
+          r.eventCounter = 14;
+        } else if (r.time >= sec("15:30") && r.eventCounter < 15) {
+          r.cometonics.visible = false;
+          r.eventCounter = 15;
+        } else if (r.time >= sec("15:40") && r.eventCounter < 16) {
+          r.messiermusics.visible = true;
+          r.eventCounter = 16;
+        } else if (r.time >= sec("26:00") && r.eventCounter < 17) {
+          r.bigbang.visible = true;
+          r.eventCounter = 17;
+        } else if (r.time >= sec("28:00") && r.eventCounter < 18) {
+          r.bigbang.visible = false;
+          r.messiermusics.visible = false;
+          r.eventCounter = 18;
+        }
+      };
+
+      doConnect(onMessage);
+
+      const onInput = (e) => onMessage({ TT_time: parseInt(e.target.value) });
+      const onReset = () => {
+        r.time = 0;
+        r.eventCounter = 0;
+      };
+
+      createApp({
+        r,
+        onInput,
+        onReset,
+      }).mount();
+    </script>
+    <script></script>
+  </head>
+
+  <body style="margin: 24px; overflow: hidden">
+    <div style="position: fixed; top: 16px; left: 16px; z-index: 10000">
+      <input
+        type="range"
+        v-model.number="r.time"
+        @input="onInput"
+        :max="sec('28:00')"
+        style="width: 300px"
+      />
+      <p style="height: 32px">
+        <button v-show="r.time == sec('28:00')" @click="onReset">
+          Back to start
+        </button>
+      </p>
+      <div>{{ secondsToTimeString(r.time) }} / {{ r.eventCounter }}</div>
+      <p />
+      <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.2}">
+        {{ key }}
+      </div>
+      <div :style="{opacity: r.cometonics.visible ? 1 : 0.2}">cometonics</div>
+      <div :style="{opacity: r.messiermusics.visible ? 1 : 0.2}">
+        messiermusics
+      </div>
+      <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
+    </div>
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+      <a-assets>
+        <a-asset-item
+          autoload
+          id="mercury"
+          src="planets2/mercury.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="jupiter"
+          src="planets2/jupiter.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="earth"
+          src="planets2/earth.glb"
+        ></a-asset-item>
+        <a-asset-item autoload id="mars" src="planets2/mars.glb"></a-asset-item>
+        <a-asset-item
+          autoload
+          id="venus"
+          src="planets2/venus.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="saturn"
+          src="planets2/saturn.glb"
+        ></a-asset-item>
+      </a-assets>
+
+      <a-entity
+        :position="{ x: 0, y: 0, z: -40}"
+        :rotation="{ x: 90, y: 0, z: 0}"
+        :scale="{x: 0.01, y: 0.01, z: 0.01}"
+      >
+        <a-entity
+          v-for="p,key in r.planets"
+          :position="p.outside.position"
+          :scale="p.outside.scale"
+          :animation="p.outside.animation"
+          :visible="p.visible"
+        >
+          <a-entity
+            rotation="90 0 0"
+            opacity="0.1"
+            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '.2'}"
+          ></a-entity>
+          <a-entity
+            :gltf-model="p.inside.model"
+            :position="p.inside.position"
+            :rotation="p.inside.rotation"
+            :scale="p.inside.scale"
+            :animation="p.inside.animation"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <a-text
+        :visible="r.cometonics.visible"
+        position="0 -1 -20"
+        value="cometonics"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
+
+      <a-text
+        :visible="r.messiermusics.visible"
+        position="0 0 -20"
+        value="messiermusics"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
+
+      <a-text
+        :visible="r.bigbang.visible"
+        position="0 1 -20"
+        value="bigbang"
+        align="center"
+        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
+      ></a-text>
+
+      <a-entity
+        light="type: directional; color: #FFF; intensity: 5"
+        position="0 0 5"
+      ></a-entity>
+
+      <a-camera></a-camera>
+    </a-scene>
+  </body>
 </html>
