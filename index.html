@@ -4,6 +4,11 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>AR.js demo Stars</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+    </style>
     <script src="https://unpkg.com/es-module-shims@1.5.17/dist/es-module-shims.js"></script>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
@@ -36,6 +41,9 @@
         venus_v8: { visible: false, speed: 8 },
       };
 
+      const cometonics = { visible: false };
+      const messiermusics = { visible: false };
+      const bigbang = { visible: false };
       /*
         planets.push(new Planet("mercury", "m2", 2));
         planets.push(new Planet("venus", "v2", 2));
@@ -53,17 +61,22 @@
         planets.push(new Planet("venus", "v8", 8));
 
         */
-      const r = reactive({ time: null, eventCounter: 0, planets });
+      const r = reactive({
+        time: null,
+        eventCounter: 0,
+        planets,
+        cometonics,
+        messiermusics,
+        bigbang,
+      });
 
-      createApp({ r }).mount();
-
-      let t = 0;
-      setInterval(() => {
-        websocket.send(JSON.stringify({ TT_time2: t++ }));
-      }, 10);
+      // let t = 0;
+      // setInterval(() => {
+      //   websocket.send(JSON.stringify({ TT_time: t++ }));
+      // }, 25);
 
       const onMessage = (data) => {
-        r.time = data.TT_time2;
+        r.time = data.TT_time;
         if (r.time >= 0 && r.eventCounter < 1) {
           r.planets.earth.visible = true;
           r.eventCounter = 1;
@@ -118,26 +131,53 @@
           r.planets.venus_v4.visible = false;
           r.planets.venus_v8.visible = true;
           r.eventCounter = 12;
-        } else if (r.time >= 660 && r.eventCounter < 13) {
+        } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
           // 11:00
           r.planets.saturn_s14.visible = false;
           r.eventCounter = 13;
-        } else if (r.time >= 730 && r.eventCounter < 14) {
-          // 12:00
+        } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
+          // Hide all planets
           Object.keys(r.planets).forEach(
             (key) => (r.planets[key].visible = false)
           );
+          cometonics.visible = true;
           r.eventCounter = 14;
+        } else if (r.time >= sec("15:30") && r.eventCounter < 15) {
+          cometonics.visible = false;
+          r.eventCounter = 15;
+        } else if (r.time >= sec("15:40") && r.eventCounter < 16) {
+          messiermusics.visible = true;
+          r.eventCounter = 16;
+        } else if (r.time >= sec("26:00") && r.eventCounter < 17) {
+          bigbang.visible = true;
+          r.eventCounter = 17;
+        } else if (r.time >= sec("28:00") && r.eventCounter < 18) {
+          bigbang.visible = false;
+          messiermusics.visible = true;
+          r.eventCounter = 18;
         }
       };
 
       doConnect(onMessage);
+
+      createApp({ r }).mount();
     </script>
     <script></script>
   </head>
 
-  <body style="margin: 0; overflow: hidden">
-    <pre style="height: 100vh; overflow: auto">{{ r }}</pre>
+  <body style="margin: 24px; overflow: hidden">
+    {{ sec("28:00") }}
+    <input type="range" v-model.number="r.time" :max="sec('28:00')" />
+    <div>{{ secondsToTimeString(r.time) }} / {{ r.eventCounter }}</div>
+    <p />
+    <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.2}">
+      {{ key }}
+    </div>
+    <div :style="{opacity: r.cometonics.visible ? 1 : 0.2}">cometonics</div>
+    <div :style="{opacity: r.messiermusics.visible ? 1 : 0.2}">
+      messiermusics
+    </div>
+    <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
     <!-- <a-scene
       id="scene"
       vr-mode-ui="enabled: false"
