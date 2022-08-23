@@ -310,8 +310,31 @@
 
       <a-text
         :visible="r.cometonics.visible"
-        position="0 -1 -20"
+        :position="{x: -5, y: 0, z: -20}"
         value="cometonics"
+        align="center"
+      ></a-text>
+
+      <a-text
+        v-for="m,key,i in r.messier"
+        :visible="m.visible"
+        :position="{x: -2, y: -i, z: -20}"
+        :value="key"
+        align="center"
+      ></a-text>
+
+      <a-text
+        v-for="g,key,i in r.galactic"
+        :visible="g.visible"
+        :position="{x: 2, y: -i, z: -20}"
+        :value="key"
+        align="center"
+      ></a-text>
+
+      <a-text
+        :visible="r.bigbang.visible"
+        :position="{x: 5, y: 0, z: -20}"
+        value="bigbang"
         align="center"
       ></a-text>
 
