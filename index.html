@@ -45,34 +45,22 @@
       };
 
       const cometonics = { visible: false };
-      const messiermusics = { visible: false };
-      const bigbang = { visible: false };
-      const part2 = { visible: false };
-      /*
-        planets.push(new Planet("mercury", "m2", 2));
-        planets.push(new Planet("venus", "v2", 2));
-        planets.push(new Planet("jupiter", "j12", 0.5));
-        planets.push(new Planet("saturn", "s12", 0.5));
 
-        planets.push(new Planet("mercury", "m4", 4));
-        planets.push(new Planet("jupiter", "j14", 0.25));
-        planets.push(new Planet("saturn", "s14", 0.25));
+      const messier = {
+        clusters: { visible: false },
+        nebulas: { visible: false },
+        galaxies: { visible: false },
+        superclusters: { visible: false },
+        radiogalaxies: { visible: false },
+        quasars: { visible: false },
+      };
 
-        planets.push(new Planet("mercury", "m8", 8));
-        planets.push(new Planet("saturn", "s18", 1 / 8));
-
-        planets.push(new Planet("venus", "v4", 4));
-        planets.push(new Planet("venus", "v8", 8));
-
-        */
       const r = reactive({
         time: 0,
         eventCounter: 0,
         planets,
         cometonics,
-        messiermusics,
-        bigbang,
-        part2,
+        messier,
       });
 
       // let t = 0;
@@ -141,27 +129,54 @@
           r.planets.saturn_s14.visible = false;
           r.eventCounter = 13;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
-          // Hide all planets
+          r.cometonics.visible = true;
+          r.eventCounter = 14;
+        } else if (r.time >= sec("12:00") && r.eventCounter < 14) {
+          // Messiermusics 0:00
           Object.keys(r.planets).forEach(
             (key) => (r.planets[key].visible = false)
           );
-          r.cometonics.visible = true;
-          r.eventCounter = 14;
         } else if (r.time >= sec("15:30") && r.eventCounter < 15) {
+          // 3:30
           r.cometonics.visible = false;
           r.eventCounter = 15;
         } else if (r.time >= sec("15:40") && r.eventCounter < 16) {
-          r.messiermusics.visible = true;
+          // 3:40
+          r.messier.clusters.visible = true;
           r.eventCounter = 16;
-        } else if (r.time >= sec("25:30") && r.eventCounter < 17) {
-          r.bigbang.visible = true;
+        } else if (r.time >= sec("16:40") && r.eventCounter < 16) {
+          // 4:40
+          r.messier.clusters.visible = false;
+          r.messier.nebulas.visible = true;
+          r.eventCounter = 16;
+        } else if (r.time >= sec("18:00") && r.eventCounter < 16) {
+          // 6:00
+          r.messier.nebulas.visible = false;
+          r.messier.clusters.visible = true;
+          r.eventCounter = 16;
+        } else if (r.time >= sec("21:10") && r.eventCounter < 16) {
+          // 9:10
+          r.messier.clusters.visible = false;
+          r.messier.galaxies.visible = true;
+          r.eventCounter = 16;
+        } else if (r.time >= sec("23:50") && r.eventCounter < 17) {
+          // 11:50
+          r.messier.galaxies.visible = false;
+          r.messier.superclusters.visible = true;
           r.eventCounter = 17;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 18) {
-          r.bigbang.visible = false;
-          r.messiermusics.visible = false;
+        } else if (r.time >= sec("25:00") && r.eventCounter < 18) {
+          // 13:00
+          r.messier.superclusters.visible = false;
+          r.messier.radiogalaxies.visible = true;
           r.eventCounter = 18;
-        } else if (r.time >= sec("28:00") && r.eventCounter < 19) {
-          r.part2.visible = true;
+        } else if (r.time >= sec("26:00") && r.eventCounter < 19) {
+          // 14:00
+          r.messier.radiogalaxies.visible = false;
+          r.messier.quasars.visible = true;
+          r.eventCounter = 19;
+        } else if (r.time >= sec("26:45") && r.eventCounter < 19) {
+          // 14:45
+          r.messier.quasars.visible = false;
           r.eventCounter = 19;
         }
       };
@@ -204,11 +219,9 @@
         {{ key }}
       </div>
       <div :style="{opacity: r.cometonics.visible ? 1 : 0.2}">cometonics</div>
-      <div :style="{opacity: r.messiermusics.visible ? 1 : 0.2}">
-        messiermusics
+      <div v-for="m,key in r.messier" :style="{opacity: m.visible ? 1 : 0.2}">
+        messier {{ key }}
       </div>
-      <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
-      <div :style="{opacity: r.part2.visible ? 1 : 0.2}">part 2</div>
     </div>
     <a-scene
       vr-mode-ui="enabled: false"
@@ -276,31 +289,6 @@
         position="0 -1 -20"
         value="cometonics"
         align="center"
-        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
-      ></a-text>
-
-      <a-text
-        :visible="r.messiermusics.visible"
-        position="0 0 -20"
-        value="messiermusics"
-        align="center"
-        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
-      ></a-text>
-
-      <a-text
-        :visible="r.bigbang.visible"
-        position="0 1 -20"
-        value="bigbang"
-        align="center"
-        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
-      ></a-text>
-
-      <a-text
-        :visible="r.part2.visible"
-        position="0 2 -20"
-        value="Part 2"
-        align="center"
-        animation="property: rotation; dur: 20000; to: 0 0 360; loop: true; easing: linear"
       ></a-text>
 
       <a-entity
