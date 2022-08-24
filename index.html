@@ -21,6 +21,9 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
       import { generatePlanet } from "./lib/planets.js";
 
+      const animation = AFRAME.ANIME;
+      const speed = 100; // Edit to 1000 for normal speed
+
       const planets = {
         mercury: generatePlanet("mercury"),
         venus: generatePlanet("venus"),
@@ -76,11 +79,20 @@
 
         globalRotation: 90,
         globalScale: 1,
+
+        orbitsOpacity: 0,
+        orbitsOffset: 0,
       });
 
       const onMessage = (data) => {
         r.time = data.TT_time;
         if (r.time >= 0 && r.eventCounter < 1) {
+          animation({
+            targets: r,
+            orbitsOpacity: 1,
+            duration: sec("1:00") * speed,
+            easing: "linear",
+          });
           r.planets.earth.visible = true;
           r.eventCounter = 1;
           r.a = 360;
@@ -101,12 +113,21 @@
           r.planets.saturn.visible = true;
           r.eventCounter = 6;
         } else if (r.time >= 360 && r.eventCounter < 7) {
+          // 6:00
+          animation({
+            targets: r,
+            globalScale: 2,
+            globalRotation: 0,
+            duration: sec("2:00") * speed,
+            easing: "easeInOutSine",
+          });
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
           r.planets.jupiter_j12.visible = true;
           r.planets.saturn_s12.visible = true;
           r.eventCounter = 7;
         } else if (r.time >= 420 && r.eventCounter < 8) {
+          // 7:00
           r.planets.mercury_m4.visible = true;
           r.planets.jupiter_j14.visible = true;
           r.planets.saturn_s14.visible = true;
@@ -138,9 +159,21 @@
           r.eventCounter = 12;
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
           // 11:00
+          animation({
+            targets: r,
+            globalScale: 1,
+            duration: sec("0:30") * speed,
+            easing: "easeInOutSine",
+          });
           r.planets.saturn_s14.visible = false;
           r.eventCounter = 13;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
+          animation({
+            targets: r,
+            orbitsOffset: 10,
+            duration: sec("1:00") * speed,
+            easing: "linear",
+          });
           r.cometonics.visible = true;
           r.eventCounter = 14;
         } else if (r.time >= sec("12:00") && r.eventCounter < 15) {
@@ -151,6 +184,12 @@
           r.eventCounter = 15;
         } else if (r.time >= sec("15:30") && r.eventCounter < 16) {
           // 3:30
+          animation({
+            targets: r,
+            orbitsOpacity: 0,
+            duration: sec("1:00") * speed,
+            easing: "linear",
+          });
           r.cometonics.visible = false;
           r.eventCounter = 16;
         } else if (r.time >= sec("15:40") && r.eventCounter < 17) {
@@ -184,6 +223,18 @@
           r.eventCounter = 22;
         } else if (r.time >= sec("25:30") && r.eventCounter < 23) {
           // 13:30
+          animation({
+            targets: r,
+            orbitsOpacity: 1,
+            duration: sec("1:00") * speed,
+            easing: "linear",
+          });
+          animation({
+            targets: r,
+            globalScale: 0,
+            duration: sec("2:00") * speed,
+            easing: "linear",
+          });
           r.bigbang.visible = true;
           r.eventCounter = 23;
         } else if (r.time >= sec("26:00") && r.eventCounter < 24) {
@@ -240,6 +291,7 @@
         :max="sec('27:30')"
         style="width: 300px"
       />
+      {{ r.orbitOpacity }}
       <p style="height: 32px">
         <button v-show="r.time == sec('27:30')" @click="onReset">
           Back to start
@@ -363,7 +415,20 @@
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
-        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}">
+        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}" :opacity="0">
+          <a-entity
+            v-for="p,key,i in r.planets"
+            :position="{ x: 0, y: 0 + (i * r.orbitsOffset), z: 0 }"
+            :scale="p.outside.scale"
+            :animation="p.outside.animation"
+          >
+            <a-entity
+              rotation="90 0 0"
+              :sprite-particles="{ opacity: String(r.orbitsOpacity), radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '0.5'}"
+              :sprite-particles_="{  opacity: r.orbitsOpacity, color: '#fff', radialVelocity:'10', angularVelocity:'0 0 10',radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: p.inside.position.z + '..' + (p.inside.position.z + 1), scale: '0.2'}"
+            ></a-entity>
+          </a-entity>
+
           <a-entity
             v-for="p,key in r.planets"
             :position="p.outside.position"
@@ -371,11 +436,6 @@
             :animation="p.outside.animation"
             :visible="p.visible"
           >
-            <a-entity
-              rotation="90 0 0"
-              opacity="0.1"
-              :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '.2'}"
-            ></a-entity>
             <a-entity
               :gltf-model="p.inside.model"
               :position="p.inside.position"
