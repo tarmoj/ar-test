@@ -65,11 +65,15 @@
       const r = reactive({
         time: 0,
         eventCounter: 0,
+
         planets,
         cometonics,
         messier,
         galactic,
         bigbang,
+
+        globalRotation: 90,
+        globalScale: 1,
       });
 
       // let t = 0;
@@ -82,6 +86,8 @@
         if (r.time >= 0 && r.eventCounter < 1) {
           r.planets.earth.visible = true;
           r.eventCounter = 1;
+          r.a = 360;
+          r.a2 = 1;
         } else if (r.time >= 60 && r.eventCounter < 2) {
           r.planets.venus.visible = true;
           r.eventCounter = 2;
@@ -228,7 +234,7 @@
     <script></script>
   </head>
 
-  <body style="margin: 24px; overflow: hidden">
+  <body style="margin: 0; overflow: hidden">
     <div style="position: fixed; top: 16px; left: 16px; z-index: 10000">
       <input
         type="range"
@@ -256,6 +262,24 @@
       </div>
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.4}">bigbang</div>
     </div>
+
+    <div style="position: fixed; top: 16px; right: 16px; z-index: 10000">
+      <input
+        type="range"
+        v-model.number="r.globalRotation"
+        max="90"
+        step="any"
+        style="margin-bottom: 8px"
+      />
+      <input
+        type="range"
+        v-model.number="r.globalScale"
+        max="10"
+        min="1"
+        step="any"
+      />
+    </div>
+
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
@@ -325,63 +349,77 @@
         ></a-asset-item>
       </a-assets>
 
-      <a-entity
-        :position="{ x: 0, y: 0, z: -40}"
-        :rotation="{ x: 90, y: 0, z: 0}"
-        :scale="{x: 0.01, y: 0.01, z: 0.01}"
+      <!-- <a-entity
+        :position="{x: 0, y: 0, z: -20}"
+        :animation="{property: 'rotation', dur: 10000, to: {x: r.a, y: r.a, z: r.a}, loop: true, easing: 'linear'}"
       >
         <a-entity
-          v-for="p,key in r.planets"
-          :position="p.outside.position"
-          :scale="p.outside.scale"
-          :animation="p.outside.animation"
-          :visible="p.visible"
-        >
+          gltf-model="#bigbang"
+          scale="1 1 1"
+          :model-opacity="{opacity: 0}"
+          :animation="{property: 'model-opacity.opacity', dur: 20000, to: r.a2, easing: 'linear'}"
+        ></a-entity>
+      </a-entity> -->
+
+      <a-entity
+        :position="{ x: 0, y: 0, z: -20}"
+        :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
+        :rotation="{x: r.globalRotation, y: 0, z: 0}"
+      >
+        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}">
           <a-entity
-            rotation="90 0 0"
-            opacity="0.1"
-            :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '.2'}"
-          ></a-entity>
-          <a-entity
-            :gltf-model="p.inside.model"
-            :position="p.inside.position"
-            :rotation="p.inside.rotation"
-            :scale="p.inside.scale"
-            :animation="p.inside.animation"
-          ></a-entity>
+            v-for="p,key in r.planets"
+            :position="p.outside.position"
+            :scale="p.outside.scale"
+            :animation="p.outside.animation"
+            :visible="p.visible"
+          >
+            <a-entity
+              rotation="90 0 0"
+              opacity="0.1"
+              :sprite-particles="{ radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '.2'}"
+            ></a-entity>
+            <a-entity
+              :gltf-model="p.inside.model"
+              :position="p.inside.position"
+              :rotation="p.inside.rotation"
+              :scale="p.inside.scale"
+              :animation="p.inside.animation"
+            ></a-entity>
+          </a-entity>
         </a-entity>
-      </a-entity>
 
-      <a-entity :visible="r.cometonics.visible" position="0 0 -20">
-        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-        <a-entity gltf-model="#bigbang" scale="0.1 0.1 0.1"></a-entity>
-        <a-text value="cometonics" align="center"></a-text>
-      </a-entity>
+        <a-entity :visible="r.cometonics.visible" position="0 0 0">
+          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+          <a-entity gltf-model="#cometonics" scale="0.1 0.1 0.1"></a-entity>
+          <a-text value="cometonics" align="center"></a-text>
+        </a-entity>
 
-      <a-entity
-        v-for="m,key,i in r.messier"
-        :visible="m.visible"
-        :position="{x: -1, y: -i + 3, z: -20}"
-      >
-        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-        <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
-        <a-text :value="key" align="center"></a-text>
-      </a-entity>
+        <a-entity
+          v-for="m,key,i in r.messier"
+          :visible="m.visible"
+          :position="{x: -1, y: -i + 3, z: 0}"
+        >
+          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+          <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
+          <a-text :value="key" align="center"></a-text>
+        </a-entity>
 
-      <a-entity
-        v-for="g,key,i in r.galactic"
-        :visible="g.visible"
-        :position="{x: 1, y: -i + 1, z: -20}"
-      >
-        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-        <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
-        <a-text :value="key" align="center"></a-text>
-      </a-entity>
+        <a-entity
+          v-for="g,key,i in r.galactic"
+          :visible="g.visible"
+          :position="{x: 1, y: -i + 1, z: 0}"
+        >
+          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+          <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
+          <a-text :value="key" align="center"></a-text>
+        </a-entity>
 
-      <a-entity :visible="r.bigbang.visible" :position="{x: 5, y: 0, z: -20}">
-        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-        <a-entity gltf-model="#bigbang" scale="0.1 0.1 0.1"></a-entity>
-        <a-text value="bigbang" align="center"></a-text>
+        <a-entity :visible="r.bigbang.visible" :position="{x: 5, y: 0, z: 0}">
+          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+          <a-entity gltf-model="#bigbang" scale="0.1 0.1 0.1"></a-entity>
+          <a-text value="bigbang" align="center"></a-text>
+        </a-entity>
       </a-entity>
 
       <a-entity
