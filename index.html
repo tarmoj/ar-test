@@ -47,19 +47,20 @@
       const cometonics = { visible: false };
 
       const messier = {
-        clusters: { visible: false, scale: 0.005 },
+        clusters: { visible: false, scale: 0.001 },
         nebulas: { visible: false, scale: 0.0004 },
-        galaxies: { visible: false, scale: 0.005 },
-        superclusters: { visible: false, scale: 0.005 },
+        galaxies: { visible: false, scale: 0.001 },
+        superclusters: { visible: false, scale: 0.001 },
       };
 
       const galactic = {
-        radiogalaxies: { visible: false, scale: 0.005 },
-        quasars: { visible: false, scale: 0.005 },
+        radiogalaxies: { visible: false, scale: 0.001 },
+        quasars: { visible: false, scale: 0.001 },
       };
 
       const bigbang = {
         visible: false,
+        scale: 0.001,
       };
 
       const r = reactive({
@@ -314,7 +315,7 @@
         <a-asset-item
           autoload
           id="nebulas"
-          src="assets/nebulas2.glb"
+          src="assets/nebulas.glb"
         ></a-asset-item>
         <a-asset-item
           autoload
@@ -407,9 +408,9 @@
           <a-text :value="key" align="center"></a-text>
         </a-entity>
 
-        <a-entity :visible="r.bigbang.visible">
+        <a-entity :visible="!r.bigbang.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity gltf-model="#bigbang" scale="0.01 0.01 0.01"></a-entity>
+          <a-entity gltf-model="#bigbang" scale="0.001 0.001 0.001"></a-entity>
           <a-text value="bigbang" align="center"></a-text>
         </a-entity>
       </a-entity>
