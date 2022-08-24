@@ -10,6 +10,9 @@
         font-size: 14px;
         color: white;
       }
+      input {
+        font-family: monospace;
+      }
       input[type="text"] {
         display: block;
         width: 50px;
@@ -70,6 +73,7 @@
       // };
 
       const data = {
+        color: "#fff..#00f,#fff,#fff",
         radialType: "circleXY",
         spawnRate: "100",
         lifeTime: "500",
@@ -87,7 +91,10 @@
             if (Array.isArray(value) && value.length === 2) {
               value = value.join("..");
             }
-            if (Array.isArray(value) && value.length === 3) {
+            if (Array.isArray(value) && value.length === 3 && key === "color") {
+              value = hsl2hex(...value);
+            }
+            if (Array.isArray(value) && value.length === 3 && key !== "color") {
               value = value.join(" ");
             }
             return [key, value];
@@ -143,7 +150,7 @@
           </div>
         </div>
         <div v-else>
-          <input type="text" v-model="data[key]" />
+          <input type="text" v-model="data[key]" style="width: 200px" />
           <input
             v-if="isNumber(data[key])"
             type="range"
