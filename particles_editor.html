@@ -76,14 +76,29 @@
         color: "#fff..#00f,#fff,#fff",
         radialType: "circleXY",
         spawnRate: "100",
-        lifeTime: "500",
+        lifeTime: "5000",
         radialPosition: ["5", "6"],
         radialVelocity: ["0", "1"],
-        angularVelocity: ["0", "0", "5"],
+        angularVelocity: ["0", "0", "10"],
         scale: "0.8",
         trailLifeTime: "2",
         trailInterval: "0.1",
+        texture: "#blob",
       };
+
+      // const data = {
+      //   color: "#fff..#00f,#fff,#fff",
+      //   radialType: "sphere",
+      //   spawnRate: "1000",
+      //   lifeTime: "5000",
+      //   radialPosition: [5, 6],
+      //   radialVelocity: [0, 1],
+      //   angularVelocity: [0, 0, 0],
+      //   scale: "3",
+      //   trailLifeTime: "2",
+      //   trailInterval: "0.1",
+      //   texture: "#blob",
+      // };
 
       const normalizeData = (data) => {
         return Object.fromEntries(
@@ -114,16 +129,31 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <a-entity
-        :rotation="{x: -angle, y: 0, z: 0}"
-        position="0 0 -40"
-        :sprite-particles="normalizeData(data)"
-      ></a-entity>
+      <a-assets>
+        <img id="blob" src="assets/blob.png" />
+      </a-assets>
+
+      <a-entity :rotation="{x: -angle, y: 0, z: 0}" position="0 0 -40">
+        <a-entity
+          :rotation="{x: 0, y: 0, z: 0}"
+          :sprite-particles="normalizeData(data)"
+          :animation="{property: 'rotation', dur: 50000, to: {x: 0, y: 0, z: -360}, loop: true, easing: 'linear'}"
+        ></a-entity>
+      </a-entity>
 
       <a-camera></a-camera>
     </a-scene>
 
-    <div style="position: fixed; top: 16px; left: 16px">
+    <div
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        overflow: auto;
+        padding: 16px;
+      "
+    >
       <p>Rotation: {{ angle }}deg</p>
       <input
         type="range"
@@ -161,7 +191,22 @@
           />
         </div>
       </div>
-      <!-- <pre>{{ normalizeData(data) }}</pre> -->
     </div>
+    <!-- prettier-ignore -->
+    <div
+      style="
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 50vh;
+        overflow: auto;
+        padding: 16px;
+        width: 200px;
+        font-family: monospace;
+        white-space: pre;
+        opacity: 0.5;
+      "
+    >{{ normalizeData(data) }}
+  </div>
   </body>
 </html>
