@@ -76,11 +76,6 @@
         globalScale: 1,
       });
 
-      // let t = 0;
-      // setInterval(() => {
-      //   websocket.send(JSON.stringify({ TT_time: t++ }));
-      // }, 25);
-
       const onMessage = (data) => {
         r.time = data.TT_time;
         if (r.time >= 0 && r.eventCounter < 1) {
