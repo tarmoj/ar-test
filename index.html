@@ -385,11 +385,13 @@
           </a-entity>
         </a-entity>
 
-        <a-entity :visible="r.cometonics.visible" position="0 0 0">
+        <a-entity :visible="r.cometonics.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
           <a-entity
             gltf-model="#cometonics"
             :scale="{x: r.cometonics.scale,y: r.cometonics.scale,z: r.cometonics.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 110000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
           <a-text value="cometonics" align="center"></a-text>
         </a-entity>
@@ -410,15 +412,19 @@
           <a-entity
             :gltf-model="'#' + key"
             :scale="{x: g.scale,y: g.scale,z: g.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
           <a-text :value="key" align="center"></a-text>
         </a-entity>
 
-        <a-entity :visible="!r.bigbang.visible">
+        <a-entity :visible="r.bigbang.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
           <a-entity
             gltf-model="#bigbang"
             :scale="{x: r.bigbang.scale,y: r.bigbang.scale,z: r.bigbang.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
           <a-text value="bigbang" align="center"></a-text>
         </a-entity>
