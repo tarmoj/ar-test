@@ -47,15 +47,15 @@
       const cometonics = { visible: false };
 
       const messier = {
-        clusters: { visible: false },
-        nebulas: { visible: false },
-        galaxies: { visible: false },
-        superclusters: { visible: false },
+        clusters: { visible: false, scale: 0.005 },
+        nebulas: { visible: false, scale: 0.0004 },
+        galaxies: { visible: false, scale: 0.005 },
+        superclusters: { visible: false, scale: 0.005 },
       };
 
       const galactic = {
-        radiogalaxies: { visible: false },
-        quasars: { visible: false },
+        radiogalaxies: { visible: false, scale: 0.005 },
+        quasars: { visible: false, scale: 0.005 },
       };
 
       const bigbang = {
@@ -270,7 +270,7 @@
         type="range"
         v-model.number="r.globalScale"
         max="10"
-        min="1"
+        min="0.001"
         step="any"
       />
     </div>
@@ -314,7 +314,7 @@
         <a-asset-item
           autoload
           id="nebulas"
-          src="assets/nebulas.glb"
+          src="assets/nebulas2.glb"
         ></a-asset-item>
         <a-asset-item
           autoload
@@ -386,33 +386,30 @@
 
         <a-entity :visible="r.cometonics.visible" position="0 0 0">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity gltf-model="#cometonics" scale="0.1 0.1 0.1"></a-entity>
+          <a-entity gltf-model="#cometonics" scale="0.01 0.01 0.01"></a-entity>
           <a-text value="cometonics" align="center"></a-text>
         </a-entity>
 
-        <a-entity
-          v-for="m,key,i in r.messier"
-          :visible="m.visible"
-          :position="{x: -1, y: -i + 3, z: 0}"
-        >
+        <a-entity v-for="m,key,i in r.messier" :visible="m.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
+          <a-entity
+            :gltf-model="'#' + key"
+            :scale="{x: m.scale,y: m.scale,z: m.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 100000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
           <a-text :value="key" align="center"></a-text>
         </a-entity>
 
-        <a-entity
-          v-for="g,key,i in r.galactic"
-          :visible="g.visible"
-          :position="{x: 1, y: -i + 1, z: 0}"
-        >
+        <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
+          <a-entity :gltf-model="'#' + key" scale="0.01 0.01 0.01"></a-entity>
           <a-text :value="key" align="center"></a-text>
         </a-entity>
 
-        <a-entity :visible="r.bigbang.visible" :position="{x: 5, y: 0, z: 0}">
+        <a-entity :visible="r.bigbang.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity gltf-model="#bigbang" scale="0.1 0.1 0.1"></a-entity>
+          <a-entity gltf-model="#bigbang" scale="0.01 0.01 0.01"></a-entity>
           <a-text value="bigbang" align="center"></a-text>
         </a-entity>
       </a-entity>
