@@ -44,22 +44,23 @@
         venus_v8: generatePlanet("venus", 8),
       };
 
-      const cometonics = { visible: false };
+      const cometonics = { visible: false, scale: 0.001 };
 
       const messier = {
-        clusters: { visible: false, scale: 0.005 },
-        nebulas: { visible: false, scale: 0.0004 },
-        galaxies: { visible: false, scale: 0.005 },
-        superclusters: { visible: false, scale: 0.005 },
+        clusters: { visible: false, scale: 0.001 },
+        nebulas: { visible: false, scale: 0.001 },
+        galaxies: { visible: false, scale: 0.001 },
+        superclusters: { visible: false, scale: 0.001 },
       };
 
       const galactic = {
-        radiogalaxies: { visible: false, scale: 0.005 },
-        quasars: { visible: false, scale: 0.005 },
+        radiogalaxies: { visible: false, scale: 0.001 },
+        quasars: { visible: false, scale: 0.001 },
       };
 
       const bigbang = {
         visible: false,
+        scale: 0.001,
       };
 
       const r = reactive({
@@ -384,9 +385,14 @@
           </a-entity>
         </a-entity>
 
-        <a-entity :visible="r.cometonics.visible" position="0 0 0">
+        <a-entity :visible="r.cometonics.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity gltf-model="#cometonics" scale="0.01 0.01 0.01"></a-entity>
+          <a-entity
+            gltf-model="#cometonics"
+            :scale="{x: r.cometonics.scale,y: r.cometonics.scale,z: r.cometonics.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 110000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
           <a-text value="cometonics" align="center"></a-text>
         </a-entity>
 
@@ -403,13 +409,23 @@
 
         <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity :gltf-model="'#' + key" scale="0.01 0.01 0.01"></a-entity>
+          <a-entity
+            :gltf-model="'#' + key"
+            :scale="{x: g.scale,y: g.scale,z: g.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
           <a-text :value="key" align="center"></a-text>
         </a-entity>
 
         <a-entity :visible="r.bigbang.visible">
           <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity gltf-model="#bigbang" scale="0.01 0.01 0.01"></a-entity>
+          <a-entity
+            gltf-model="#bigbang"
+            :scale="{x: r.bigbang.scale,y: r.bigbang.scale,z: r.bigbang.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
           <a-text value="bigbang" align="center"></a-text>
         </a-entity>
       </a-entity>
