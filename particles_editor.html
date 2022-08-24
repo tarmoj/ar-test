@@ -13,17 +13,17 @@
       input[type="text"] {
         display: block;
         width: 50px;
-        font-size: 10px;
         color: white;
-        background-color: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(0, 0, 0, 0.5);
+        border: none;
+        border-radius: 3px;
         margin-bottom: 1px;
         padding: 4px;
       }
       input[type="range"] {
         display: block;
         -webkit-appearance: none;
-        background: gray;
+        background-color: rgba(255, 255, 255, 0.7);
         height: 1px;
         position: relative;
         outline: none;
@@ -54,19 +54,31 @@
         lifeTime: { min: 0 },
       };
 
+      // const data = {
+      //   radialType: "circleXY",
+      //   spawnRate: "2000",
+      //   lifeTime: ["10", "100"],
+      //   radialPosition: ["8", "10"],
+      //   radialVelocity: ["0", "0.4"],
+      //   angularVelocity: ["0", "0", "0"],
+      //   acceleration: ["0", "0", "0"],
+      //   radialAcceleration: ["0", "0", "0"],
+      //   angularAcceleration: ["0", "0", "0"],
+      //   scale: "1",
+      //   trailLifeTime: "10",
+      //   trailInterval: "0",
+      // };
+
       const data = {
         radialType: "circleXY",
-        spawnRate: "2000",
-        lifeTime: ["10", "100"],
-        radialPosition: ["8", "10"],
-        radialVelocity: ["0", "0.4"],
-        angularVelocity: ["0", "0", "0"],
-        acceleration: ["0", "0", "0"],
-        radialAcceleration: ["0", "0", "0"],
-        angularAcceleration: ["0", "0", "0"],
-        scale: "1",
-        trailLifeTime: "10",
-        trailInterval: "0",
+        spawnRate: "100",
+        lifeTime: "500",
+        radialPosition: ["5", "6"],
+        radialVelocity: ["0", "1"],
+        angularVelocity: ["0", "0", "5"],
+        scale: "0.8",
+        trailLifeTime: "2",
+        trailInterval: "0.1",
       };
 
       const normalizeData = (data) => {
