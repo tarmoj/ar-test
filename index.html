@@ -21,6 +21,8 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
       import { generatePlanet } from "./lib/planets.js";
 
+      const animation = AFRAME.ANIME;
+      const speed = 100;
       const planets = {
         mercury: generatePlanet("mercury"),
         venus: generatePlanet("venus"),
@@ -101,12 +103,21 @@
           r.planets.saturn.visible = true;
           r.eventCounter = 6;
         } else if (r.time >= 360 && r.eventCounter < 7) {
+          // 6:00
+          animation({
+            targets: r,
+            globalScale: 2,
+            globalRotation: 0,
+            duration: sec("2:00") * speed,
+            easing: "easeInOutSine",
+          });
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
           r.planets.jupiter_j12.visible = true;
           r.planets.saturn_s12.visible = true;
           r.eventCounter = 7;
         } else if (r.time >= 420 && r.eventCounter < 8) {
+          // 7:00
           r.planets.mercury_m4.visible = true;
           r.planets.jupiter_j14.visible = true;
           r.planets.saturn_s14.visible = true;
@@ -138,6 +149,12 @@
           r.eventCounter = 12;
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
           // 11:00
+          animation({
+            targets: r,
+            globalScale: 1,
+            duration: sec("0:30") * speed,
+            easing: "easeInOutSine",
+          });
           r.planets.saturn_s14.visible = false;
           r.eventCounter = 13;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
