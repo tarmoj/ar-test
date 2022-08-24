@@ -244,17 +244,17 @@
       </p>
       <div>{{ secondsToTimeString(r.time) }} / {{ r.eventCounter }}</div>
       <p />
-      <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.2}">
+      <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.4}">
         {{ key }}
       </div>
-      <div :style="{opacity: r.cometonics.visible ? 1 : 0.2}">cometonics</div>
-      <div v-for="m,key in r.messier" :style="{opacity: m.visible ? 1 : 0.2}">
+      <div :style="{opacity: r.cometonics.visible ? 1 : 0.4}">cometonics</div>
+      <div v-for="m,key in r.messier" :style="{opacity: m.visible ? 1 : 0.4}">
         messiermusics {{ key }}
       </div>
-      <div v-for="g,key in r.galactic" :style="{opacity: g.visible ? 1 : 0.2}">
+      <div v-for="g,key in r.galactic" :style="{opacity: g.visible ? 1 : 0.4}">
         galacticquasaric {{ key }}
       </div>
-      <div :style="{opacity: r.bigbang.visible ? 1 : 0.2}">bigbang</div>
+      <div :style="{opacity: r.bigbang.visible ? 1 : 0.4}">bigbang</div>
     </div>
     <a-scene
       vr-mode-ui="enabled: false"
@@ -265,28 +265,63 @@
         <a-asset-item
           autoload
           id="mercury"
-          src="planets2/mercury.glb"
+          src="assets/mercury.glb"
         ></a-asset-item>
         <a-asset-item
           autoload
           id="jupiter"
-          src="planets2/jupiter.glb"
+          src="assets/jupiter.glb"
         ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="earth"
-          src="planets2/earth.glb"
-        ></a-asset-item>
-        <a-asset-item autoload id="mars" src="planets2/mars.glb"></a-asset-item>
-        <a-asset-item
-          autoload
-          id="venus"
-          src="planets2/venus.glb"
-        ></a-asset-item>
+        <a-asset-item autoload id="earth" src="assets/earth.glb"></a-asset-item>
+        <a-asset-item autoload id="mars" src="assets/mars.glb"></a-asset-item>
+        <a-asset-item autoload id="venus" src="assets/venus.glb"></a-asset-item>
         <a-asset-item
           autoload
           id="saturn"
-          src="planets2/saturn.glb"
+          src="assets/saturn.glb"
+        ></a-asset-item>
+
+        <a-asset-item
+          autoload
+          id="cometronics"
+          src="assets/cometronics.glb"
+        ></a-asset-item>
+
+        <a-asset-item
+          autoload
+          id="clusters"
+          src="assets/clusters.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="nebulas"
+          src="assets/nebulas.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="galaxies"
+          src="assets/galaxies.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="superclusters"
+          src="assets/superclusters.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="radiogalaxies"
+          src="assets/radiogalaxies.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="quasars"
+          src="assets/quasars.glb"
+        ></a-asset-item>
+
+        <a-asset-item
+          autoload
+          id="bigbang"
+          src="assets/bigbang.glb"
         ></a-asset-item>
       </a-assets>
 
@@ -318,30 +353,34 @@
       </a-entity>
 
       <a-entity :visible="r.cometonics.visible" position="0 0 -20">
-        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+        <a-entity gltf-model="#bigbang" scale="0.1 0.1 0.1"></a-entity>
         <a-text value="cometonics" align="center"></a-text>
       </a-entity>
 
       <a-entity
         v-for="m,key,i in r.messier"
         :visible="m.visible"
-        :position="{x: -2, y: -i + 3, z: -20}"
+        :position="{x: -1, y: -i + 3, z: -20}"
       >
-        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+        <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
         <a-text :value="key" align="center"></a-text>
       </a-entity>
 
       <a-entity
         v-for="g,key,i in r.galactic"
         :visible="g.visible"
-        :position="{x: 2, y: -i + 1, z: -20}"
+        :position="{x: 1, y: -i + 1, z: -20}"
       >
-        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+        <a-entity :gltf-model="'#' + key" scale="0.1 0.1 0.1"></a-entity>
         <a-text :value="key" align="center"></a-text>
       </a-entity>
 
       <a-entity :visible="r.bigbang.visible" :position="{x: 5, y: 0, z: -20}">
-        <a-entity :sprite-particles="exampleParticles"></a-entity>
+        <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
+        <a-entity gltf-model="#bigbang" scale="0.1 0.1 0.1"></a-entity>
         <a-text value="bigbang" align="center"></a-text>
       </a-entity>
 
