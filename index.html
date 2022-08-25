@@ -17,7 +17,7 @@
       import { generatePlanet } from "./lib/planets.js";
 
       const animation = AFRAME.ANIME;
-      const speed = 1000; // Edit to 1000 for normal speed
+      const speed = 10; // Edit to 1000 for normal speed
 
       const planets = {
         mercury: generatePlanet("mercury"),
@@ -64,8 +64,11 @@
 
       function getOrbitsParticles(radialPosition) {
         const p = normalizeParticles({
-          radialPosition: [radialPosition - 2, radialPosition + 2],
-          opacity: 1, //this.orbitsOpacity,
+          radialPosition: [
+            radialPosition - this.orbitsOffsetX,
+            radialPosition + this.orbitsOffsetX,
+          ],
+          opacity: this.orbitsOpacity,
           color: this.orbitsColor,
           radialType: "circle",
           spawnRate: 100,
@@ -92,11 +95,13 @@
 
         globalRotation: 90,
         globalScale: 1,
-        userZMultipler: -1,
+        userZMultipler: 0,
 
+        orbitsVisible: true,
         orbitsOpacity: 0,
+        orbitsOffsetX: 1,
         orbitsOffsetY: 0,
-        orbitsRadialVelocity: 0,
+        orbitsRadialVelocity: 1,
         orbitsAngularVelocity: 0,
         orbitsColor: "#fff",
         getOrbitsParticles,
@@ -115,29 +120,37 @@
           r.eventCounter = 1;
           r.a = 360;
           r.a2 = 1;
-        } else if (r.time >= 60 && r.eventCounter < 2) {
+        } else if (r.time >= sec("01:00") && r.eventCounter < 2) {
           r.planets.venus.visible = true;
           r.eventCounter = 2;
-        } else if (r.time >= 120 && r.eventCounter < 3) {
+        } else if (r.time >= sec("02:00") && r.eventCounter < 3) {
+          animation({
+            targets: r,
+            orbitsOffsetX: 10,
+            duration: sec("04:00") * speed,
+            easing: "easeInOutSine",
+          });
           r.planets.mercury.visible = true;
           r.eventCounter = 3;
-        } else if (r.time >= 180 && r.eventCounter < 4) {
+        } else if (r.time >= sec("03:00") && r.eventCounter < 4) {
           r.planets.mars.visible = true;
-          r.eventCounter = 4;
-        } else if (r.time >= 240 && r.eventCounter < 5) {
+          r.eventCounter = 8;
+        } else if (r.time >= sec("04:00") && r.eventCounter < 5) {
           r.planets.jupiter.visible = true;
           r.eventCounter = 5;
-        } else if (r.time >= 300 && r.eventCounter < 6) {
+        } else if (r.time >= sec("05:00") && r.eventCounter < 6) {
+          r.orbitsOffsetX = 5;
           r.planets.saturn.visible = true;
           r.eventCounter = 6;
-        } else if (r.time >= 360 && r.eventCounter < 7) {
+        } else if (r.time >= sec("06:00") && r.eventCounter < 7) {
+          r.orbitsOffsetX = 6;
           // 6:00
           animation({
             targets: r,
             globalScale: 2,
             globalRotation: 0,
-            duration: sec("2:00") * speed,
-            easing: "x",
+            duration: sec("1:00") * speed,
+            easing: "linear",
           });
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
@@ -179,8 +192,8 @@
           // 11:00
           animation({
             targets: r,
-            globalScale: 1,
-            duration: sec("0:30") * speed,
+            globalRotation: 0,
+            duration: sec("01:00") * speed,
             easing: "easeInOutSine",
           });
           r.planets.saturn_s14.visible = false;
@@ -190,7 +203,7 @@
             targets: r,
             orbitsOffsetY: 1,
             orbitsRadialVelocity: -1,
-            orbitsAngularVelocity: 1,
+            //  orbitsAngularVelocity: 1,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -200,9 +213,9 @@
           // Messiermusics 0:00
           animation({
             targets: r,
-            orbitsOffsetY: 3,
+            orbitsOffsetY: 2,
             orbitsRadialVelocity: -2,
-            orbitsAngularVelocity: 2,
+            // orbitsAngularVelocity: 2,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -222,13 +235,14 @@
           animation({
             targets: r,
             orbitsOpacity: 0,
-            duration: sec("1:00") * speed,
+            duration: sec("00:10") * speed,
             easing: "linear",
           });
           r.cometonics.visible = false;
           r.eventCounter = 17;
         } else if (r.time >= sec("15:40") && r.eventCounter < 18) {
           // 3:40
+          r.orbitsVisible = false;
           r.messier.clusters.visible = true;
           r.eventCounter = 18;
         } else if (r.time >= sec("16:40") && r.eventCounter < 19) {
@@ -258,6 +272,7 @@
           r.eventCounter = 24;
         } else if (r.time >= sec("25:30") && r.eventCounter < 25) {
           // 13:30
+          r.orbitsVisible = false;
           r.orbitsAngularVelocity = 2;
           r.orbitsColor = "#fff..#aaf,#fff,#fff,#fff";
           animation({
