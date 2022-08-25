@@ -65,7 +65,7 @@
       function getOrbitsParticles(radialPosition) {
         const p = normalizeParticles({
           radialPosition,
-          opacity: this.orbitsOpacity,
+          opacity: 1, //this.orbitsOpacity,
           color: this.orbitsColor,
           radialType: "circle",
           spawnRate: 100,
@@ -76,7 +76,7 @@
             this.orbitsAngularVelocity2,
             0,
           ],
-          scale: 0.75,
+          scale: 1 - remap(this.userZMultipler, -1, 1, 0, 0.95),
           // trailLifeTime: 2,
           // trailInterval: 0.1,
           texture: "#blob",
@@ -96,7 +96,7 @@
 
         globalRotation: 90,
         globalScale: 1,
-        userZMultipler: 0,
+        userZMultipler: -1,
 
         orbitsOpacity: 0,
         orbitsOffsetY: 0,
@@ -142,7 +142,7 @@
             globalScale: 2,
             globalRotation: 0,
             duration: sec("2:00") * speed,
-            easing: "easeInOutSine",
+            easing: "x",
           });
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
@@ -395,8 +395,8 @@
       <input
         type="range"
         v-model.number="r.userZMultipler"
-        min="-0.8"
-        max="0.8"
+        min="-1"
+        max="1"
         step="any"
         style="width: 100%; display: block"
       />
@@ -485,7 +485,6 @@
           >
             <a-entity
               rotation="90 0 0"
-              :sprite-particles_="{ opacity: String(r.orbitsOpacity), radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '0.5'}"
               :sprite-particles="r.getOrbitsParticles(p.inside.position.z)"
             ></a-entity>
           </a-entity>
