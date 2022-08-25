@@ -38,23 +38,15 @@
         texture: "#blob",
       };
 
-      const normalizeData = (data) => {
-        return Object.fromEntries(
-          Object.entries(data).map(([key, value]) => {
-            if (Array.isArray(value) && value.length === 2) {
-              value = value.join("..");
-            }
-            if (Array.isArray(value) && value.length === 3) {
-              value = value.join(" ");
-            }
-            return [key, value];
-          })
-        );
-      };
-
       const isNumber = (value) => !isNaN(parseFloat(value));
 
-      createApp({ fields, data, normalizeData, isNumber, angle: 80 }).mount();
+      createApp({
+        fields,
+        data,
+        normalizeParticles,
+        isNumber,
+        angle: 80,
+      }).mount();
     </script>
   </head>
   <body style="margin: 0; overflow: hidden">
@@ -70,7 +62,7 @@
       <a-entity
         :rotation="{x: -angle, y: 0, z: 0}"
         position="0 0 -40"
-        :sprite-particles="normalizeData(data)"
+        :sprite-particles="normalizeParticles(data)"
       ></a-entity>
 
       <a-camera></a-camera>
@@ -115,6 +107,10 @@
         </div>
       </div>
       <!-- <pre>{{ normalizeData(data) }}</pre> -->
+    </div>
+
+    <div style="position: fixed; top: 16px; right: 16px">
+      <pre style="opacity: 0.7">{{ data }}</pre>
     </div>
   </body>
   <style>

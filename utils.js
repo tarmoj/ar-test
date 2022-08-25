@@ -41,3 +41,17 @@ function remap(value, start1, stop1, start2, stop2) {
 function random(min = 0, max = 1) {
   return min + Math.random() * (max - min);
 }
+
+const normalizeParticles = (data) => {
+  return Object.fromEntries(
+    Object.entries(data).map(([key, value]) => {
+      if (Array.isArray(value) && value.length === 2) {
+        value = value.join("..");
+      }
+      if (Array.isArray(value) && value.length === 3) {
+        value = value.join(" ");
+      }
+      return [key, String(value)];
+    })
+  );
+};
