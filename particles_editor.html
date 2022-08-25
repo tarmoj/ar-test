@@ -4,42 +4,6 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>AR.js demo Stars</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        font-size: 14px;
-        color: white;
-      }
-      input[type="text"] {
-        display: block;
-        width: 50px;
-        color: white;
-        background-color: rgba(0, 0, 0, 0.5);
-        border: none;
-        border-radius: 3px;
-        margin-bottom: 1px;
-        padding: 4px;
-      }
-      input[type="range"] {
-        display: block;
-        -webkit-appearance: none;
-        background-color: rgba(255, 255, 255, 0.7);
-        height: 1px;
-        position: relative;
-        outline: none;
-        width: 100%;
-      }
-
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        border: 1px solid gray;
-        height: 16px;
-        width: 16px;
-        border-radius: 1000px;
-        background: white;
-        cursor: pointer;
-      }
-    </style>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
@@ -50,57 +14,45 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const fields = {
-        spawnRate: { min: 0 },
-        lifeTime: { min: 0 },
+        spawnRate: { min: 0, max: 1000, step: 1 },
+        lifeTime: { min: 0, max: 1000, step: 1 },
+        radialPosition: { min: -100, max: 100, step: 0.01 },
+        radialVelocity: { min: -100, max: 100, step: 0.01 },
+        angularVelocity: { min: -100, max: 100, step: 0.01 },
+        scale: { min: 0, max: 100, step: "any" },
+        trailLifeTime: { min: 0, max: 10, step: 0.001 },
+        trailInterval: { min: 0.05, max: 1, step: 0.01 },
       };
 
-      // const data = {
-      //   radialType: "circleXY",
-      //   spawnRate: "2000",
-      //   lifeTime: ["10", "100"],
-      //   radialPosition: ["8", "10"],
-      //   radialVelocity: ["0", "0.4"],
-      //   angularVelocity: ["0", "0", "0"],
-      //   acceleration: ["0", "0", "0"],
-      //   radialAcceleration: ["0", "0", "0"],
-      //   angularAcceleration: ["0", "0", "0"],
-      //   scale: "1",
-      //   trailLifeTime: "10",
-      //   trailInterval: "0",
-      // };
-
       const data = {
-        radialType: "circleXY",
+        color: "#00f..#fff,#fff,#fff",
+        radialType: "circle",
         spawnRate: "100",
-        lifeTime: "500",
+        lifeTime: "100",
         radialPosition: ["5", "6"],
         radialVelocity: ["0", "1"],
         angularVelocity: ["0", "0", "5"],
         scale: "0.8",
         trailLifeTime: "2",
         trailInterval: "0.1",
-      };
-
-      const normalizeData = (data) => {
-        return Object.fromEntries(
-          Object.entries(data).map(([key, value]) => {
-            if (Array.isArray(value) && value.length === 2) {
-              value = value.join("..");
-            }
-            if (Array.isArray(value) && value.length === 3) {
-              value = value.join(" ");
-            }
-            return [key, value];
-          })
-        );
+        texture: "#blob",
       };
 
       const isNumber = (value) => !isNaN(parseFloat(value));
 
-      createApp({ fields, data, normalizeData, isNumber, angle: 80 }).mount();
+      createApp({
+        fields,
+        data,
+        normalizeParticles,
+        isNumber,
+        angle: 80,
+      }).mount();
     </script>
   </head>
   <body style="margin: 0; overflow: hidden">
+    <a-assets>
+      <img id="blob" src="assets/blob.png" />
+    </a-assets>
     <a-scene
       id="scene"
       vr-mode-ui="enabled: false"
@@ -110,7 +62,7 @@
       <a-entity
         :rotation="{x: -angle, y: 0, z: 0}"
         position="0 0 -40"
-        :sprite-particles="normalizeData(data)"
+        :sprite-particles="normalizeParticles(data)"
       ></a-entity>
 
       <a-camera></a-camera>
@@ -136,9 +88,9 @@
               v-if="isNumber(data[key][i])"
               type="range"
               v-model="data[key][i]"
-              min="-200"
-              max="200"
-              step="0.1"
+              :min="fields[key].min"
+              :max="fields[key].max"
+              :step="fields[key].step"
             />
           </div>
         </div>
@@ -148,13 +100,53 @@
             v-if="isNumber(data[key])"
             type="range"
             v-model="data[key]"
-            min="-200"
-            max="200"
-            step="0.1"
+            :min="fields[key].min"
+            :max="fields[key].max"
+            :step="fields[key].step"
           />
         </div>
       </div>
       <!-- <pre>{{ normalizeData(data) }}</pre> -->
     </div>
+
+    <div style="position: fixed; top: 16px; right: 16px">
+      <pre style="opacity: 0.7">{{ data }}</pre>
+    </div>
   </body>
+  <style>
+    body {
+      font-family: sans-serif;
+      font-size: 14px;
+      color: white;
+    }
+    input[type="text"] {
+      display: block;
+      width: 50px;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 3px;
+      margin-bottom: 1px;
+      padding: 4px;
+    }
+    input[type="range"] {
+      display: block;
+      -webkit-appearance: none;
+      background-color: rgba(255, 255, 255, 0.7);
+      height: 1px;
+      position: relative;
+      outline: none;
+      width: 100%;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      border: 1px solid gray;
+      height: 16px;
+      width: 16px;
+      border-radius: 1000px;
+      background: white;
+      cursor: pointer;
+    }
+  </style>
 </html>

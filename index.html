@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
+    <script src="./utils.js"></script>
     <script src="./lib/websocket.js"></script>
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
@@ -67,6 +68,24 @@
         scale: 0.001,
       };
 
+      function getOrbitsParticles(radialPosition) {
+        const p = normalizeParticles({
+          radialPosition,
+          opacity: this.orbitsOpacity,
+          color: "#fff",
+          radialType: "circle",
+          spawnRate: 100,
+          lifeTime: 100,
+          radialVelocity: [0, this.orbitsRadialVelocity],
+          angularVelocity: [this.orbitsAngularVelocity, 0, 0],
+          scale: 0.7,
+          // trailLifeTime: 2,
+          // trailInterval: 0.1,
+          texture: "#blob",
+        });
+        return p;
+      }
+
       const r = reactive({
         time: 0,
         eventCounter: 0,
@@ -81,7 +100,10 @@
         globalScale: 1,
 
         orbitsOpacity: 0,
-        orbitsOffset: 0,
+        orbitsOffsetY: 0,
+        orbitsRadialVelocity: 0,
+        orbitsAngularVelocity: 0,
+        getOrbitsParticles,
       });
 
       const onMessage = (data) => {
@@ -170,7 +192,9 @@
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
           animation({
             targets: r,
-            orbitsOffset: 10,
+            orbitsOffsetY: 10,
+            orbitsAngularVelocity: -1,
+            orbitsRadialVelocity: 0.01,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -277,9 +301,9 @@
         onInput,
         onReset,
         exampleParticles,
+        normalizeParticles,
       }).mount();
     </script>
-    <script></script>
   </head>
 
   <body style="margin: 0; overflow: hidden">
@@ -313,19 +337,22 @@
     </div>
 
     <div style="position: fixed; top: 16px; right: 16px; z-index: 10000">
+      Global rotation: {{ String(r.globalRotation).split('.')[0] }}
       <input
         type="range"
         v-model.number="r.globalRotation"
         max="90"
         step="any"
-        style="margin-bottom: 8px"
+        style="margin-bottom: 8px; display: block"
       />
+      Global scale: {{ String(r.globalScale).split('.')[0] }}
       <input
         type="range"
         v-model.number="r.globalScale"
         max="10"
         min="0.001"
         step="any"
+        style="margin-bottom: 8px; display: block"
       />
     </div>
 
@@ -390,12 +417,12 @@
           id="quasars"
           src="assets/quasars.glb"
         ></a-asset-item>
-
         <a-asset-item
           autoload
           id="bigbang"
           src="assets/bigbang.glb"
         ></a-asset-item>
+        <img id="blob" src="assets/blob.png" />
       </a-assets>
 
       <!-- <a-entity
@@ -418,14 +445,14 @@
         <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}" :opacity="0">
           <a-entity
             v-for="p,key,i in r.planets"
-            :position="{ x: 0, y: 0 + (i * r.orbitsOffset), z: 0 }"
+            :position="{ x: 0, y: 0 + (i * r.orbitsOffsetY), z: 0 }"
             :scale="p.outside.scale"
             :animation="p.outside.animation"
           >
             <a-entity
               rotation="90 0 0"
-              :sprite-particles="{ opacity: String(r.orbitsOpacity), radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '0.5'}"
-              :sprite-particles_="{  opacity: r.orbitsOpacity, color: '#fff', radialVelocity:'10', angularVelocity:'0 0 10',radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: p.inside.position.z + '..' + (p.inside.position.z + 1), scale: '0.2'}"
+              :sprite-particles_="{ opacity: String(r.orbitsOpacity), radialType: 'circleXY', spawnRate: 100, lifeTime: String(500), radialPosition: String(p.inside.position.z), scale: '0.5'}"
+              :sprite-particles="r.getOrbitsParticles(p.inside.position.z)"
             ></a-entity>
           </a-entity>
 
