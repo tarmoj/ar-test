@@ -50,29 +50,18 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const fields = {
-        spawnRate: { min: 0 },
-        lifeTime: { min: 0 },
+        spawnRate: { min: 0, max: 10000, step: 1 },
+        lifeTime: { min: 0, max: 10000, step: 1 },
+        radialPosition: { min: -100, max: 100, step: "any" },
+        radialVelocity: { min: -100, max: 100, step: "any" },
+        anglularVelocity: { min: -100, max: 100, step: "any" },
+        scale: { min: 0, max: 100, step: "any" },
+        trailLifeTime: { min: 0, max: 10, step: "any" },
+        trailInterval: { min: 0, max: 10, step: "any" },
       };
 
-      // const data = {
-      //   radialType: "circleXY",
-      //   spawnRate: "2000",
-      //   lifeTime: ["10", "100"],
-      //   radialPosition: ["8", "10"],
-      //   radialVelocity: ["0", "0.4"],
-      //   angularVelocity: ["0", "0", "0"],
-      //   acceleration: ["0", "0", "0"],
-      //   radialAcceleration: ["0", "0", "0"],
-      //   angularAcceleration: ["0", "0", "0"],
-      //   scale: "1",
-      //   trailLifeTime: "10",
-      //   trailInterval: "0",
-      // };
-
       const data = {
-        radialType: "circleXY",
-        spawnRate: "100",
-        lifeTime: "500",
+        radialType: "circle",
         radialPosition: ["5", "6"],
         radialVelocity: ["0", "1"],
         angularVelocity: ["0", "0", "5"],
@@ -136,9 +125,9 @@
               v-if="isNumber(data[key][i])"
               type="range"
               v-model="data[key][i]"
-              min="-200"
-              max="200"
-              step="0.1"
+              :min="fields[key].min"
+              :max="fields[key].max"
+              :step="fields[key].step"
             />
           </div>
         </div>
@@ -148,9 +137,9 @@
             v-if="isNumber(data[key])"
             type="range"
             v-model="data[key]"
-            min="-200"
-            max="200"
-            step="0.1"
+            :min="fields[key].min"
+            :max="fields[key].max"
+            :step="fields[key].step"
           />
         </div>
       </div>
