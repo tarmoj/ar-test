@@ -48,7 +48,7 @@
       const messier = {
         clusters: { visible: false, scale: 0.008 },
         nebulas: { visible: false, scale: 0.008 },
-        galaxies: { visible: false, scale: 0.008 },
+        galaxies: { visible: false, scale: 0.01 },
         superclusters: { visible: false, scale: 0.008 },
       };
 
@@ -194,7 +194,7 @@
           animation({
             targets: r,
             orbitsOffsetY: 1,
-            orbitsAngularVelocity: -0.1,
+            orbitsAngularVelocity: 1,
             orbitsRadialVelocity: -1,
             duration: sec("1:00") * speed,
             easing: "linear",
@@ -206,7 +206,7 @@
           animation({
             targets: r,
             orbitsOffsetY: 3,
-            orbitsAngularVelocity: -10,
+            orbitsAngularVelocity: 5,
             orbitsRadialVelocity: -10,
             duration: sec("1:00") * speed,
             easing: "linear",
@@ -218,8 +218,8 @@
         } else if (r.time >= sec("14:30") && r.eventCounter < 16) {
           animation({
             targets: r,
-            orbitsAngularVelocity: 0.1,
-            orbitsAngularVelocity2: 0.1,
+            orbitsAngularVelocity: 10,
+            orbitsAngularVelocity2: 10,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
