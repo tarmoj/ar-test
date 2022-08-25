@@ -47,6 +47,7 @@
 
       const messier = {
         clusters: { visible: false, scale: 0.008 },
+        clusters2: { visible: false, scale: 0.008 },
         nebulas: { visible: false, scale: 0.008 },
         galaxies: { visible: false, scale: 0.01 },
         superclusters: { visible: false, scale: 0.008 },
@@ -253,11 +254,11 @@
         } else if (r.time >= sec("18:00") && r.eventCounter < 20) {
           // 6:00
           r.messier.nebulas.visible = false;
-          r.messier.clusters.visible = true;
+          r.messier.clusters2.visible = true;
           r.eventCounter = 20;
         } else if (r.time >= sec("21:10") && r.eventCounter < 21) {
           // 9:10
-          r.messier.clusters.visible = false;
+          r.messier.clusters2.visible = false;
           r.messier.galaxies.visible = true;
           r.eventCounter = 21;
         } else if (r.time >= sec("23:50") && r.eventCounter < 22) {
@@ -445,6 +446,11 @@
           autoload
           id="clusters"
           src="assets/clusters.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="clusters2"
+          src="assets/clusters2.glb"
         ></a-asset-item>
         <a-asset-item
           autoload
