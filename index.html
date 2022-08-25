@@ -64,18 +64,14 @@
 
       function getOrbitsParticles(radialPosition) {
         const p = normalizeParticles({
-          radialPosition,
+          radialPosition: [radialPosition - 2, radialPosition + 2],
           opacity: 1, //this.orbitsOpacity,
           color: this.orbitsColor,
           radialType: "circle",
           spawnRate: 100,
           lifeTime: 100,
           radialVelocity: [0, this.orbitsRadialVelocity],
-          angularVelocity: [
-            this.orbitsAngularVelocity,
-            this.orbitsAngularVelocity2,
-            0,
-          ],
+          angularVelocity: [this.orbitsAngularVelocity, 0, 0.1],
           scale: 1 - remap(this.userZMultipler, -1, 1, 0, 0.95),
           // trailLifeTime: 2,
           // trailInterval: 0.1,
@@ -102,7 +98,6 @@
         orbitsOffsetY: 0,
         orbitsRadialVelocity: 0,
         orbitsAngularVelocity: 0,
-        orbitsAngularVelocity2: 0,
         orbitsColor: "#fff",
         getOrbitsParticles,
       });
@@ -194,8 +189,8 @@
           animation({
             targets: r,
             orbitsOffsetY: 1,
-            orbitsAngularVelocity: 1,
             orbitsRadialVelocity: -1,
+            orbitsAngularVelocity: 1,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -206,8 +201,8 @@
           animation({
             targets: r,
             orbitsOffsetY: 3,
-            orbitsAngularVelocity: 5,
-            orbitsRadialVelocity: -10,
+            orbitsRadialVelocity: -2,
+            orbitsAngularVelocity: 2,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -218,8 +213,7 @@
         } else if (r.time >= sec("14:30") && r.eventCounter < 16) {
           animation({
             targets: r,
-            orbitsAngularVelocity: 10,
-            orbitsAngularVelocity2: 10,
+            orbitsAngularVelocity: 1,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -264,8 +258,7 @@
           r.eventCounter = 24;
         } else if (r.time >= sec("25:30") && r.eventCounter < 25) {
           // 13:30
-          r.orbitsAngularVelocity = 100;
-          r.orbitsAngularVelocity2 = 100;
+          r.orbitsAngularVelocity = 2;
           r.orbitsColor = "#fff..#aaf,#fff,#fff,#fff";
           animation({
             targets: r,
