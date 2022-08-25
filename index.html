@@ -1,15 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Timetrip to Big Bang and Back</title>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>AR.js demo Stars</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        color: white;
-      }
-    </style>
     <script src="https://unpkg.com/es-module-shims@1.5.17/dist/es-module-shims.js"></script>
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
@@ -78,7 +72,7 @@
           lifeTime: 100,
           radialVelocity: [0, this.orbitsRadialVelocity],
           angularVelocity: [this.orbitsAngularVelocity, 0, 0],
-          scale: 0.7,
+          scale: 0.5,
           // trailLifeTime: 2,
           // trailInterval: 0.1,
           texture: "#blob",
@@ -98,6 +92,7 @@
 
         globalRotation: 90,
         globalScale: 1,
+        userZMultipler: 0,
 
         orbitsOpacity: 0,
         orbitsOffsetY: 0,
@@ -307,7 +302,10 @@
   </head>
 
   <body style="margin: 0; overflow: hidden">
-    <div style="position: fixed; top: 16px; left: 16px; z-index: 10000">
+    <div
+      class="dev-overlay"
+      style="position: fixed; top: 16px; left: 16px; z-index: 10000"
+    >
       <input
         type="range"
         v-model.number="r.time"
@@ -315,7 +313,6 @@
         :max="sec('27:30')"
         style="width: 300px"
       />
-      {{ r.orbitOpacity }}
       <p style="height: 32px">
         <button v-show="r.time == sec('27:30')" @click="onReset">
           Back to start
@@ -336,7 +333,10 @@
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.4}">bigbang</div>
     </div>
 
-    <div style="position: fixed; top: 16px; right: 16px; z-index: 10000">
+    <div
+      class="dev-overlay"
+      style="position: fixed; top: 16px; right: 16px; z-index: 10000"
+    >
       Global rotation: {{ String(r.globalRotation).split('.')[0] }}
       <input
         type="range"
@@ -353,6 +353,26 @@
         min="0.001"
         step="any"
         style="margin-bottom: 8px; display: block"
+      />
+    </div>
+
+    <div
+      class="user-overlay"
+      style="
+        position: fixed;
+        right: 16px;
+        bottom: 16px;
+        left: 16px;
+        z-index: 20000;
+      "
+    >
+      <input
+        type="range"
+        v-model.number="r.userZMultipler"
+        min="-0.8"
+        max="0.8"
+        step="any"
+        style="width: 100%; display: block"
       />
     </div>
 
@@ -425,20 +445,8 @@
         <img id="blob" src="assets/blob.png" />
       </a-assets>
 
-      <!-- <a-entity
-        :position="{x: 0, y: 0, z: -20}"
-        :animation="{property: 'rotation', dur: 10000, to: {x: r.a, y: r.a, z: r.a}, loop: true, easing: 'linear'}"
-      >
-        <a-entity
-          gltf-model="#bigbang"
-          scale="1 1 1"
-          :model-opacity="{opacity: 0}"
-          :animation="{property: 'model-opacity.opacity', dur: 20000, to: r.a2, easing: 'linear'}"
-        ></a-entity>
-      </a-entity> -->
-
       <a-entity
-        :position="{ x: 0, y: 0, z: -20}"
+        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
@@ -530,4 +538,55 @@
       <a-camera></a-camera>
     </a-scene>
   </body>
+  <style>
+    body {
+      font-family: sans-serif;
+      color: white;
+    }
+    @media only screen and (max-width: 600px) {
+      .dev-overlay {
+        display: none;
+      }
+      .user-overlay {
+        display: block;
+      }
+    }
+    @media only screen and (min-width: 600px) {
+      .dev-overlay {
+        display: block;
+      }
+      .user-overlay {
+        display: none;
+      }
+    }
+    input[type="text"] {
+      display: block;
+      width: 50px;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 3px;
+      margin-bottom: 1px;
+      padding: 4px;
+    }
+    input[type="range"] {
+      display: block;
+      -webkit-appearance: none;
+      background-color: rgba(255, 255, 255, 0.7);
+      height: 1px;
+      position: relative;
+      outline: none;
+      width: 100%;
+      margin: 16px 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      background-color: rgba(255, 255, 255, 0.7);
+      height: 24px;
+      width: 24px;
+      border-radius: 1000px;
+      background: white;
+      cursor: pointer;
+    }
+  </style>
 </html>
