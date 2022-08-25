@@ -71,18 +71,18 @@
       function getOrbitsParticles(radialPosition) {
         const p = normalizeParticles({
           radialPosition,
+          opacity: this.orbitsOpacity,
           color: "#fff",
           radialType: "circle",
           spawnRate: 100,
           lifeTime: 100,
-          radialVelocity: [0, 0],
-          angularVelocity: [0, 0, 0],
-          scale: 0.5,
+          radialVelocity: [0, this.orbitsRadialVelocity],
+          angularVelocity: [this.orbitsAngularVelocity, 0, 0],
+          scale: 0.7,
           // trailLifeTime: 2,
           // trailInterval: 0.1,
           texture: "#blob",
         });
-        console.log(p);
         return p;
       }
 
@@ -101,6 +101,8 @@
 
         orbitsOpacity: 0,
         orbitsOffsetY: 0,
+        orbitsRadialVelocity: 0,
+        orbitsAngularVelocity: 0,
         getOrbitsParticles,
       });
 
@@ -191,6 +193,8 @@
           animation({
             targets: r,
             orbitsOffsetY: 10,
+            orbitsAngularVelocity: -1,
+            orbitsRadialVelocity: 0.01,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -333,19 +337,22 @@
     </div>
 
     <div style="position: fixed; top: 16px; right: 16px; z-index: 10000">
+      Global rotation: {{ String(r.globalRotation).split('.')[0] }}
       <input
         type="range"
         v-model.number="r.globalRotation"
         max="90"
         step="any"
-        style="margin-bottom: 8px"
+        style="margin-bottom: 8px; display: block"
       />
+      Global scale: {{ String(r.globalScale).split('.')[0] }}
       <input
         type="range"
         v-model.number="r.globalScale"
         max="10"
         min="0.001"
         step="any"
+        style="margin-bottom: 8px; display: block"
       />
     </div>
 
