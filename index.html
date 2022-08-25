@@ -17,7 +17,7 @@
       import { generatePlanet } from "./lib/planets.js";
 
       const animation = AFRAME.ANIME;
-      const speed = 1000; // Edit to 1000 for normal speed
+      const speed = 100; // Edit to 1000 for normal speed
 
       const planets = {
         mercury: generatePlanet("mercury"),
@@ -46,15 +46,15 @@
       const cometonics = { visible: false, scale: 0.001 };
 
       const messier = {
-        clusters: { visible: false, scale: 0.01 },
-        nebulas: { visible: false, scale: 0.001 },
-        galaxies: { visible: false, scale: 0.001 },
-        superclusters: { visible: false, scale: 0.001 },
+        clusters: { visible: false, scale: 0.008 },
+        nebulas: { visible: false, scale: 0.008 },
+        galaxies: { visible: false, scale: 0.008 },
+        superclusters: { visible: false, scale: 0.008 },
       };
 
       const galactic = {
-        radiogalaxies: { visible: false, scale: 0.001 },
-        quasars: { visible: false, scale: 0.001 },
+        radiogalaxies: { visible: false, scale: 0.008 },
+        quasars: { visible: false, scale: 0.008 },
       };
 
       const bigbang = {
@@ -66,13 +66,17 @@
         const p = normalizeParticles({
           radialPosition,
           opacity: this.orbitsOpacity,
-          color: "#fff",
+          color: this.orbitsColor,
           radialType: "circle",
           spawnRate: 100,
           lifeTime: 100,
           radialVelocity: [0, this.orbitsRadialVelocity],
-          angularVelocity: [this.orbitsAngularVelocity, 0, 0],
-          scale: 0.5,
+          angularVelocity: [
+            this.orbitsAngularVelocity,
+            this.orbitsAngularVelocity2,
+            0,
+          ],
+          scale: 0.75,
           // trailLifeTime: 2,
           // trailInterval: 0.1,
           texture: "#blob",
@@ -98,6 +102,8 @@
         orbitsOffsetY: 0,
         orbitsRadialVelocity: 0,
         orbitsAngularVelocity: 0,
+        orbitsAngularVelocity2: 0,
+        orbitsColor: "#fff",
         getOrbitsParticles,
       });
 
@@ -107,7 +113,7 @@
           animation({
             targets: r,
             orbitsOpacity: 1,
-            duration: sec("1:00") * speed,
+            duration: 10 * speed,
             easing: "linear",
           });
           r.planets.earth.visible = true;
@@ -187,9 +193,9 @@
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
           animation({
             targets: r,
-            orbitsOffsetY: 10,
-            orbitsAngularVelocity: -1,
-            orbitsRadialVelocity: 0.01,
+            orbitsOffsetY: 1,
+            orbitsAngularVelocity: -0.1,
+            orbitsRadialVelocity: -1,
             duration: sec("1:00") * speed,
             easing: "linear",
           });
@@ -197,12 +203,28 @@
           r.eventCounter = 14;
         } else if (r.time >= sec("12:00") && r.eventCounter < 15) {
           // Messiermusics 0:00
+          animation({
+            targets: r,
+            orbitsOffsetY: 3,
+            orbitsAngularVelocity: -10,
+            orbitsRadialVelocity: -10,
+            duration: sec("1:00") * speed,
+            easing: "linear",
+          });
           Object.keys(r.planets).forEach(
             (key) => (r.planets[key].visible = false)
           );
           r.eventCounter = 15;
-        } else if (r.time >= sec("15:30") && r.eventCounter < 16) {
-          // 3:30
+        } else if (r.time >= sec("14:30") && r.eventCounter < 16) {
+          animation({
+            targets: r,
+            orbitsAngularVelocity: 0.1,
+            orbitsAngularVelocity2: 0.1,
+            duration: sec("1:00") * speed,
+            easing: "linear",
+          });
+          r.eventCounter = 16;
+        } else if (r.time >= sec("15:30") && r.eventCounter < 17) {
           animation({
             targets: r,
             orbitsOpacity: 0,
@@ -210,38 +232,41 @@
             easing: "linear",
           });
           r.cometonics.visible = false;
-          r.eventCounter = 16;
-        } else if (r.time >= sec("15:40") && r.eventCounter < 17) {
+          r.eventCounter = 17;
+        } else if (r.time >= sec("15:40") && r.eventCounter < 18) {
           // 3:40
           r.messier.clusters.visible = true;
-          r.eventCounter = 17;
-        } else if (r.time >= sec("16:40") && r.eventCounter < 18) {
+          r.eventCounter = 18;
+        } else if (r.time >= sec("16:40") && r.eventCounter < 19) {
           // 4:40
           r.messier.clusters.visible = false;
           r.messier.nebulas.visible = true;
-          r.eventCounter = 18;
-        } else if (r.time >= sec("18:00") && r.eventCounter < 19) {
+          r.eventCounter = 19;
+        } else if (r.time >= sec("18:00") && r.eventCounter < 20) {
           // 6:00
           r.messier.nebulas.visible = false;
           r.messier.clusters.visible = true;
-          r.eventCounter = 19;
-        } else if (r.time >= sec("21:10") && r.eventCounter < 20) {
+          r.eventCounter = 20;
+        } else if (r.time >= sec("21:10") && r.eventCounter < 21) {
           // 9:10
           r.messier.clusters.visible = false;
           r.messier.galaxies.visible = true;
-          r.eventCounter = 20;
-        } else if (r.time >= sec("23:50") && r.eventCounter < 21) {
+          r.eventCounter = 21;
+        } else if (r.time >= sec("23:50") && r.eventCounter < 22) {
           // 11:50
           r.messier.galaxies.visible = false;
           r.messier.superclusters.visible = true;
-          r.eventCounter = 21;
-        } else if (r.time >= sec("25:00") && r.eventCounter < 22) {
+          r.eventCounter = 23;
+        } else if (r.time >= sec("25:00") && r.eventCounter < 24) {
           // 13:00
           r.messier.superclusters.visible = false;
           r.galactic.radiogalaxies.visible = true;
-          r.eventCounter = 22;
-        } else if (r.time >= sec("25:30") && r.eventCounter < 23) {
+          r.eventCounter = 24;
+        } else if (r.time >= sec("25:30") && r.eventCounter < 25) {
           // 13:30
+          r.orbitsAngularVelocity = 100;
+          r.orbitsAngularVelocity2 = 100;
+          r.orbitsColor = "#fff..#aaf,#fff,#fff,#fff";
           animation({
             targets: r,
             orbitsOpacity: 1,
@@ -255,20 +280,20 @@
             easing: "linear",
           });
           r.bigbang.visible = true;
-          r.eventCounter = 23;
-        } else if (r.time >= sec("26:00") && r.eventCounter < 24) {
+          r.eventCounter = 25;
+        } else if (r.time >= sec("26:00") && r.eventCounter < 26) {
           // 14:00
           r.galactic.radiogalaxies.visible = false;
           r.galactic.quasars.visible = true;
-          r.eventCounter = 24;
-        } else if (r.time >= sec("26:45") && r.eventCounter < 25) {
+          r.eventCounter = 26;
+        } else if (r.time >= sec("26:45") && r.eventCounter < 27) {
           // 14:45
           r.galactic.quasars.visible = false;
-          r.eventCounter = 25;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 26) {
+          r.eventCounter = 27;
+        } else if (r.time >= sec("27:30") && r.eventCounter < 28) {
           // 15:30
           r.bigbang.visible = false;
-          r.eventCounter = 26;
+          r.eventCounter = 28;
         }
       };
 
@@ -491,7 +516,7 @@
             :model-opacity="{opacity: 0.5}"
             :animation_="{property: 'rotation', dur: 110000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
-          <a-text value="cometonics" align="center"></a-text>
+          <!-- <a-text value="cometonics" align="center"></a-text> -->
         </a-entity>
 
         <a-entity v-for="m,key,i in r.messier" :visible="m.visible">
@@ -503,7 +528,7 @@
             :model-opacity="{opacity: 0.5}"
             :animation_="{property: 'rotation', dur: 100000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
-          <a-text :value="key" align="center"></a-text>
+          <!-- <a-text :value="key" align="center"></a-text> -->
         </a-entity>
 
         <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
@@ -515,7 +540,7 @@
             :model-opacity="{opacity: 0.5}"
             :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
-          <a-text :value="key" align="center"></a-text>
+          <!-- <a-text :value="key" align="center"></a-text> -->
         </a-entity>
 
         <a-entity :visible="r.bigbang.visible">
@@ -527,7 +552,7 @@
             :model-opacity="{opacity: 0.5}"
             :animation_="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
-          <a-text value="bigbang" align="center"></a-text>
+          <!-- <a-text value="bigbang" align="center"></a-text> -->
         </a-entity>
       </a-entity>
 
