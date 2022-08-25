@@ -17,7 +17,7 @@
       import { generatePlanet } from "./lib/planets.js";
 
       const animation = AFRAME.ANIME;
-      const speed = 100; // Edit to 1000 for normal speed
+      const speed = 1000; // Edit to 1000 for normal speed
 
       const planets = {
         mercury: generatePlanet("mercury"),
@@ -366,6 +366,7 @@
         z-index: 20000;
       "
     >
+      <p>{{ secondsToTimeString(r.time) }}</p>
       <input
         type="range"
         v-model.number="r.userZMultipler"
