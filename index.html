@@ -22,16 +22,17 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const particles = {
+        //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
         radialType: "circle",
+        lifeTime: "1000",
         spawnRate: "100",
-        lifeTime: "100",
-        radialPosition: ["5", "6"],
-        radialVelocity: ["0", "1"],
-        angularVelocity: ["0", "0", "5"],
-        scale: "0.8",
-        trailLifeTime: "2",
-        trailInterval: "0.1",
+        radialPosition: [0, 0],
+        radialVelocity: [0, 1],
+        angularVelocity: [0, 0, 5],
+        scale: 2,
+        // trailLifeTime: "2",
+        // trailInterval: "0.1",
         texture: "#blob",
       };
 
@@ -88,6 +89,8 @@
         globalRotation: 90,
         globalScale: 1,
         userZMultipler: 0,
+
+        particles,
       });
 
       const onMessage = (data) => {
@@ -96,6 +99,14 @@
           r.globalFrequency = data.frequency;
         }
         if (r.time >= 0 && r.eventCounter < 1) {
+          animation({
+            targets: r.particles,
+            radialPosition: [0, 100],
+            //angularVelocity: [0, 10, 10],
+            duration: r.getDuration("00:30"),
+            easing: "linear",
+          });
+
           r.planets.earth.visible = true;
           animation({
             targets: r.planets.earth,
@@ -566,7 +577,6 @@
         onInput,
         onReset,
         normalizeParticles,
-        particles,
       }).mount();
     </script>
   </head>
@@ -585,7 +595,14 @@
         :visible="r.cometonics.visible"
         :rotation="{x: 90, y: 0, z: 0}"
         position="0 0 -20"
-        :sprite-particles="normalizeParticles({...particles, opacity: r.cometonics.opacity})"
+        :sprite-particles="normalizeParticles({...r.particles, opacity: r.cometonics.opacity})"
+      ></a-entity>
+
+      <a-entity
+        :visible="!r.cometonics.visible"
+        :rotation="{x: 90, y: 0, z: 0}"
+        position="0 0 -20"
+        :sprite-particles="normalizeParticles({...r.particles, opacity: r.cometonics.opacity + 1})"
       ></a-entity>
 
       <!-- Planets -->
@@ -777,6 +794,7 @@
         style="margin-bottom: 8px; display: block"
       />
       Playback speed (ms) <input v-model.number="r.globalFrequency" />
+      <pre>{{ r.particles }}</pre>
       <pre>{{ { cometonics: r.cometonics } }}</pre>
       <pre>
 {{ Object.fromEntries(Object.keys(r.planets).map(key => [key, r.planets[key].opacity])) }}
