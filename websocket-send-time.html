@@ -2,14 +2,21 @@
 <html lang="">
   <head>
     <meta charset="utf-8" />
-    <title>Websocket test</title>
+    <title>Websocket send time</title>
+    <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
     <script src="/lib/websocket.js"></script>
 
     <script>
       let time = 0,
         ticker = 0;
 
+      function wsOpenCallback() {
+        document.querySelector("#status").innerHTML = "connected";
+        stopClock();
+      }
+
       function wsClosedCallback() {
+        document.querySelector("#status").innerHTML = "closed";
         stopClock();
       }
 
@@ -22,13 +29,18 @@
         const startTime =
           parseInt(document.querySelector("#minutes").value) * 60 +
           parseInt(document.querySelector("#seconds").value);
+
+        const frequency = parseInt(document.querySelector("#frequency").value);
+
         console.log("Start from second: ", startTime);
+        console.log("Start with frequency (ms): ", frequency);
+
         time = startTime;
         sendTime();
         ticker = setInterval(() => {
           time++;
           sendTime();
-        }, 1000);
+        }, frequency);
       }
 
       function stopClock() {
@@ -46,6 +58,13 @@
     Start time from: <input id="minutes" type="text" size="1" value="00" /> :
     <input id="seconds" type="text" size="1" value="00" />
     <br />
+    Start time from: <input id="minutes" type="text" size="2" value="00" /> :
+    <input id="seconds" type="text" size="2" value="00" />
+    <br />
+    Send frequency (ms)
+    <br />
+    <input id="frequency" type="text" size="4" value="1000" />
+    <br />
     <button id="startButton" onclick="startClock()">Start</button>
     <button id="stopButton" onclick="stopClock()">Stop</button>
     <br />
@@ -53,6 +72,6 @@
     <br />
     Websocket status:<label id="status">unknown</label>
     <br />
-    <button id="connectButton" onclick="doConnect()">Connect</button>
+    <!-- <button id="connectButton" onclick="doConnect()">Connect</button> -->
   </body>
 </html>
