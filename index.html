@@ -8,6 +8,7 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-lines@1.1.0/lines.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
 
@@ -128,13 +129,6 @@
           r.eventCounter++;
         } else if (r.time >= sec("06:00") && r.eventCounter < 7) {
           r.orbitsOffsetX = 6;
-          animation({
-            targets: r,
-            globalScale: 2,
-            globalRotation: 0,
-            duration: r.getDuration("01:00"),
-            easing: "linear",
-          });
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
           r.planets.jupiter_j12.visible = true;
@@ -532,6 +526,14 @@
             :animation="p.outside.animation"
             :visible="p.visible"
           >
+            <a-entity
+              :random-lines="{radius: p.inside.position.z, opacity: 0.5, degrees: 1440, randomness: 1}"
+              rotation="0 0 0"
+            ></a-entity>
+            <a-entity
+              :random-lines="{radius: p.inside.position.z, opacity: 0.5, degrees: 360, randomness: 2}"
+              rotation="0 0 0"
+            ></a-entity>
             <a-entity
               :gltf-model="p.inside.model"
               :position="p.inside.position"
