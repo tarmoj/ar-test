@@ -213,6 +213,8 @@
           });
           r.eventCounter = 16;
         } else if (r.time >= sec("15:30") && r.eventCounter < 17) {
+          // Enable clusters and nebulas
+          r.messier.clusters.visible = true;
           // Fade out cometronics
           animation({
             targets: r.cometonics,
@@ -227,15 +229,31 @@
             duration: r.getDuration("00:10"),
             easing: "linear",
           });
-
-          r.messier.clusters.visible = true;
           r.eventCounter = 17;
         } else if (r.time >= sec("15:40") && r.eventCounter < 18) {
+          // Cometronics done fading, hide
           r.cometonics.visible = false;
           r.eventCounter = 18;
+        } else if (r.time >= sec("16:30") && r.eventCounter < 19) {
+          // Enable nebulas
+          r.messier.nebulas.visible = true;
+          // Fade in nebulas
+          animation({
+            targets: r.messier.nebulas,
+            opacity: 1,
+            duration: r.getDuration("00:10"),
+            easing: "linear",
+          });
+          // Fade out clusters
+          animation({
+            targets: r.messier.clusters,
+            opacity: 0,
+            duration: r.getDuration("00:10"),
+            easing: "linear",
+          });
+          r.eventCounter = 19;
         } else if (r.time >= sec("16:40") && r.eventCounter < 19) {
           r.messier.clusters.visible = false;
-          r.messier.nebulas.visible = true;
           r.eventCounter = 19;
         } else if (r.time >= sec("18:00") && r.eventCounter < 20) {
           r.messier.nebulas.visible = false;
