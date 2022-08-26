@@ -79,6 +79,9 @@
 
       const onMessage = (data) => {
         r.time = data.TT_time;
+        if (data.frequency) {
+          r.globalFrequency = data.frequency;
+        }
         if (r.time >= 0 && r.eventCounter < 1) {
           animation({
             targets: r,
