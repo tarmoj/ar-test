@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
 
     <script src="./lib/planets.js"></script>
+    <script src="./lib/orbits.js"></script>
     <script src="./lib/utils.js"></script>
     <script src="./lib/websocket.js"></script>
 
@@ -21,29 +22,7 @@
       const animation = AFRAME.ANIME;
       const speed = 1000; // Edit to 1000 for normal speed
 
-      const planets = {
-        mercury: generatePlanet("mercury"),
-        venus: generatePlanet("venus"),
-        earth: generatePlanet("earth"),
-        mars: generatePlanet("mars"),
-        jupiter: generatePlanet("jupiter"),
-        saturn: generatePlanet("saturn"),
-
-        mercury_m2: generatePlanet("mercury", 2),
-        venus_v2: generatePlanet("venus", 2),
-        jupiter_j12: generatePlanet("jupiter", 1 / 2),
-        saturn_s12: generatePlanet("saturn", 1 / 2),
-
-        mercury_m4: generatePlanet("mercury", 4),
-        jupiter_j14: generatePlanet("jupiter", 1 / 4),
-        saturn_s14: generatePlanet("saturn", 1 / 4),
-
-        mercury_m8: generatePlanet("mercury", 8),
-        saturn_s18: generatePlanet("saturn", 1 / 8),
-
-        venus_v4: generatePlanet("venus", 4),
-        venus_v8: generatePlanet("venus", 8),
-      };
+      const planets = generatePlanets();
 
       const cometonics = { visible: false, scale: 0.001 };
 
@@ -62,29 +41,7 @@
 
       const bigbang = {
         visible: false,
-        scale: 0.001,
       };
-
-      function getOrbitsParticles(radialPosition) {
-        const p = normalizeParticles({
-          radialPosition: [
-            radialPosition - this.orbitsOffsetX,
-            radialPosition + this.orbitsOffsetX,
-          ],
-          opacity: this.orbitsOpacity,
-          color: this.orbitsColor,
-          radialType: "circle",
-          spawnRate: 100,
-          lifeTime: 100,
-          radialVelocity: [0, this.orbitsRadialVelocity],
-          angularVelocity: [this.orbitsAngularVelocity, 0, 0.1],
-          scale: 1 - remap(this.userZMultipler, -1, 1, 0, 0.95),
-          // trailLifeTime: 2,
-          // trailInterval: 0.1,
-          texture: "#blob",
-        });
-        return p;
-      }
 
       const r = reactive({
         time: 0,
@@ -107,7 +64,7 @@
         orbitsRadialVelocity: 1,
         orbitsAngularVelocity: 0,
         orbitsColor: "#fff",
-        getOrbitsParticles,
+        getOrbitsParticles, // From orbits
       });
 
       const onMessage = (data) => {
@@ -408,16 +365,6 @@
             :scale="{x: g.scale,y: g.scale,z: g.scale }"
             :model-opacity="{opacity: 0.5}"
             :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
-          ></a-entity>
-        </a-entity>
-
-        <a-entity :visible="r.bigbang.visible">
-          <a-entity
-            animation-mixer
-            gltf-model="#bigbang"
-            :scale="{x: r.bigbang.scale,y: r.bigbang.scale,z: r.bigbang.scale }"
-            :model-opacity="{opacity: 0.5}"
-            :animation_="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
         </a-entity>
       </a-entity>
