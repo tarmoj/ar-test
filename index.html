@@ -20,7 +20,14 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const animation = AFRAME.ANIME;
-      const speed = 1000; // Edit to 1000 for normal speed
+
+      function getDuration(timestring) {
+        return sec(timestring) * this.globalFrequency;
+      }
+
+      function getPlaybackRate() {
+        return 1000 / this.globalFrequency;
+      }
 
       const planets = generatePlanets();
 
@@ -46,6 +53,9 @@
       const r = reactive({
         time: 0,
         eventCounter: 0,
+        globalFrequency: 1000,
+        getDuration,
+        getPlaybackRate,
 
         planets,
         cometonics,
@@ -73,7 +83,7 @@
           animation({
             targets: r,
             orbitsOpacity: 1,
-            duration: 10 * speed,
+            duration: r.getDuration("0:10"),
             easing: "linear",
           });
           r.planets.earth.visible = true;
@@ -87,7 +97,7 @@
           animation({
             targets: r,
             orbitsOffsetX: 10,
-            duration: sec("04:00") * speed,
+            duration: r.getDuration("04:00"),
             easing: "easeInOutSine",
           });
           r.planets.mercury.visible = true;
@@ -109,7 +119,7 @@
             targets: r,
             globalScale: 2,
             globalRotation: 0,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           r.planets.mercury_m2.visible = true;
@@ -153,7 +163,7 @@
           animation({
             targets: r,
             globalRotation: 0,
-            duration: sec("01:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
           r.planets.saturn_s14.visible = false;
@@ -164,7 +174,7 @@
             orbitsOffsetY: 1,
             orbitsRadialVelocity: -1,
             //  orbitsAngularVelocity: 1,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           r.cometonics.visible = true;
@@ -176,7 +186,7 @@
             orbitsOffsetY: 2,
             orbitsRadialVelocity: -2,
             // orbitsAngularVelocity: 2,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           Object.keys(r.planets).forEach(
@@ -187,7 +197,7 @@
           animation({
             targets: r,
             orbitsAngularVelocity: 1,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           r.eventCounter = 16;
@@ -195,7 +205,7 @@
           animation({
             targets: r,
             orbitsOpacity: 0,
-            duration: sec("00:10") * speed,
+            duration: r.getDuration("00:10"),
             easing: "linear",
           });
           r.cometonics.visible = false;
@@ -238,13 +248,13 @@
           animation({
             targets: r,
             orbitsOpacity: 1,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           animation({
             targets: r,
             globalScale: 0,
-            duration: sec("2:00") * speed,
+            duration: r.getDuration("02:00"),
             easing: "linear",
           });
           r.bigbang.visible = true;
@@ -340,7 +350,7 @@
 
         <a-entity :visible="r.cometonics.visible">
           <a-entity
-            animation-mixer
+            :animation-mixer="{timeScale: r.getPlaybackRate()}"
             gltf-model="#cometonics"
             :scale="{x: r.cometonics.scale,y: r.cometonics.scale,z: r.cometonics.scale }"
             :model-opacity="{opacity: 0.5}"
@@ -350,7 +360,7 @@
 
         <a-entity v-for="m,key,i in r.messier" :visible="m.visible">
           <a-entity
-            animation-mixer
+            :animation-mixer="{timeScale: r.getPlaybackRate()}"
             :gltf-model="'#' + key"
             :scale="{x: m.scale,y: m.scale,z: m.scale }"
             :model-opacity="{opacity: 0.5}"
@@ -360,7 +370,7 @@
 
         <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
           <a-entity
-            animation-mixer
+            :animation-mixer="{timeScale: r.getPlaybackRate()}"
             :gltf-model="'#' + key"
             :scale="{x: g.scale,y: g.scale,z: g.scale }"
             :model-opacity="{opacity: 0.5}"
@@ -492,6 +502,7 @@
         step="any"
         style="margin-bottom: 8px; display: block"
       />
+      Playback speed (ms) <input v-model.number="r.globalFrequency" />
     </div>
 
     <div
