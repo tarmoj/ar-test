@@ -311,6 +311,7 @@
       doConnect(onMessage);
 
       const onInput = (e) => onMessage({ TT_time: parseInt(e.target.value) });
+
       const onReset = () => {
         r.time = 0;
         r.eventCounter = 0;
@@ -338,6 +339,160 @@
   </head>
 
   <body style="margin: 0; overflow: hidden">
+    <!-- Scene -->
+
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+      <a-entity
+        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
+        :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
+        :rotation="{x: r.globalRotation, y: 0, z: 0}"
+      >
+        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}" :opacity="0">
+          <a-entity
+            v-for="p,key,i in r.planets"
+            :position="{ x: 0, y: 0 + (i * r.orbitsOffsetY), z: 0 }"
+            :scale="p.outside.scale"
+            :animation="p.outside.animation"
+          >
+            <a-entity
+              rotation="90 0 0"
+              :sprite-particles="r.getOrbitsParticles(p.inside.position.z)"
+            ></a-entity>
+          </a-entity>
+
+          <a-entity
+            v-for="p,key in r.planets"
+            :position="p.outside.position"
+            :scale="p.outside.scale"
+            :animation="p.outside.animation"
+            :visible="p.visible"
+          >
+            <a-entity
+              :gltf-model="p.inside.model"
+              :position="p.inside.position"
+              :rotation="p.inside.rotation"
+              :scale="p.inside.scale"
+              :animation="p.inside.animation"
+            ></a-entity>
+          </a-entity>
+        </a-entity>
+
+        <a-entity :visible="r.cometonics.visible">
+          <a-entity
+            animation-mixer
+            gltf-model="#cometonics"
+            :scale="{x: r.cometonics.scale,y: r.cometonics.scale,z: r.cometonics.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation_="{property: 'rotation', dur: 110000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity v-for="m,key,i in r.messier" :visible="m.visible">
+          <a-entity
+            animation-mixer
+            :gltf-model="'#' + key"
+            :scale="{x: m.scale,y: m.scale,z: m.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation_="{property: 'rotation', dur: 100000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
+          <a-entity
+            animation-mixer
+            :gltf-model="'#' + key"
+            :scale="{x: g.scale,y: g.scale,z: g.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
+        </a-entity>
+
+        <a-entity :visible="r.bigbang.visible">
+          <a-entity
+            animation-mixer
+            gltf-model="#bigbang"
+            :scale="{x: r.bigbang.scale,y: r.bigbang.scale,z: r.bigbang.scale }"
+            :model-opacity="{opacity: 0.5}"
+            :animation_="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
+          ></a-entity>
+        </a-entity>
+      </a-entity>
+
+      <a-entity
+        light="type: directional; color: #FFF; intensity: 5"
+        position="0 0 5"
+      ></a-entity>
+
+      <a-camera></a-camera>
+
+      <!-- Assets -->
+
+      <a-assets>
+        <a-asset-item
+          autoload
+          id="mercury"
+          src="assets/mercury.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="jupiter"
+          src="assets/jupiter.glb"
+        ></a-asset-item>
+        <a-asset-item autoload id="earth" src="assets/earth.glb"></a-asset-item>
+        <a-asset-item autoload id="mars" src="assets/mars.glb"></a-asset-item>
+        <a-asset-item autoload id="venus" src="assets/venus.glb"></a-asset-item>
+        <a-asset-item
+          autoload
+          id="saturn"
+          src="assets/saturn.glb"
+        ></a-asset-item>
+
+        <a-asset-item
+          autoload
+          id="clusters"
+          src="assets/clusters.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="clusters2"
+          src="assets/clusters2.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="nebulas"
+          src="assets/nebulas.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="galaxies"
+          src="assets/galaxies.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="superclusters"
+          src="assets/superclusters.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="radiogalaxies"
+          src="assets/radiogalaxies.glb"
+        ></a-asset-item>
+        <a-asset-item
+          autoload
+          id="quasars"
+          src="assets/quasars.glb"
+        ></a-asset-item>
+
+        <img id="blob" src="assets/blob.png" />
+      </a-assets>
+    </a-scene>
+
+    <!-- Overlays -->
+
     <div
       class="dev-overlay"
       style="position: fixed; top: 16px; left: 16px; z-index: 10000"
@@ -412,173 +567,8 @@
         style="width: 100%; display: block"
       />
     </div>
-
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: false;"
-    >
-      <a-assets>
-        <a-asset-item
-          autoload
-          id="mercury"
-          src="assets/mercury.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="jupiter"
-          src="assets/jupiter.glb"
-        ></a-asset-item>
-        <a-asset-item autoload id="earth" src="assets/earth.glb"></a-asset-item>
-        <a-asset-item autoload id="mars" src="assets/mars.glb"></a-asset-item>
-        <a-asset-item autoload id="venus" src="assets/venus.glb"></a-asset-item>
-        <a-asset-item
-          autoload
-          id="saturn"
-          src="assets/saturn.glb"
-        ></a-asset-item>
-
-        <a-asset-item
-          autoload
-          id="cometronics"
-          src="assets/cometronics.glb"
-        ></a-asset-item>
-
-        <a-asset-item
-          autoload
-          id="clusters"
-          src="assets/clusters.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="clusters2"
-          src="assets/clusters2.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="nebulas"
-          src="assets/nebulas.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="galaxies"
-          src="assets/galaxies.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="superclusters"
-          src="assets/superclusters.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="radiogalaxies"
-          src="assets/radiogalaxies.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="quasars"
-          src="assets/quasars.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="bigbang"
-          src="assets/bigbang.glb"
-        ></a-asset-item>
-        <img id="blob" src="assets/blob.png" />
-      </a-assets>
-
-      <a-entity
-        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
-        :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
-        :rotation="{x: r.globalRotation, y: 0, z: 0}"
-      >
-        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}" :opacity="0">
-          <a-entity
-            v-for="p,key,i in r.planets"
-            :position="{ x: 0, y: 0 + (i * r.orbitsOffsetY), z: 0 }"
-            :scale="p.outside.scale"
-            :animation="p.outside.animation"
-          >
-            <a-entity
-              rotation="90 0 0"
-              :sprite-particles="r.getOrbitsParticles(p.inside.position.z)"
-            ></a-entity>
-          </a-entity>
-
-          <a-entity
-            v-for="p,key in r.planets"
-            :position="p.outside.position"
-            :scale="p.outside.scale"
-            :animation="p.outside.animation"
-            :visible="p.visible"
-          >
-            <a-entity
-              :gltf-model="p.inside.model"
-              :position="p.inside.position"
-              :rotation="p.inside.rotation"
-              :scale="p.inside.scale"
-              :animation="p.inside.animation"
-            ></a-entity>
-          </a-entity>
-        </a-entity>
-
-        <a-entity :visible="r.cometonics.visible">
-          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity
-            animation-mixer
-            gltf-model="#cometonics"
-            :scale="{x: r.cometonics.scale,y: r.cometonics.scale,z: r.cometonics.scale }"
-            :model-opacity="{opacity: 0.5}"
-            :animation_="{property: 'rotation', dur: 110000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
-          ></a-entity>
-          <!-- <a-text value="cometonics" align="center"></a-text> -->
-        </a-entity>
-
-        <a-entity v-for="m,key,i in r.messier" :visible="m.visible">
-          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity
-            animation-mixer
-            :gltf-model="'#' + key"
-            :scale="{x: m.scale,y: m.scale,z: m.scale }"
-            :model-opacity="{opacity: 0.5}"
-            :animation_="{property: 'rotation', dur: 100000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
-          ></a-entity>
-          <!-- <a-text :value="key" align="center"></a-text> -->
-        </a-entity>
-
-        <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
-          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity
-            animation-mixer
-            :gltf-model="'#' + key"
-            :scale="{x: g.scale,y: g.scale,z: g.scale }"
-            :model-opacity="{opacity: 0.5}"
-            :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
-          ></a-entity>
-          <!-- <a-text :value="key" align="center"></a-text> -->
-        </a-entity>
-
-        <a-entity :visible="r.bigbang.visible">
-          <!-- <a-entity :sprite-particles="exampleParticles"></a-entity> -->
-          <a-entity
-            animation-mixer
-            gltf-model="#bigbang"
-            :scale="{x: r.bigbang.scale,y: r.bigbang.scale,z: r.bigbang.scale }"
-            :model-opacity="{opacity: 0.5}"
-            :animation_="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
-          ></a-entity>
-          <!-- <a-text value="bigbang" align="center"></a-text> -->
-        </a-entity>
-      </a-entity>
-
-      <a-entity
-        light="type: directional; color: #FFF; intensity: 5"
-        position="0 0 5"
-      ></a-entity>
-
-      <a-camera></a-camera>
-    </a-scene>
   </body>
+
   <style>
     body {
       font-family: sans-serif;
