@@ -231,6 +231,7 @@
           });
           r.eventCounter = 17;
         } else if (r.time >= sec("15:40") && r.eventCounter < 18) {
+          // Clusters are still playing...
           // Cometronics done fading, hide
           r.cometonics.visible = false;
           r.eventCounter = 18;
@@ -252,16 +253,58 @@
             easing: "linear",
           });
           r.eventCounter = 19;
+          //
         } else if (r.time >= sec("16:40") && r.eventCounter < 19) {
+          // Nebulas are still playing...
+          // Clusters done fading, hide
           r.messier.clusters.visible = false;
           r.eventCounter = 19;
-        } else if (r.time >= sec("18:00") && r.eventCounter < 20) {
-          r.messier.nebulas.visible = false;
+          //
+        } else if (r.time >= sec("17:50") && r.eventCounter < 20) {
+          // Enable clusters2
           r.messier.clusters2.visible = true;
+          // Fade in clusters2
+          animation({
+            targets: r.messier.clusters2,
+            opacity: 1,
+            duration: r.getDuration("00:10"),
+            easing: "linear",
+          });
+          // Fade out nebulas
+          animation({
+            targets: r.messier.nebulas,
+            opacity: 0,
+            duration: r.getDuration("00:10"),
+            easing: "linear",
+          });
           r.eventCounter = 20;
-        } else if (r.time >= sec("21:10") && r.eventCounter < 21) {
-          r.messier.clusters2.visible = false;
+        } else if (r.time >= sec("18:00") && r.eventCounter < 20) {
+          // clusters2 are still playing...
+          // nebulas done fading, hide
+          r.messier.nebulas.visible = false;
+          r.eventCounter = 20;
+        } else if (r.time >= sec("21:00") && r.eventCounter < 21) {
+          // Enable galaxies
           r.messier.galaxies.visible = true;
+          // Fade in galaxies
+          animation({
+            targets: r.messier.galaxies,
+            opacity: 1,
+            duration: r.getDuration("00:10"),
+            easing: "linear",
+          });
+          // Fade out nebulas
+          animation({
+            targets: r.messier.clusters2,
+            opacity: 0,
+            duration: r.getDuration("00:10"),
+            easing: "linear",
+          });
+          r.eventCounter = 21;
+        } else if (r.time >= sec("21:10") && r.eventCounter < 21) {
+          // galaxies are still playing...
+          // clusters2 done fading, hide
+          r.messier.clusters2.visible = false;
           r.eventCounter = 21;
         } else if (r.time >= sec("23:50") && r.eventCounter < 22) {
           r.messier.galaxies.visible = false;
