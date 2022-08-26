@@ -1,53 +1,50 @@
 <!DOCTYPE html>
 <html lang="">
-<head>
-  <meta charset="utf-8">
-  <title>Websocket test</title>
-  <script src="websocket.js"></script>
+  <head>
+    <meta charset="utf-8" />
+    <title>Websocket test</title>
+    <script src="/lib/websocket.js"></script>
 
-  <script>
-    let time = 0, ticker=0;
+    <script>
+      let time = 0,
+        ticker = 0;
 
-
-   function wsClosedCallback() {
-     stopClock();
-   }
-
-
-    function sendTime() {
-      doSend(JSON.stringify({ TT_time: time }));
-      document.querySelector("#timeLabel").innerHTML = time.toString();
-    }
-
-    function startClock() {
-      const startTime = parseInt(document.querySelector("#minutes").value)*60 + parseInt(document.querySelector("#seconds").value)
-      console.log("Start from second: ", startTime);
-      time = startTime;
-      sendTime();
-      ticker = setInterval( ()=> {
-                time++;
-                sendTime();
-              }, 1000
-      );
-    }
-
-    function stopClock() {
-      if (ticker>0) {
-        clearInterval(ticker);
+      function wsClosedCallback() {
+        stopClock();
       }
-      time = 0;
-    }
 
+      function sendTime() {
+        doSend(JSON.stringify({ TT_time: time }));
+        document.querySelector("#timeLabel").innerHTML = time.toString();
+      }
 
-  window.onload = () => doConnect();
+      function startClock() {
+        const startTime =
+          parseInt(document.querySelector("#minutes").value) * 60 +
+          parseInt(document.querySelector("#seconds").value);
+        console.log("Start from second: ", startTime);
+        time = startTime;
+        sendTime();
+        ticker = setInterval(() => {
+          time++;
+          sendTime();
+        }, 1000);
+      }
 
-  </script>
+      function stopClock() {
+        if (ticker > 0) {
+          clearInterval(ticker);
+        }
+        time = 0;
+      }
 
-</head>
+      window.onload = () => doConnect();
+    </script>
+  </head>
   <body>
     <h2>Timetrip - Send time</h2>
-    Start time from: <input id="minutes" type="text" size="1" value="00"/> :
-    <input id="seconds" type="text" size="1" value="00"/>
+    Start time from: <input id="minutes" type="text" size="1" value="00" /> :
+    <input id="seconds" type="text" size="1" value="00" />
     <br />
     <button id="startButton" onclick="startClock()">Start</button>
     <button id="stopButton" onclick="stopClock()">Stop</button>
@@ -55,8 +52,7 @@
     Time: <label id="timeLabel"></label>
     <br />
     Websocket status:<label id="status">unknown</label>
-  <br />
-  <button id="connectButton" onclick="doConnect()">Connect</button>
-
+    <br />
+    <button id="connectButton" onclick="doConnect()">Connect</button>
   </body>
 </html>
