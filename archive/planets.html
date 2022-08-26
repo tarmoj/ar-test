@@ -161,7 +161,7 @@
         }
       }
 
-      function secondsToTimeString(time) {
+      function timestring(time) {
         const minutes = Math.floor(time / 60).toString();
         const seconds = (time % 60).toString();
         const timeString =
@@ -241,10 +241,7 @@
         }
         document
           .querySelector("#timeLabel")
-          .setAttribute(
-            "value",
-            secondsToTimeString(time) + " " + eventCounter
-          ); // not sure if eventCounter is good
+          .setAttribute("value", timestring(time) + " " + eventCounter); // not sure if eventCounter is good
       }
 
       let timer;
