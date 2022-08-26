@@ -95,7 +95,11 @@
           </div>
         </div>
         <div v-else>
-          <input type="text" v-model="data[key]" />
+          <input
+            type="text"
+            v-model="data[key]"
+            style="width: 100%; margin-bottom: 8px"
+          />
           <input
             v-if="isNumber(data[key])"
             type="range"
