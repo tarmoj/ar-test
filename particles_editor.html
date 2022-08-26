@@ -7,8 +7,7 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
-    <script src="./utils.js"></script>
-    <script src="./components/random-lines.js"></script>
+    <script src="./lib/utils.js"></script>
 
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
@@ -50,9 +49,6 @@
     </script>
   </head>
   <body style="margin: 0; overflow: hidden">
-    <a-assets>
-      <img id="blob" src="assets/blob.png" />
-    </a-assets>
     <a-scene
       id="scene"
       vr-mode-ui="enabled: false"
@@ -66,6 +62,10 @@
       ></a-entity>
 
       <a-camera></a-camera>
+
+      <a-assets>
+        <img id="blob" src="assets/blob.png" />
+      </a-assets>
     </a-scene>
 
     <div style="position: fixed; top: 16px; left: 16px">
@@ -95,7 +95,11 @@
           </div>
         </div>
         <div v-else>
-          <input type="text" v-model="data[key]" />
+          <input
+            type="text"
+            v-model="data[key]"
+            style="width: 100%; margin-bottom: 8px"
+          />
           <input
             v-if="isNumber(data[key])"
             type="range"
