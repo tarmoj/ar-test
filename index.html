@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
 
     <script src="./lib/planets.js"></script>
+    <script src="./lib/orbits.js"></script>
     <script src="./lib/utils.js"></script>
     <script src="./lib/websocket.js"></script>
 
@@ -19,31 +20,16 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const animation = AFRAME.ANIME;
-      const speed = 1000; // Edit to 1000 for normal speed
 
-      const planets = {
-        mercury: generatePlanet("mercury"),
-        venus: generatePlanet("venus"),
-        earth: generatePlanet("earth"),
-        mars: generatePlanet("mars"),
-        jupiter: generatePlanet("jupiter"),
-        saturn: generatePlanet("saturn"),
+      function getDuration(timestring) {
+        return sec(timestring) * this.globalFrequency;
+      }
 
-        mercury_m2: generatePlanet("mercury", 2),
-        venus_v2: generatePlanet("venus", 2),
-        jupiter_j12: generatePlanet("jupiter", 1 / 2),
-        saturn_s12: generatePlanet("saturn", 1 / 2),
+      function getPlaybackRate() {
+        return 1000 / this.globalFrequency;
+      }
 
-        mercury_m4: generatePlanet("mercury", 4),
-        jupiter_j14: generatePlanet("jupiter", 1 / 4),
-        saturn_s14: generatePlanet("saturn", 1 / 4),
-
-        mercury_m8: generatePlanet("mercury", 8),
-        saturn_s18: generatePlanet("saturn", 1 / 8),
-
-        venus_v4: generatePlanet("venus", 4),
-        venus_v8: generatePlanet("venus", 8),
-      };
+      const planets = generatePlanets();
 
       const cometonics = { visible: false, scale: 0.001 };
 
@@ -62,33 +48,14 @@
 
       const bigbang = {
         visible: false,
-        scale: 0.001,
       };
-
-      function getOrbitsParticles(radialPosition) {
-        const p = normalizeParticles({
-          radialPosition: [
-            radialPosition - this.orbitsOffsetX,
-            radialPosition + this.orbitsOffsetX,
-          ],
-          opacity: this.orbitsOpacity,
-          color: this.orbitsColor,
-          radialType: "circle",
-          spawnRate: 100,
-          lifeTime: 100,
-          radialVelocity: [0, this.orbitsRadialVelocity],
-          angularVelocity: [this.orbitsAngularVelocity, 0, 0.1],
-          scale: 1 - remap(this.userZMultipler, -1, 1, 0, 0.95),
-          // trailLifeTime: 2,
-          // trailInterval: 0.1,
-          texture: "#blob",
-        });
-        return p;
-      }
 
       const r = reactive({
         time: 0,
         eventCounter: 0,
+        globalFrequency: 1000,
+        getDuration,
+        getPlaybackRate,
 
         planets,
         cometonics,
@@ -107,16 +74,19 @@
         orbitsRadialVelocity: 1,
         orbitsAngularVelocity: 0,
         orbitsColor: "#fff",
-        getOrbitsParticles,
+        getOrbitsParticles, // From orbits
       });
 
       const onMessage = (data) => {
         r.time = data.TT_time;
+        if (data.frequency) {
+          r.globalFrequency = data.frequency;
+        }
         if (r.time >= 0 && r.eventCounter < 1) {
           animation({
             targets: r,
             orbitsOpacity: 1,
-            duration: 10 * speed,
+            duration: r.getDuration("0:10"),
             easing: "linear",
           });
           r.planets.earth.visible = true;
@@ -130,7 +100,7 @@
           animation({
             targets: r,
             orbitsOffsetX: 10,
-            duration: sec("04:00") * speed,
+            duration: r.getDuration("04:00"),
             easing: "easeInOutSine",
           });
           r.planets.mercury.visible = true;
@@ -152,7 +122,7 @@
             targets: r,
             globalScale: 2,
             globalRotation: 0,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           r.planets.mercury_m2.visible = true;
@@ -196,7 +166,7 @@
           animation({
             targets: r,
             globalRotation: 0,
-            duration: sec("01:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
           r.planets.saturn_s14.visible = false;
@@ -207,7 +177,7 @@
             orbitsOffsetY: 1,
             orbitsRadialVelocity: -1,
             //  orbitsAngularVelocity: 1,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           r.cometonics.visible = true;
@@ -219,7 +189,7 @@
             orbitsOffsetY: 2,
             orbitsRadialVelocity: -2,
             // orbitsAngularVelocity: 2,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           Object.keys(r.planets).forEach(
@@ -230,7 +200,7 @@
           animation({
             targets: r,
             orbitsAngularVelocity: 1,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           r.eventCounter = 16;
@@ -238,7 +208,7 @@
           animation({
             targets: r,
             orbitsOpacity: 0,
-            duration: sec("00:10") * speed,
+            duration: r.getDuration("00:10"),
             easing: "linear",
           });
           r.cometonics.visible = false;
@@ -281,13 +251,13 @@
           animation({
             targets: r,
             orbitsOpacity: 1,
-            duration: sec("1:00") * speed,
+            duration: r.getDuration("01:00"),
             easing: "linear",
           });
           animation({
             targets: r,
             globalScale: 0,
-            duration: sec("2:00") * speed,
+            duration: r.getDuration("02:00"),
             easing: "linear",
           });
           r.bigbang.visible = true;
@@ -383,7 +353,7 @@
 
         <a-entity :visible="r.cometonics.visible">
           <a-entity
-            animation-mixer
+            :animation-mixer="{timeScale: r.getPlaybackRate()}"
             gltf-model="#cometonics"
             :scale="{x: r.cometonics.scale,y: r.cometonics.scale,z: r.cometonics.scale }"
             :model-opacity="{opacity: 0.5}"
@@ -393,7 +363,7 @@
 
         <a-entity v-for="m,key,i in r.messier" :visible="m.visible">
           <a-entity
-            animation-mixer
+            :animation-mixer="{timeScale: r.getPlaybackRate()}"
             :gltf-model="'#' + key"
             :scale="{x: m.scale,y: m.scale,z: m.scale }"
             :model-opacity="{opacity: 0.5}"
@@ -403,21 +373,11 @@
 
         <a-entity v-for="g,key,i in r.galactic" :visible="g.visible">
           <a-entity
-            animation-mixer
+            :animation-mixer="{timeScale: r.getPlaybackRate()}"
             :gltf-model="'#' + key"
             :scale="{x: g.scale,y: g.scale,z: g.scale }"
             :model-opacity="{opacity: 0.5}"
             :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
-          ></a-entity>
-        </a-entity>
-
-        <a-entity :visible="r.bigbang.visible">
-          <a-entity
-            animation-mixer
-            gltf-model="#bigbang"
-            :scale="{x: r.bigbang.scale,y: r.bigbang.scale,z: r.bigbang.scale }"
-            :model-opacity="{opacity: 0.5}"
-            :animation_="{property: 'rotation', dur: 101000, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
         </a-entity>
       </a-entity>
@@ -545,6 +505,7 @@
         step="any"
         style="margin-bottom: 8px; display: block"
       />
+      Playback speed (ms) <input v-model.number="r.globalFrequency" />
     </div>
 
     <div
