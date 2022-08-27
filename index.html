@@ -279,6 +279,20 @@
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
+
+          animation({
+            targets: r.starfield.angularVelocity,
+            b: 2,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r.starfield.opacity,
+            b: 1,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
           //r.planets.saturn_s14.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
@@ -363,10 +377,11 @@
           r.messier.clusters.visible = true;
           // Fade out cometronics
           animation({
-            targets: r.cometonics,
-            opacity: 0,
+            targets: r.starfield.opacity,
+            a: 0,
+            b: 0,
             duration: r.getDuration("00:10"),
-            easing: "linear",
+            easing: "easeInOutSine",
           });
           // Fade in clusters
           animation({
@@ -378,8 +393,8 @@
           r.eventCounter++;
         } else if (r.time >= sec("15:40") && r.eventCounter < 39) {
           // Clusters are still playing...
-          // Cometronics done fading, hide
-          r.cometonics.visible = false;
+          // Cometronics is there, just opacity: 0
+          //r.cometonics.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("16:30") && r.eventCounter < 40) {
           // Enable nebulas
@@ -812,6 +827,7 @@
         style="margin-bottom: 8px; display: block"
       />
       Playback speed (ms) <input v-model.number="r.globalFrequency" />
+      <p>{{ r.getPlaybackRate() }}</p>
       <pre>{{ r.particles }}</pre>
       <pre>{{ { cometonics: r.cometonics } }}</pre>
       <pre>
@@ -848,7 +864,7 @@
       font-family: sans-serif;
       color: white;
     }
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 900px) {
       .dev-overlay {
         display: none;
       }
@@ -856,7 +872,7 @@
         display: block;
       }
     }
-    @media only screen and (min-width: 600px) {
+    @media only screen and (min-width: 900px) {
       .dev-overlay {
         display: block;
       }
