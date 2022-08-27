@@ -623,6 +623,23 @@
           r.eventCounter++;
         } else if (r.time >= sec("26:45") && r.eventCounter < 53) {
           r.galactic.quasars.visible = false;
+          Object.keys(r.planets).forEach((key) => {
+            r.planets[key].visible = true;
+            r.planets[key].opacity = 1;
+          });
+          Object.keys(r.messier).forEach((key) => {
+            r.messier[key].visible = true;
+            animation({
+              targets: r.messier[key],
+              opacity: 1,
+              duration: r.getDuration("00:10"),
+              easing: "linear",
+            });
+          });
+          Object.keys(r.galactic).forEach((key) => {
+            r.galactic[key].visible = true;
+            r.galactic[key].opacity = 1;
+          });
           // TODO: Bring all in
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = true;
