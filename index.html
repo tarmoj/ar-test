@@ -20,7 +20,7 @@
 
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
-      import { Tween } from "https://unpkg.com/tweedle.js@2.0.0/dist/tweedle.es.min.js";
+
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
@@ -97,36 +97,6 @@
           r.globalFrequency = data.frequency;
         }
         if (r.time >= 0 && r.eventCounter < 1) {
-          animation({
-            targets: r.particles.radialPosition,
-            a: 5,
-            b: 10,
-            duration: r.getDuration("00:05"),
-            easing: "easeInQuad",
-          });
-          animation({
-            targets: r.particles.radialVelocity,
-            a: 0,
-            b: 0,
-            duration: r.getDuration("00:05"),
-            easing: "easeInQuad",
-          });
-          animation({
-            targets: r.particles.angularVelocity,
-            a: 1,
-            b: 5,
-            c: 10,
-            duration: r.getDuration("00:05"),
-            easing: "easeInQuad",
-          });
-
-          animation({
-            targets: r.particles,
-            trailLifeTime: 0.5,
-            trailInterval: 0.2,
-            duration: r.getDuration("00:05"),
-          });
-
           r.planets.earth.visible = true;
           animation({
             targets: r.planets.earth,
@@ -611,19 +581,21 @@
     >
       <!-- cometonics -->
 
-      <a-entity
+      <a-text
         :visible="r.cometonics.visible"
-        :rotation="{x: 90, y: 0, z: 0}"
         position="0 0 -20"
-        :sprite-particles="normalizeParticles({...r.particles, opacity: r.cometonics.opacity})"
-      ></a-entity>
+        value="cometronics"
+        align="center"
+      ></a-text>
 
-      <a-entity
-        :visible="!r.cometonics.visible"
-        :rotation="{x: 90, y: 0, z: 0}"
+      <!-- bigbang -->
+
+      <a-text
+        :visible="r.bigbang.visible"
         position="0 0 -20"
-        :sprite-particles="normalizeParticles({...r.particles, opacity: r.cometonics.opacity + 1})"
-      ></a-entity>
+        value="bigbang"
+        align="center"
+      ></a-text>
 
       <!-- Planets -->
 
