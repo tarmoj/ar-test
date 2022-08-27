@@ -21,30 +21,105 @@
         scale: { min: 0, max: 100, step: "any" },
         trailLifeTime: { min: 0, max: 10, step: 0.001 },
         trailInterval: { min: 0.05, max: 1, step: 0.01 },
+        destinationWeight: { min: 0, max: 1, step: 0.01 },
+        destinationOffset: { min: -10, max: 10, step: 0.01 },
       };
 
-      const data = {
+      const data = reactive({
         color: "#00f..#fff,#fff,#fff",
-        radialType: "circle",
-        spawnRate: "100",
-        lifeTime: "100",
-        radialPosition: ["5", "6"],
-        radialVelocity: ["0", "1"],
-        angularVelocity: ["0", "0", "5"],
-        scale: "0.8",
-        trailLifeTime: "2",
-        trailInterval: "0.1",
+        radialType: "sphere",
+        spawnRate: 100,
+        lifeTime: 1000,
+        radialPosition: { a: 1, b: 2 },
+        radialVelocity: { a: 0, b: 1 },
+        angularVelocity: { a: 0, b: 0, c: 0 },
+        scale: 2,
         texture: "#blob",
-      };
+        trailLifeTime: 2,
+        trailInterval: 0.1,
+      });
 
-      const isNumber = (value) => !isNaN(parseFloat(value));
+      const data2 = reactive({
+        color: "#ff",
+        radialType: "circleXZ",
+        spawnRate: 100,
+        lifeTime: 1000,
+        radialPosition: { a: 3, b: 5 },
+        radialVelocity: { a: 0, b: 2 },
+        angularVelocity: { a: 0, b: -10, c: 0 },
+        scale: 2,
+        texture: "#blob",
+      });
+
+      const box = reactive({
+        position: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        innerPosition: { x: 0, y: 0, z: 0 },
+      });
+
+      const animation = AFRAME.ANIME;
+
+      const dur = 3000;
+
+      animation({
+        targets: box.position,
+        x: 0,
+        y: [-2, 2],
+        z: 0,
+        duration: dur * 2,
+        easing: "easeInOutSine",
+        direction: "alternate",
+        loop: true,
+      });
+
+      animation({
+        targets: box.rotation,
+        x: 0,
+        y: -360,
+        z: 0,
+        duration: dur,
+        easing: "linear",
+        loop: true,
+      });
+
+      // animation({
+      //   targets: box.innerPosition,
+      //   x: 2,
+      //   y: 0,
+      //   z: 0,
+      //   duration: dur,
+      //   easing: "easeInOutSine",
+      //   direction: "alternate",
+      //   loop: true,
+      // });
+
+      animation({
+        targets: data.radialVelocity,
+        a: 0,
+        b: 0,
+        duration: dur,
+        easing: "easeInOutSine",
+        direction: "alternate",
+        loop: true,
+      });
+
+      animation({
+        targets: data,
+        trailLifeTime: 0.3,
+        duration: dur * 2,
+        easing: "easeOutSine",
+        direction: "alternate",
+        loop: true,
+      });
 
       createApp({
         fields,
         data,
+        data2,
         normalizeParticles,
         isNumber,
         angle: 80,
+        box,
       }).mount();
     </script>
   </head>
@@ -55,11 +130,32 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
+      <a-entity position="0 0 -20">
+        <!-- <a-entity :sprite-particles="normalizeParticles(data2)"></a-entity> -->
+
+        <a-entity
+          v-for="y in [1,2,3,4]"
+          :position="{x: 0, y: y - 5, z: 0}"
+          :sprite-particles="normalizeParticles({...data2, radialPosition: { a: y, b: y }, radialVelocity: { a: 0, b: -0.1 },angularVelocity: { a: 10, b: -10, c: 10 }})"
+        ></a-entity>
+
+        <!-- <a-entity
+          position="0 0.5 0"
+          :sprite-particles="normalizeParticles({...data2, opacity: 0.5, radialPosition: { a: 1, b: 5 }})"
+        ></a-entity> -->
+
+        <a-entity :position="box.position" :rotation="box.rotation">
+          <a-entity :position="box.innerPosition">
+            <!-- <a-entity :sprite-particles="normalizeParticles(data)"></a-entity> -->
+          </a-entity>
+        </a-entity>
+      </a-entity>
+      <!-- 
       <a-entity
         :rotation="{x: -angle, y: 0, z: 0}"
         position="0 0 -40"
         :sprite-particles="normalizeParticles(data)"
-      ></a-entity>
+      ></a-entity> -->
 
       <a-camera></a-camera>
 
