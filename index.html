@@ -90,8 +90,8 @@
         color: "#fff",
         opacity: { a: 0, b: 0 },
         radialType: "circleXZ",
-        spawnRate: 500,
-        lifeTime: 1000,
+        spawnRate: 60,
+        lifeTime: 10000,
         scale: { a: 0.5, b: 1 },
         texture: "#blob",
       };
@@ -118,6 +118,8 @@
         cometronicsStarfield,
         cometronicsSphere,
         cometronicsSphereSpeed: 0,
+
+        planetsOrbits,
       });
 
       const onMessage = (data) => {
@@ -288,6 +290,13 @@
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
           animation({
             targets: r,
+            cometronicsSphereSpeed: 2,
+            duration: r.getDuration("04:30"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r,
             globalRotation: 0,
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
@@ -309,6 +318,20 @@
           //r.planets.saturn_s14.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
+          animation({
+            targets: Object.keys(r.planets).map((key) => r.planets[key]),
+            opacity: 0,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r.planetsOrbits,
+            opacity: 0,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+
           r.cometonics.visible = true;
           // TODO: Should cometronics fade in earlier and planets go out later?
           // animation({
@@ -317,7 +340,7 @@
           //   duration: r.getDuration("00:10"),
           //   easing: "easeInQuad",
           // });
-
+          // r.cometronicsSphere.visible = true;
           animation({
             targets: r.cometronicsSphere.opacity,
             a: 0.8,
@@ -326,30 +349,24 @@
             easing: "easeInOutSine",
           });
 
-          animation({
-            targets: r,
-            cometronicsSphereSpeed: 2,
-            duration: r.getDuration("01:00"),
-            easing: "easeInOutSine",
-          });
-
           r.eventCounter++;
           // Placeholder events for cometonics
         } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
+          cometonics.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:50") && r.eventCounter < 16) {
           r.eventCounter++;
         } else if (r.time >= sec("12:00") && r.eventCounter < 17) {
           // Messiermusics 0:00
-          Object.keys(r.planets).forEach(
-            (key) => (r.planets[key].visible = false)
-          );
           r.eventCounter++;
         } else if (r.time >= sec("12:10") && r.eventCounter < 18) {
           r.eventCounter++;
         } else if (r.time >= sec("12:20") && r.eventCounter < 19) {
           r.eventCounter++;
         } else if (r.time >= sec("12:30") && r.eventCounter < 20) {
+          Object.keys(r.planets).forEach(
+            (key) => (r.planets[key].visible = false)
+          );
           r.eventCounter++;
         } else if (r.time >= sec("12:40") && r.eventCounter < 21) {
           r.eventCounter++;
@@ -394,6 +411,12 @@
           //
         } else if (r.time >= sec("15:00") && r.eventCounter < 35) {
           r.eventCounter++;
+          animation({
+            targets: r.cometronicsSphere,
+            spawnRate: 100,
+            duration: r.getDuration("04:30"),
+            easing: "easeInOutSine",
+          });
           //
         } else if (r.time >= sec("15:10") && r.eventCounter < 36) {
           r.eventCounter++;
@@ -404,12 +427,18 @@
         } else if (r.time >= sec("15:30") && r.eventCounter < 38) {
           // Enable clusters and nebulas
           r.messier.clusters.visible = true;
-          // Fade out cometronics starfield
+          // Fade cometronics starfield to original values
           animation({
             targets: r.cometronicsStarfield.opacity,
-            a: 0,
+            a: 0.1,
+            b: 0.3,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+          animation({
+            targets: r.cometronicsStarfield.angularVelocity,
             b: 0,
-            duration: r.getDuration("00:10"),
+            duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
           // Fade out cometronics sphere
@@ -430,8 +459,8 @@
           r.eventCounter++;
         } else if (r.time >= sec("15:40") && r.eventCounter < 39) {
           // Clusters are still playing...
-          // Cometronics is there, just opacity: 0
-          //r.cometonics.visible = false;
+          // Cometronics sphere is gone
+          //r.cometronicsSphere.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("16:30") && r.eventCounter < 40) {
           // Enable nebulas
@@ -595,15 +624,24 @@
         } else if (r.time >= sec("26:45") && r.eventCounter < 53) {
           r.galactic.quasars.visible = false;
           // TODO: Bring all in
-          // Object.keys(r.planets).forEach((key) => {
-          //   r.planets[key].visible = true;
-          //   animation({
-          //     targets: r.planets[key],
-          //     opacity: 1,
-          //     duration: r.getDuration("00:10"),
-          //     easing: "linear",
-          //   });
-          // });
+          Object.keys(r.planets).forEach((key) => {
+            r.planets[key].visible = true;
+          });
+          Object.keys(r.messier).forEach((key) => {
+            r.messier[key].visible = true;
+          });
+          Object.keys(r.galactic).forEach((key) => {
+            r.galactic[key].visible = true;
+          });
+          Object.keys(r.planets).forEach((key) => {
+            r.planets[key].visible = true;
+            animation({
+              targets: r.planets[key],
+              opacity: 1,
+              duration: r.getDuration("00:10"),
+              easing: "linear",
+            });
+          });
           // Object.keys(r.messier).forEach((key) => {
           //   r.messier[key].visible = true;
           //   animation({
@@ -671,11 +709,12 @@
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
-        <a-entity
+        <!-- <a-entity
           :sprite-particles="normalizeParticles(r.cometronicsStarfield)"
-        ></a-entity>
+        ></a-entity> -->
         <a-entity
-          v-for="y in [1,1.2,2,5,6.6]"
+          :visible="r.cometronicsSphere.visible"
+          v-for="y in [1,1.2,2,5,6]"
           :sprite-particles="normalizeParticles({
             ...r.cometronicsSphere, 
             radialPosition: { a: y, b: y }, 
@@ -704,7 +743,7 @@
       <!-- Planets -->
 
       <a-entity
-        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
+        :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler)}"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
@@ -717,11 +756,11 @@
             :visible="p.visible"
           >
             <a-entity
-              :random-lines="{radius: p.inside.position.z, opacity: 0.7 * p.opacity, degrees: 360 * 5, randomness: 2}"
+              :random-lines="{radius: p.inside.position.z, opacity: 0.1, degrees: 360 * 5, randomness: 2}"
               rotation="0 0 0"
             ></a-entity>
             <a-entity
-              :random-lines="{radius: p.inside.position.z, opacity: 0.7 * p.opacity, degrees: 360 * 2, randomness: 2.5}"
+              :random-lines="{radius: p.inside.position.z, opacity: 0.1, degrees: 360 * 2, randomness: 2.5}"
               rotation="0 0 0"
             ></a-entity>
             <a-entity
@@ -754,7 +793,6 @@
             :gltf-model="'#' + key"
             :scale="{x: g.scale,y: g.scale,z: g.scale }"
             :model-opacity="{opacity: g.opacity}"
-            :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
         </a-entity>
       </a-entity>
@@ -889,13 +927,17 @@
         step="any"
         style="margin-bottom: 8px; display: block"
       />
-      Playback speed (ms) <input v-model.number="r.globalFrequency" />
+      Playback speed (ms) <input v-model.number="r.globalFrequency" />\
+      <pre>{{ r.planetsOrbits }}</pre>
       <!-- <p>{{ r.getPlaybackRate() }}</p>
       <pre>{{ r.particles }}</pre>
       <pre>{{ { cometonics: r.cometonics } }}</pre>
+      <pre>-->
       <pre>
-{{ Object.fromEntries(Object.keys(r.planets).map(key => [key, r.planets[key].opacity])) }}
-      </pre>
+{{ Object.fromEntries(Object.keys(r.planets).map(key => [key,
+      r.planets[key].opacity])) }}</pre
+      >
+      <!--</pre>
       <pre>{{ r.messier }}</pre>
       <pre>{{ r.galactic }}</pre> -->
     </div>
@@ -920,9 +962,19 @@
         style="width: 100%; display: block"
       />
     </div>
+    <!-- <div class="overlay"></div> -->
   </body>
 
   <style>
+    .overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.8);
+    }
     .a-loader-title {
       height: 100vh;
       position: fixed;
