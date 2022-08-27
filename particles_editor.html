@@ -43,12 +43,12 @@
         color: "#fff",
         opacity: {a: 0.5, b: 1},
         radialType: "circleXZ",
-        spawnRate: 100,
+        spawnRate: 500,
         lifeTime: 1000,
         radialPosition: { a: 3, b: 5 },
         radialVelocity: { a: 0, b: 2 },
         angularVelocity: { a: 0, b: -10, c: 0 },
-        scale: 1,
+        scale: 0.8,
         texture: "#blob",
       });
 
@@ -61,7 +61,6 @@
       const animation = AFRAME.ANIME;
 
       const dur = 300000;
-      const speed = 1;
 
       animation({
         targets: box.position,
@@ -122,7 +121,8 @@
         isNumber,
         angle: 80,
         box,
-        speed
+        speed: 1,
+        offset: 0
       }).mount();
     </script>
   </head>
@@ -133,13 +133,13 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <a-entity position="0 0 -20" rotation="-90 0 0">
+      <a-entity position="0 0 -20" rotation="0 0 0">
         <a-entity :sprite-particles="normalizeParticles({...data2, radialPosition: { a: 3, b: 20 }, radialVelocity: { a: 0, b: 2 * speed },angularVelocity: { a: 0, b: 0, c: 0.1 * speed }})"></a-entity>
 
         <a-entity :rotation="box.rotation"
-          v-for="y in [1,2,3,4]"
-          :position="{x: 0, y: (y - 5) / 10, z: 0}"
-          :sprite-particles="normalizeParticles({...data2, radialPosition: { a: y, b: y }, radialVelocity: { a: 0, b: -10 * speed, c: 10 * speed },angularVelocity: { a: 10 * speed, b: -10 * speed, c: 0 }})"
+          v-for="y in [1,1.2,2,4,4.3]"
+          :position="{x: 0, y: 0, z: 0}"
+          :sprite-particles="normalizeParticles({...data2, radialPosition: { a: y - offset, b: y + offset }, radialVelocity: { a: 0, b: -10 * speed, c: 10 * speed },angularVelocity: { a: 10 * speed, b: -10 * speed, c: 0 }})"
         ></a-entity>
 
         <!-- <a-entity
@@ -213,7 +213,7 @@
     </div> -->
 
     <div style="position: fixed; top: 16px; right: 16px">
-      <pre style="opacity: 0.7">{{ data }}</pre>
+      <!-- <pre style="opacity: 0.7">{{ data }}</pre> -->
     </div>
   </body>
   <style>
