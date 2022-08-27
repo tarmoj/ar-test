@@ -5,8 +5,10 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <script src="https://unpkg.com/es-module-shims@1.5.17/dist/es-module-shims.js"></script>
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+    <!-- <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script> -->
+    <script src="https://unpkg.com/aframe@1.0.4/dist/aframe-v1.0.4.min.js"></script>
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script> -->
+    <script src="https://unpkg.com/ar.js@2.2.2/aframe/build/aframe-ar.min.js"></script>
     <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
     <script src="https://unpkg.com/aframe-lines@1.1.0/lines.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
@@ -71,6 +73,29 @@
         opacity: 1,
       };
 
+      const cometronicsStarfield = {
+        color: "#fff",
+        opacity: { a: 0.1, b: 0.3 },
+        radialType: "circleXZ",
+        spawnRate: 500,
+        lifeTime: 1000,
+        radialPosition: { a: 4, b: 16 },
+        radialVelocity: { a: 0, b: 0.1 },
+        angularVelocity: { a: 0, b: 0, c: 0 },
+        scale: { a: 0.5, b: 1 },
+        texture: "#blob",
+      };
+
+      const cometronicsSphere = {
+        color: "#fff",
+        opacity: { a: 0.1, b: 1 },
+        radialType: "circleXZ",
+        spawnRate: 500,
+        lifeTime: 1000,
+        scale: { a: 0.5, b: 1 },
+        texture: "#blob",
+      };
+
       const r = reactive({
         time: 0,
         eventCounter: 0,
@@ -89,6 +114,10 @@
         userZMultipler: 0,
 
         particles,
+
+        cometronicsStarfield,
+        cometronicsSphere,
+        cometronicsSphereSpeed: 0,
       });
 
       const onMessage = (data) => {
@@ -263,17 +292,47 @@
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
+
+          animation({
+            targets: r.cometronicsStarfield.angularVelocity,
+            b: 2,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r.cometronicsStarfield.opacity,
+            b: 1,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
           //r.planets.saturn_s14.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
           r.cometonics.visible = true;
           // TODO: Should cometronics fade in earlier and planets go out later?
+          // animation({
+          //   targets: r.cometonics,
+          //   opacity: 1,
+          //   duration: r.getDuration("00:10"),
+          //   easing: "easeInQuad",
+          // });
+
           animation({
-            targets: r.cometonics,
-            opacity: 1,
-            duration: r.getDuration("00:10"),
-            easing: "easeInQuad",
+            targets: r.cometronicsSphere.opacity,
+            a: 0.8,
+            b: 1,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
           });
+
+          animation({
+            targets: r,
+            cometronicsSphereSpeed: 2,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+
           r.eventCounter++;
           // Placeholder events for cometonics
         } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
@@ -345,12 +404,21 @@
         } else if (r.time >= sec("15:30") && r.eventCounter < 38) {
           // Enable clusters and nebulas
           r.messier.clusters.visible = true;
-          // Fade out cometronics
+          // Fade out cometronics starfield
           animation({
-            targets: r.cometonics,
-            opacity: 0,
+            targets: r.cometronicsStarfield.opacity,
+            a: 0,
+            b: 0,
             duration: r.getDuration("00:10"),
-            easing: "linear",
+            easing: "easeInOutSine",
+          });
+          // Fade out cometronics sphere
+          animation({
+            targets: r.cometronicsSphere.opacity,
+            a: 0,
+            b: 0,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
           });
           // Fade in clusters
           animation({
@@ -362,8 +430,8 @@
           r.eventCounter++;
         } else if (r.time >= sec("15:40") && r.eventCounter < 39) {
           // Clusters are still playing...
-          // Cometronics done fading, hide
-          r.cometonics.visible = false;
+          // Cometronics is there, just opacity: 0
+          //r.cometonics.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("16:30") && r.eventCounter < 40) {
           // Enable nebulas
@@ -482,15 +550,8 @@
           r.messier.superclusters.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("25:30") && r.eventCounter < 50) {
-          // TODO: scale bigbang instead!
-          // Going to scale 0 in 2 min
-          animation({
-            targets: r,
-            globalScale: 0,
-            duration: r.getDuration("02:00"),
-            easing: "linear",
-          });
-          r.bigbang.visible = true;
+          // TODO: START BIGBANG HERE?
+          // r.bigbang.visible = true;
           r.eventCounter++;
         } else if (r.time >= sec("25:50") && r.eventCounter < 51) {
           r.galactic.quasars.visible = true;
@@ -508,6 +569,23 @@
             duration: r.getDuration("00:10"),
             easing: "linear",
           });
+
+          // Fade cometronicsStarfield back in
+          animation({
+            targets: r.cometronicsStarfield.opacity,
+            a: 0.8,
+            b: 1,
+            duration: r.getDuration("00:10"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r,
+            globalScale: 0,
+            duration: r.getDuration("02:00"),
+            easing: "linear",
+          });
+
           r.eventCounter++;
         } else if (r.time >= sec("26:00") && r.eventCounter < 52) {
           // quasars  are still playing...
@@ -546,7 +624,7 @@
           // });
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 54) {
-          r.bigbang.visible = false;
+          //r.bigbang.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 55) {
         }
@@ -581,21 +659,40 @@
     >
       <!-- cometonics -->
 
-      <a-text
+      <a-entity
+        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
+        :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
+        :rotation="{x: r.globalRotation, y: 0, z: 0}"
+      >
+        <a-entity
+          :sprite-particles="normalizeParticles(r.cometronicsStarfield)"
+        ></a-entity>
+        <a-entity
+          v-for="y in [1,1.2,2,5,6.6]"
+          :sprite-particles="normalizeParticles({
+            ...r.cometronicsSphere, 
+            radialPosition: { a: y, b: y }, 
+            radialVelocity: { a: 0, b: -10 * r.cometronicsSphereSpeed, c: 10 * r.cometronicsSphereSpeed },
+            angularVelocity: { a: 10 * r.cometronicsSphereSpeed, b: -10 * r.cometronicsSphereSpeed, c: 0 }
+          })"
+        ></a-entity>
+      </a-entity>
+
+      <!-- <a-text
         :visible="r.cometonics.visible"
         position="0 0 -20"
         value="cometronics"
         align="center"
-      ></a-text>
+      ></a-text> -->
 
       <!-- bigbang -->
 
-      <a-text
+      <!-- <a-text
         :visible="r.bigbang.visible"
         position="0 0 -20"
         value="bigbang"
         align="center"
-      ></a-text>
+      ></a-text> -->
 
       <!-- Planets -->
 
@@ -786,13 +883,14 @@
         style="margin-bottom: 8px; display: block"
       />
       Playback speed (ms) <input v-model.number="r.globalFrequency" />
+      <!-- <p>{{ r.getPlaybackRate() }}</p>
       <pre>{{ r.particles }}</pre>
       <pre>{{ { cometonics: r.cometonics } }}</pre>
       <pre>
 {{ Object.fromEntries(Object.keys(r.planets).map(key => [key, r.planets[key].opacity])) }}
       </pre>
       <pre>{{ r.messier }}</pre>
-      <pre>{{ r.galactic }}</pre>
+      <pre>{{ r.galactic }}</pre> -->
     </div>
 
     <div
@@ -822,7 +920,7 @@
       font-family: sans-serif;
       color: white;
     }
-    @media only screen and (max-width: 600px) {
+    @media only screen and (max-width: 900px) {
       .dev-overlay {
         display: none;
       }
@@ -830,7 +928,7 @@
         display: block;
       }
     }
-    @media only screen and (min-width: 600px) {
+    @media only screen and (min-width: 900px) {
       .dev-overlay {
         display: block;
       }
