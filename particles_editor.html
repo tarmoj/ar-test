@@ -33,7 +33,7 @@
         radialPosition: { a: 1, b: 2 },
         radialVelocity: { a: 0, b: 1 },
         angularVelocity: { a: 0, b: 0, c: 0 },
-        scale: 2,
+        scale: 1,
         texture: "#blob",
         trailLifeTime: 2,
         trailInterval: 0.1,
@@ -48,7 +48,7 @@
         radialPosition: { a: 3, b: 5 },
         radialVelocity: { a: 0, b: 2 },
         angularVelocity: { a: 0, b: -10, c: 0 },
-        scale: 2,
+        scale: 1,
         texture: "#blob",
       });
 
@@ -60,7 +60,8 @@
 
       const animation = AFRAME.ANIME;
 
-      const dur = 3000;
+      const dur = 300000;
+      const speed = 1;
 
       animation({
         targets: box.position,
@@ -121,6 +122,7 @@
         isNumber,
         angle: 80,
         box,
+        speed
       }).mount();
     </script>
   </head>
@@ -131,13 +133,13 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <a-entity position="0 0 -20">
-        <!-- <a-entity :sprite-particles="normalizeParticles(data2)"></a-entity> -->
+      <a-entity position="0 0 -20" rotation="-90 0 0">
+        <a-entity :sprite-particles="normalizeParticles({...data2, radialPosition: { a: 3, b: 20 }, radialVelocity: { a: 0, b: 2 * speed },angularVelocity: { a: 0, b: 0, c: 0.1 * speed }})"></a-entity>
 
         <a-entity :rotation="box.rotation"
           v-for="y in [1,2,3,4]"
           :position="{x: 0, y: (y - 5) / 10, z: 0}"
-          :sprite-particles="normalizeParticles({...data2, radialPosition: { a: y, b: y }, radialVelocity: { a: 0, b: -10, c: 10 },angularVelocity: { a: 10, b: -10, c: 0 }})"
+          :sprite-particles="normalizeParticles({...data2, radialPosition: { a: y, b: y }, radialVelocity: { a: 0, b: -10 * speed, c: 10 * speed },angularVelocity: { a: 10 * speed, b: -10 * speed, c: 0 }})"
         ></a-entity>
 
         <!-- <a-entity
