@@ -90,11 +90,10 @@
         color: "#fff",
         opacity: { a: 0, b: 0 },
         radialType: "circleXZ",
-        spawnRate: 500,
+        spawnRate: 20,
         lifeTime: 1000,
         scale: { a: 0.5, b: 1 },
         texture: "#blob",
-        visible: true,
       };
 
       const r = reactive({
@@ -291,6 +290,13 @@
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
           animation({
             targets: r,
+            cometronicsSphereSpeed: 2,
+            duration: r.getDuration("04:30"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r,
             globalRotation: 0,
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
@@ -334,7 +340,7 @@
           //   duration: r.getDuration("00:10"),
           //   easing: "easeInQuad",
           // });
-          r.cometronicsSphere.visible = true;
+          // r.cometronicsSphere.visible = true;
           animation({
             targets: r.cometronicsSphere.opacity,
             a: 0.8,
@@ -343,16 +349,10 @@
             easing: "easeInOutSine",
           });
 
-          animation({
-            targets: r,
-            cometronicsSphereSpeed: 2,
-            duration: r.getDuration("01:00"),
-            easing: "easeInOutSine",
-          });
-
           r.eventCounter++;
           // Placeholder events for cometonics
         } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
+          cometonics.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:50") && r.eventCounter < 16) {
           r.eventCounter++;
@@ -411,6 +411,12 @@
           //
         } else if (r.time >= sec("15:00") && r.eventCounter < 35) {
           r.eventCounter++;
+          animation({
+            targets: r.cometronicsSphere,
+            spawnRate: 100,
+            duration: r.getDuration("04:30"),
+            easing: "easeInOutSine",
+          });
           //
         } else if (r.time >= sec("15:10") && r.eventCounter < 36) {
           r.eventCounter++;
@@ -454,7 +460,7 @@
         } else if (r.time >= sec("15:40") && r.eventCounter < 39) {
           // Clusters are still playing...
           // Cometronics sphere is gone
-          r.cometronicsSphere.visible = true;
+          //r.cometronicsSphere.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("16:30") && r.eventCounter < 40) {
           // Enable nebulas
@@ -618,15 +624,24 @@
         } else if (r.time >= sec("26:45") && r.eventCounter < 53) {
           r.galactic.quasars.visible = false;
           // TODO: Bring all in
-          // Object.keys(r.planets).forEach((key) => {
-          //   r.planets[key].visible = true;
-          //   animation({
-          //     targets: r.planets[key],
-          //     opacity: 1,
-          //     duration: r.getDuration("00:10"),
-          //     easing: "linear",
-          //   });
-          // });
+          Object.keys(r.planets).forEach((key) => {
+            r.planets[key].visible = true;
+          });
+          Object.keys(r.messier).forEach((key) => {
+            r.messier[key].visible = true;
+          });
+          Object.keys(r.galactic).forEach((key) => {
+            r.galactic[key].visible = true;
+          });
+          Object.keys(r.planets).forEach((key) => {
+            r.planets[key].visible = true;
+            animation({
+              targets: r.planets[key],
+              opacity: 1,
+              duration: r.getDuration("00:10"),
+              easing: "linear",
+            });
+          });
           // Object.keys(r.messier).forEach((key) => {
           //   r.messier[key].visible = true;
           //   animation({
@@ -694,9 +709,9 @@
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
-        <a-entity
+        <!-- <a-entity
           :sprite-particles="normalizeParticles(r.cometronicsStarfield)"
-        ></a-entity>
+        ></a-entity> -->
         <a-entity
           :visible="r.cometronicsSphere.visible"
           v-for="y in [1,1.2,2,5,6]"
@@ -728,7 +743,7 @@
       <!-- Planets -->
 
       <a-entity
-        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
+        :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler)}"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
@@ -948,9 +963,19 @@
         style="width: 100%; display: block"
       />
     </div>
+    <!-- <div class="overlay"></div> -->
   </body>
 
   <style>
+    .overlay {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.8);
+    }
     .a-loader-title {
       height: 100vh;
       position: fixed;
