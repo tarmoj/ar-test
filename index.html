@@ -20,19 +20,17 @@
 
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
-
+      import { Tween } from "https://unpkg.com/tweedle.js@2.0.0/dist/tweedle.es.min.js";
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
         radialType: "circle",
-        lifeTime: "1000",
-        spawnRate: "100",
-        radialPosition: [0, 0],
-        radialVelocity: [0, 1],
-        angularVelocity: [0, 0, 5],
+        lifeTime: 10000,
+        spawnRate: 100,
+        radialPosition: { a: 0, b: 0 },
+        radialVelocity: { a: 0, b: 0 },
+        angularVelocity: { a: 0, b: 0, c: 10 },
         scale: 2,
-        // trailLifeTime: "2",
-        // trailInterval: "0.1",
         texture: "#blob",
       };
 
@@ -100,11 +98,33 @@
         }
         if (r.time >= 0 && r.eventCounter < 1) {
           animation({
+            targets: r.particles.radialPosition,
+            a: 5,
+            b: 10,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          animation({
+            targets: r.particles.radialVelocity,
+            a: 0,
+            b: 0,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          animation({
+            targets: r.particles.angularVelocity,
+            a: 1,
+            b: 5,
+            c: 10,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+
+          animation({
             targets: r.particles,
-            radialPosition: [0, 100],
-            //angularVelocity: [0, 10, 10],
-            duration: r.getDuration("00:30"),
-            easing: "linear",
+            trailLifeTime: 0.5,
+            trailInterval: 0.2,
+            duration: r.getDuration("00:05"),
           });
 
           r.planets.earth.visible = true;
