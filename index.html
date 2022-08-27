@@ -513,15 +513,8 @@
           r.messier.superclusters.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("25:30") && r.eventCounter < 50) {
-          // TODO: scale bigbang instead!
-          // Going to scale 0 in 2 min
-          animation({
-            targets: r,
-            globalScale: 0,
-            duration: r.getDuration("02:00"),
-            easing: "linear",
-          });
-          r.bigbang.visible = true;
+          // TODO: START BIGBANG HERE?
+          // r.bigbang.visible = true;
           r.eventCounter++;
         } else if (r.time >= sec("25:50") && r.eventCounter < 51) {
           r.galactic.quasars.visible = true;
@@ -539,6 +532,23 @@
             duration: r.getDuration("00:10"),
             easing: "linear",
           });
+
+          // Fade starfield back in
+          animation({
+            targets: r.starfield.opacity,
+            a: 0.8,
+            b: 1,
+            duration: r.getDuration("00:10"),
+            easing: "easeInOutSine",
+          });
+
+          animation({
+            targets: r,
+            globalScale: 0,
+            duration: r.getDuration("02:00"),
+            easing: "linear",
+          });
+
           r.eventCounter++;
         } else if (r.time >= sec("26:00") && r.eventCounter < 52) {
           // quasars  are still playing...
@@ -577,7 +587,7 @@
           // });
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 54) {
-          r.bigbang.visible = false;
+          //r.bigbang.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 55) {
         }
@@ -631,12 +641,12 @@
 
       <!-- bigbang -->
 
-      <a-text
+      <!-- <a-text
         :visible="r.bigbang.visible"
         position="0 0 -20"
         value="bigbang"
         align="center"
-      ></a-text>
+      ></a-text> -->
 
       <!-- Planets -->
 
