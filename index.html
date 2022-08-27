@@ -8,6 +8,7 @@
     <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
     <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
     <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-lines@1.1.0/lines.js"></script>
     <script src="https://unpkg.com/aframe-sprite-particles-component@^0.5.4/aframe-sprite-particles-component.js"></script>
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
 
@@ -21,16 +22,15 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const particles = {
+        //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
         radialType: "circle",
-        spawnRate: "100",
-        lifeTime: "100",
-        radialPosition: ["5", "6"],
-        radialVelocity: ["0", "1"],
-        angularVelocity: ["0", "0", "5"],
-        scale: "0.8",
-        trailLifeTime: "2",
-        trailInterval: "0.1",
+        lifeTime: 10000,
+        spawnRate: 100,
+        radialPosition: { a: 0, b: 0 },
+        radialVelocity: { a: 0, b: 0 },
+        angularVelocity: { a: 0, b: 0, c: 10 },
+        scale: 2,
         texture: "#blob",
       };
 
@@ -46,9 +46,9 @@
 
       const planets = generatePlanets();
 
-      const cometonics = { visible: false, opacity: 1 };
+      const cometonics = { visible: false, opacity: 0 };
 
-      const defaultModelScale = 0.008;
+      const defaultModelScale = 0.0045;
 
       const messier = {
         clusters: { visible: false, scale: defaultModelScale, opacity: 0 },
@@ -65,6 +65,10 @@
 
       const bigbang = {
         visible: false,
+      };
+
+      const planetsOrbits = {
+        opacity: 1,
       };
 
       const r = reactive({
@@ -84,13 +88,7 @@
         globalScale: 1,
         userZMultipler: 0,
 
-        orbitsOpacity: 0,
-        orbitsOffsetX: 1,
-        orbitsOffsetY: 0,
-        orbitsRadialVelocity: 1,
-        orbitsAngularVelocity: 0,
-        orbitsColor: "#fff",
-        getOrbitsParticles, // From orbits
+        particles,
       });
 
       const onMessage = (data) => {
@@ -100,96 +98,182 @@
         }
         if (r.time >= 0 && r.eventCounter < 1) {
           r.planets.earth.visible = true;
+          animation({
+            targets: r.planets.earth,
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter = 1;
           r.a = 360;
           r.a2 = 1;
           r.eventCounter++;
         } else if (r.time >= sec("01:00") && r.eventCounter < 2) {
           r.planets.venus.visible = true;
+          animation({
+            targets: r.planets.venus,
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("02:00") && r.eventCounter < 3) {
-          animation({
-            targets: r,
-            orbitsOffsetX: 10,
-            duration: r.getDuration("04:00"),
-            easing: "easeInOutSine",
-          });
           r.planets.mercury.visible = true;
+          animation({
+            targets: r.planets.mercury,
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("03:00") && r.eventCounter < 4) {
           r.planets.mars.visible = true;
+          animation({
+            targets: r.planets.mars,
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("04:00") && r.eventCounter < 5) {
           r.planets.jupiter.visible = true;
+          animation({
+            targets: r.planets.jupiter,
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("05:00") && r.eventCounter < 6) {
-          r.orbitsOffsetX = 5;
           r.planets.saturn.visible = true;
+          animation({
+            targets: r.planets.saturn,
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("06:00") && r.eventCounter < 7) {
-          r.orbitsOffsetX = 6;
-          animation({
-            targets: r,
-            globalScale: 2,
-            globalRotation: 0,
-            duration: r.getDuration("01:00"),
-            easing: "linear",
-          });
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
           r.planets.jupiter_j12.visible = true;
           r.planets.saturn_s12.visible = true;
+          animation({
+            targets: [
+              r.planets.mercury_m2,
+              r.planets.venus_v2,
+              r.planets.jupiter_j12,
+              r.planets.saturn_s12,
+            ],
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("07:00") && r.eventCounter < 8) {
           // 7:00
           r.planets.mercury_m4.visible = true;
           r.planets.jupiter_j14.visible = true;
           r.planets.saturn_s14.visible = true;
+          animation({
+            targets: [
+              r.planets.mercury_m4,
+              r.planets.venus_v2,
+              r.planets.jupiter_j14,
+              r.planets.saturn_s14,
+            ],
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("08:00") && r.eventCounter < 9) {
           // 8:00
           r.planets.mercury_m8.visible = true;
           r.planets.saturn_s18.visible = true;
+          animation({
+            targets: [r.planets.mercury_m8, r.planets.saturn_s18],
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("09:00") && r.eventCounter < 10) {
-          // 9:00
-          r.planets.saturn.visible = false;
-          r.planets.jupiter.visible = false;
-          r.planets.venus.visible = false;
-          r.planets.mercury.visible = false;
+          animation({
+            targets: [
+              r.planets.saturn,
+              r.planets.jupiter,
+              r.planets.venus,
+              r.planets.mercury,
+            ],
+            opacity: 0,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          // r.planets.saturn.visible = false;
+          // r.planets.jupiter.visible = false;
+          // r.planets.venus.visible = false;
+          // r.planets.mercury.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("10:00") && r.eventCounter < 11) {
-          // 10:00
-          r.planets.venus_v2.visible = false;
-          r.planets.saturn_s12.visible = false;
-          r.planets.jupiter_j12.visible = false;
-          r.planets.venus_v2.visible = false;
+          animation({
+            targets: [
+              r.planets.venus_v2,
+              r.planets.saturn_s12,
+              r.planets.jupiter_j12,
+              r.planets.venus_v2,
+            ],
+            opacity: 0,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          animation({
+            targets: [r.planets.venus_v4],
+            opacity: 0,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          // r.planets.venus_v2.visible = false;
+          // r.planets.saturn_s12.visible = false;
+          // r.planets.jupiter_j12.visible = false;
+          // r.planets.venus_v2.visible = false;
           r.planets.venus_v4.visible = true;
           r.eventCounter++;
         } else if (r.time >= sec("10:30") && r.eventCounter < 12) {
-          r.planets.venus_v4.visible = false;
           r.planets.venus_v8.visible = true;
+          animation({
+            targets: [r.planets.venus_v8],
+            opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          animation({
+            targets: [r.planets.venus_v4],
+            opacity: 0,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          //r.planets.venus_v4.visible = false;
           r.eventCounter++;
+          //
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
-          // 11:00
           animation({
             targets: r,
             globalRotation: 0,
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
-          r.planets.saturn_s14.visible = false;
+          //r.planets.saturn_s14.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
-          animation({
-            targets: r,
-            orbitsOffsetY: 1,
-            orbitsRadialVelocity: -1,
-            //  orbitsAngularVelocity: 1,
-            duration: r.getDuration("01:00"),
-            easing: "linear",
-          });
           r.cometonics.visible = true;
+          // TODO: Should cometronics fade in earlier and planets go out later?
+          animation({
+            targets: r.cometonics,
+            opacity: 1,
+            duration: r.getDuration("00:10"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
           // Placeholder events for cometonics
         } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
@@ -483,7 +567,6 @@
         onInput,
         onReset,
         normalizeParticles,
-        particles,
       }).mount();
     </script>
   </head>
@@ -498,12 +581,21 @@
     >
       <!-- cometonics -->
 
-      <a-entity
+      <a-text
         :visible="r.cometonics.visible"
-        :rotation="{x: 90, y: 0, z: 0}"
         position="0 0 -20"
-        :sprite-particles="normalizeParticles({...particles, opacity: r.cometonics.opacity})"
-      ></a-entity>
+        value="cometronics"
+        align="center"
+      ></a-text>
+
+      <!-- bigbang -->
+
+      <a-text
+        :visible="r.bigbang.visible"
+        position="0 0 -20"
+        value="bigbang"
+        align="center"
+      ></a-text>
 
       <!-- Planets -->
 
@@ -512,19 +604,7 @@
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
-        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}" :opacity="0">
-          <!-- <a-entity
-            v-for="p,key,i in r.planets"
-            :position="{ x: 0, y: 0 + (i * r.orbitsOffsetY), z: 0 }"
-            :scale="p.outside.scale"
-            :animation="p.outside.animation"
-          >
-            <a-entity
-              rotation="90 0 0"
-              :sprite-particles="r.getOrbitsParticles(p.inside.position.z)"
-            ></a-entity>
-          </a-entity> -->
-
+        <a-entity :scale="{x: 0.01, y: 0.01, z: 0.01}">
           <a-entity
             v-for="p,key in r.planets"
             :position="p.outside.position"
@@ -533,11 +613,20 @@
             :visible="p.visible"
           >
             <a-entity
+              :random-lines="{radius: p.inside.position.z, opacity: 0.7 * p.opacity, degrees: 360 * 5, randomness: 2}"
+              rotation="0 0 0"
+            ></a-entity>
+            <a-entity
+              :random-lines="{radius: p.inside.position.z, opacity: 0.7 * p.opacity, degrees: 360 * 2, randomness: 2.5}"
+              rotation="0 0 0"
+            ></a-entity>
+            <a-entity
               :gltf-model="p.inside.model"
               :position="p.inside.position"
               :rotation="p.inside.rotation"
               :scale="p.inside.scale"
               :animation="p.inside.animation"
+              :model-opacity="{opacity: p.opacity}"
             ></a-entity>
           </a-entity>
         </a-entity>
@@ -670,7 +759,14 @@
 
     <div
       class="dev-overlay"
-      style="position: fixed; top: 16px; right: 16px; z-index: 10000"
+      style="
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 10000;
+        overflow: auto;
+        height: 100%;
+      "
     >
       Global rotation: {{ String(r.globalRotation).split('.')[0] }}
       <input
@@ -690,7 +786,11 @@
         style="margin-bottom: 8px; display: block"
       />
       Playback speed (ms) <input v-model.number="r.globalFrequency" />
+      <pre>{{ r.particles }}</pre>
       <pre>{{ { cometonics: r.cometonics } }}</pre>
+      <pre>
+{{ Object.fromEntries(Object.keys(r.planets).map(key => [key, r.planets[key].opacity])) }}
+      </pre>
       <pre>{{ r.messier }}</pre>
       <pre>{{ r.galactic }}</pre>
     </div>
