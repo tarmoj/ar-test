@@ -71,18 +71,27 @@
         opacity: 1,
       };
 
-      const starfield = {
+      const cometronicsStarfield = {
         color: "#fff",
         opacity: { a: 0.1, b: 0.3 },
         radialType: "circleXZ",
         spawnRate: 500,
-        lifeTime: 10000,
-        radialPosition: { a: 2, b: 16 },
+        lifeTime: 1000,
+        radialPosition: { a: 4, b: 16 },
         radialVelocity: { a: 0, b: 0.1 },
         angularVelocity: { a: 0, b: 0, c: 0 },
         scale: { a: 0.5, b: 1 },
         texture: "#blob",
-        offset: 0,
+      };
+
+      const cometronicsSphere = {
+        color: "#fff",
+        opacity: { a: 0.1, b: 1 },
+        radialType: "circleXZ",
+        spawnRate: 500,
+        lifeTime: 1000,
+        scale: { a: 0.5, b: 1 },
+        texture: "#blob",
       };
 
       const r = reactive({
@@ -104,7 +113,9 @@
 
         particles,
 
-        starfield,
+        cometronicsStarfield,
+        cometronicsSphere,
+        cometronicsSphereSpeed: 0,
       });
 
       const onMessage = (data) => {
@@ -281,14 +292,14 @@
           });
 
           animation({
-            targets: r.starfield.angularVelocity,
+            targets: r.cometronicsStarfield.angularVelocity,
             b: 2,
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
 
           animation({
-            targets: r.starfield.opacity,
+            targets: r.cometronicsStarfield.opacity,
             b: 1,
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
@@ -298,12 +309,28 @@
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
           r.cometonics.visible = true;
           // TODO: Should cometronics fade in earlier and planets go out later?
+          // animation({
+          //   targets: r.cometonics,
+          //   opacity: 1,
+          //   duration: r.getDuration("00:10"),
+          //   easing: "easeInQuad",
+          // });
+
           animation({
-            targets: r.cometonics,
-            opacity: 1,
-            duration: r.getDuration("00:10"),
-            easing: "easeInQuad",
+            targets: r.cometronicsSphere.opacity,
+            a: 0.8,
+            b: 1,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
           });
+
+          animation({
+            targets: r,
+            cometronicsSphereSpeed: 2,
+            duration: r.getDuration("01:00"),
+            easing: "easeInOutSine",
+          });
+
           r.eventCounter++;
           // Placeholder events for cometonics
         } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
@@ -375,12 +402,20 @@
         } else if (r.time >= sec("15:30") && r.eventCounter < 38) {
           // Enable clusters and nebulas
           r.messier.clusters.visible = true;
-          // Fade out cometronics
+          // Fade out cometronics starfield
           animation({
-            targets: r.starfield.opacity,
+            targets: r.cometronicsStarfield.opacity,
             a: 0,
             b: 0,
             duration: r.getDuration("00:10"),
+            easing: "easeInOutSine",
+          });
+          // Fade out cometronics sphere
+          animation({
+            targets: r.cometronicsSphere.opacity,
+            a: 0,
+            b: 0,
+            duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
           // Fade in clusters
@@ -533,9 +568,9 @@
             easing: "linear",
           });
 
-          // Fade starfield back in
+          // Fade cometronicsStarfield back in
           animation({
-            targets: r.starfield.opacity,
+            targets: r.cometronicsStarfield.opacity,
             a: 0.8,
             b: 1,
             duration: r.getDuration("00:10"),
@@ -628,7 +663,16 @@
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
         <a-entity
-          :sprite-particles="normalizeParticles(r.starfield)"
+          :sprite-particles="normalizeParticles(r.cometronicsStarfield)"
+        ></a-entity>
+        <a-entity
+          v-for="y in [1,1.2,2,3.8,4]"
+          :sprite-particles="normalizeParticles({
+            ...r.cometronicsSphere, 
+            radialPosition: { a: y, b: y }, 
+            radialVelocity: { a: 0, b: -10 * r.cometronicsSphereSpeed, c: 10 * r.cometronicsSphereSpeed },
+            angularVelocity: { a: 10 * r.cometronicsSphereSpeed, b: -10 * r.cometronicsSphereSpeed, c: 0 }
+          })"
         ></a-entity>
       </a-entity>
 
