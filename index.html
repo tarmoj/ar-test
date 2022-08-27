@@ -90,8 +90,8 @@
         color: "#fff",
         opacity: { a: 0, b: 0 },
         radialType: "circleXZ",
-        spawnRate: 20,
-        lifeTime: 1000,
+        spawnRate: 60,
+        lifeTime: 10000,
         scale: { a: 0.5, b: 1 },
         texture: "#blob",
       };
@@ -793,7 +793,6 @@
             :gltf-model="'#' + key"
             :scale="{x: g.scale,y: g.scale,z: g.scale }"
             :model-opacity="{opacity: g.opacity}"
-            :animation_="{property: 'rotation', dur: 100100, to: {x: 0, y: 0, z: 360}, loop: true, easing: 'linear'}"
           ></a-entity>
         </a-entity>
       </a-entity>
