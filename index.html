@@ -712,16 +712,16 @@
         <!-- <a-entity
           :sprite-particles="normalizeParticles(r.cometronicsStarfield)"
         ></a-entity> -->
-        <a-entity
+        <!-- <a-entity
           :visible="r.cometronicsSphere.visible"
-          v-for="y in [1,1.2,2,5,6]"
+          v-for="y in [1,2,6]"
           :sprite-particles="normalizeParticles({
             ...r.cometronicsSphere, 
             radialPosition: { a: y, b: y }, 
             radialVelocity: { a: 0, b: -10 * r.cometronicsSphereSpeed, c: 10 * r.cometronicsSphereSpeed },
             angularVelocity: { a: 10 * r.cometronicsSphereSpeed, b: -10 * r.cometronicsSphereSpeed, c: 0 }
           })"
-        ></a-entity>
+        ></a-entity> -->
       </a-entity>
 
       <!-- <a-text
