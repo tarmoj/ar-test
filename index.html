@@ -48,16 +48,18 @@
 
       const planets = generatePlanets();
 
-      const cometonics = { visible: false, opacity: 0 };
 
       const defaultModelScale = 0.0045;
 
+      // Cometonics
+
+      const cometonics = { visible: false, opacity: 0 };
       const come = {
         visible: true,
         scale: {
-          x: defaultModelScale,
-          y: defaultModelScale,
-          z: defaultModelScale,
+          x: defaultModelScale * 0.5,
+          y: defaultModelScale * 0.5,
+          z: defaultModelScale * 0.5,
         },
         opacity: 0,
         position: { x: 0, y: 0, z: 0 },
@@ -83,59 +85,6 @@
         visible: false,
       };
 
-      const planetsOrbits = {
-        opacity: 1,
-      };
-
-      const cometronicsStarfield = {
-        color: "#fff",
-        opacity: { a: 0.1, b: 0.3 },
-        radialType: "circleXZ",
-        spawnRate: 500,
-        lifeTime: 1000,
-        radialPosition: { a: 4, b: 16 },
-        radialVelocity: { a: 0, b: 0.1 },
-        angularVelocity: { a: 0, b: 0, c: 0 },
-        scale: { a: 0.5, b: 1 },
-        texture: "#blob",
-      };
-
-      const cometronicsStarfield2 = {
-        color: "#fff",
-        opacity: { a: 0, b: 1 },
-        radialType: "circleXZ",
-        spawnRate: 100,
-        lifeTime: 1000,
-        radialPosition: { a: 0, b: 30 },
-        radialVelocity: { a: 0, b: -0.2 },
-        angularVelocity: { a: 0, b: 1, c: 3 },
-        scale: { a: 0.5, b: 1 },
-        texture: "#blob",
-      };
-
-      const cometronicsStarfield3 = {
-        color: "#fff..#00f,#fff..#00f",
-        opacity: { a: 0, b: 0.7 },
-        radialType: "circleXZ",
-        spawnRate: 100,
-        lifeTime: 1000,
-        radialPosition: { a: 0, b: 0 },
-        radialVelocity: { a: 0, b: -0.2 },
-        angularVelocity: { a: -1, b: 0.5, c: 0.5 },
-        scale: { a: 0.5, b: 1 },
-        texture: "#blob",
-      };
-
-      const cometronicsSphere = {
-        color: "#fff",
-        opacity: { a: 0, b: 0 },
-        radialType: "circleXZ",
-        spawnRate: 60,
-        lifeTime: 10000,
-        scale: { a: 0.5, b: 1 },
-        texture: "#blob",
-      };
-
       const r = reactive({
         time: 0,
         eventCounter: 0,
@@ -155,13 +104,6 @@
 
         particles,
 
-        cometronicsStarfield,
-        cometronicsStarfield2,
-        cometronicsStarfield3,
-        cometronicsSphere,
-        cometronicsSphereSpeed: 0,
-
-        planetsOrbits,
 
         come,
       });
@@ -172,25 +114,7 @@
           r.globalFrequency = data.frequency;
         }
         if (r.time >= 0 && r.eventCounter < 1) {
-          // Come
-
-          // animation({
-          //   targets: r.come.outerRotation,
-          //   z: 360,
-          //   duration: r.getDuration("01:00"),
-          //   easing: "linear",
-          //   loop: true,
-          // });
-
-
-          // animation({
-          //   targets: r.cometronicsStarfield2.radialPosition,
-          //   b: 0,
-          //   duration: r.getDuration("01:00"),
-          //   easing: "linear",
-          //   loop: true,
-          // }); //
-
+ 
           r.planets.earth.visible = true;
           animation({
             targets: r.planets.earth,
@@ -305,10 +229,7 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          // r.planets.saturn.visible = false;
-          // r.planets.jupiter.visible = false;
-          // r.planets.venus.visible = false;
-          // r.planets.mercury.visible = false;
+
           r.eventCounter++;
         } else if (r.time >= sec("10:00") && r.eventCounter < 11) {
           animation({
@@ -328,13 +249,24 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          // r.planets.venus_v2.visible = false;
-          // r.planets.saturn_s12.visible = false;
-          // r.planets.jupiter_j12.visible = false;
-          // r.planets.venus_v2.visible = false;
+
+
           r.planets.venus_v4.visible = true;
           r.eventCounter++;
         } else if (r.time >= sec("10:30") && r.eventCounter < 12) {
+
+          // Hide the planets we faded your previously
+
+          r.planets.saturn.visible = false;
+          r.planets.jupiter.visible = false;
+          r.planets.venus.visible = false;
+          r.planets.mercury.visible = false;
+
+          r.planets.venus_v2.visible = false;
+          r.planets.saturn_s12.visible = false;
+          r.planets.jupiter_j12.visible = false;
+          r.planets.venus_v2.visible = false;
+
           r.planets.venus_v8.visible = true;
           animation({
             targets: [r.planets.venus_v8],
@@ -355,7 +287,7 @@
 
           animation({
             targets: r.come,
-            opacity: 0.8,
+            opacity: 0.5,
             duration: r.getDuration("01:00"),
             easing: "easeInOutSine",
           });
@@ -368,42 +300,6 @@
             loop: true,
           });
 
-          animation({
-            targets: r.cometronicsStarfield2.opacity,
-            b: 1,
-            duration: r.getDuration("01:00"),
-            easing: "linear",
-            loop: true});
-
-          // });
-          // animation({
-          //   targets: r,
-          //   cometronicsSphereSpeed: 2,
-          //   duration: r.getDuration("04:30"),
-          //   easing: "easeInOutSine",
-          // });
-
-          // animation({
-          //   targets: r,
-          //   globalRotation: 0,
-          //   duration: r.getDuration("01:00"),
-          //   easing: "easeInOutSine",
-          // });
-
-          // animation({
-          //   targets: r.cometronicsStarfield.angularVelocity,
-          //   b: 2,
-          //   duration: r.getDuration("01:00"),
-          //   easing: "easeInOutSine",
-          // });
-
-          // animation({
-          //   targets: r.cometronicsStarfield.opacity,
-          //   b: 1,
-          //   duration: r.getDuration("01:00"),
-          //   easing: "easeInOutSine",
-          // });
-          //r.planets.saturn_s14.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
           animation({
@@ -413,29 +309,7 @@
             easing: "easeInOutSine",
           });
 
-          // animation({
-          //   targets: r.planetsOrbits,
-          //   opacity: 0,
-          //   duration: r.getDuration("01:00"),
-          //   easing: "easeInOutSine",
-          // });
-
           r.come.visible = true;
-          // TODO: Should cometronics fade in earlier and planets go out later?
-          // animation({
-          //   targets: r.cometonics,
-          //   opacity: 1,
-          //   duration: r.getDuration("00:10"),
-          //   easing: "easeInQuad",
-          // });
-          // r.cometronicsSphere.visible = true;
-          animation({
-            targets: r.cometronicsSphere.opacity,
-            a: 0.8,
-            b: 1,
-            duration: r.getDuration("01:00"),
-            easing: "easeInOutSine",
-          });
 
           r.eventCounter++;
           // Placeholder events for cometonics
@@ -459,56 +333,35 @@
         } else if (r.time >= sec("12:40") && r.eventCounter < 21) {
           r.eventCounter++;
         } else if (r.time >= sec("12:50") && r.eventCounter < 22) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("13:00") && r.eventCounter < 23) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("13:10") && r.eventCounter < 24) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("13:20") && r.eventCounter < 25) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("13:30") && r.eventCounter < 26) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("13:40") && r.eventCounter < 27) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("13:50") && r.eventCounter < 28) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("14:00") && r.eventCounter < 29) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("14:10") && r.eventCounter < 30) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("14:20") && r.eventCounter < 31) {
-          //
           r.eventCounter++;
         } else if (r.time >= sec("14:30") && r.eventCounter < 32) {
           r.eventCounter++;
-          //
         } else if (r.time >= sec("14:40") && r.eventCounter < 33) {
           r.eventCounter++;
-          //
         } else if (r.time >= sec("14:50") && r.eventCounter < 34) {
           r.eventCounter++;
-          //
         } else if (r.time >= sec("15:00") && r.eventCounter < 35) {
           r.eventCounter++;
-          // animation({
-          //   targets: r.cometronicsSphere,
-          //   spawnRate: 100,
-          //   duration: r.getDuration("04:30"),
-          //   easing: "easeInOutSine",
-          // });
-          //
         } else if (r.time >= sec("15:10") && r.eventCounter < 36) {
           r.eventCounter++;
-          //
         } else if (r.time >= sec("15:20") && r.eventCounter < 37) {
           r.eventCounter++;
           animation({
@@ -520,28 +373,6 @@
         } else if (r.time >= sec("15:30") && r.eventCounter < 38) {
           // Enable clusters and nebulas
           r.messier.clusters.visible = true;
-          // Fade cometronics starfield to original values
-          animation({
-            targets: r.cometronicsStarfield.opacity,
-            a: 0.1,
-            b: 0.3,
-            duration: r.getDuration("01:00"),
-            easing: "easeInOutSine",
-          });
-          animation({
-            targets: r.cometronicsStarfield.angularVelocity,
-            b: 0,
-            duration: r.getDuration("01:00"),
-            easing: "easeInOutSine",
-          });
-          // Fade out cometronics sphere
-          animation({
-            targets: r.cometronicsSphere.opacity,
-            a: 0,
-            b: 0,
-            duration: r.getDuration("01:00"),
-            easing: "easeInOutSine",
-          });
           // Fade in clusters
           animation({
             targets: r.messier.clusters,
@@ -672,8 +503,6 @@
           r.messier.superclusters.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("25:30") && r.eventCounter < 50) {
-          // TODO: START BIGBANG HERE?
-          // r.bigbang.visible = true;
           r.eventCounter++;
         } else if (r.time >= sec("25:50") && r.eventCounter < 51) {
           r.galactic.quasars.visible = true;
@@ -692,15 +521,6 @@
             easing: "linear",
           });
 
-          // Fade cometronicsStarfield back in
-          animation({
-            targets: r.cometronicsStarfield.opacity,
-            a: 0.8,
-            b: 1,
-            duration: r.getDuration("00:10"),
-            easing: "easeInOutSine",
-          });
-
           animation({
             targets: r,
             globalScale: 0,
@@ -715,7 +535,7 @@
           r.galactic.radiogalaxies.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("26:45") && r.eventCounter < 53) {
-          r.galactic.quasars.visible = false;
+          r.bigbang.visible = true;
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = true;
             r.planets[key].opacity = 1;
@@ -752,27 +572,18 @@
               easing: "linear",
             });
           });
-          // Object.keys(r.messier).forEach((key) => {
-          //   r.messier[key].visible = true;
-          //   animation({
-          //     targets: r.messier[key],
-          //     opacity: 1,
-          //     duration: r.getDuration("00:10"),
-          //     easing: "linear",
-          //   });
-          // });
-          // Object.keys(r.galactic).forEach((key) => {
-          //   r.galactic[key].visible = true;
-          //   animation({
-          //     targets: r.galactic[key],
-          //     opacity: 1,
-          //     duration: r.getDuration("00:10"),
-          //     easing: "linear",
-          //   });
-          // });
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 54) {
-          //r.bigbang.visible = false;
+          r.bigbang.visible = true;
+          Object.keys(r.planets).forEach((key) => {
+            r.planets[key].visible = false;
+          });
+          Object.keys(r.messier).forEach((key) => {
+            r.messier[key].visible = false;
+          });
+          Object.keys(r.galactic).forEach((key) => {
+            r.galactic[key].visible = true;
+          });
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 55) {
         }
@@ -812,43 +623,6 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
-      <!-- cometonics -->
-
-      <!-- <a-entity
-        :position="{ x: 0, y: 0, z: -20 * (1 - r.userZMultipler)}"
-        :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
-        :rotation="{x: r.globalRotation, y: 0, z: 0}"
-      > -->
-      <!-- <a-entity
-          :sprite-particles="normalizeParticles(r.cometronicsStarfield)"
-        ></a-entity> -->
-      <!-- <a-entity
-          :visible="r.cometronicsSphere.visible"
-          v-for="y in [1,2,6]"
-          :sprite-particles="normalizeParticles({
-            ...r.cometronicsSphere, 
-            radialPosition: { a: y, b: y }, 
-            radialVelocity: { a: 0, b: -10 * r.cometronicsSphereSpeed, c: 10 * r.cometronicsSphereSpeed },
-            angularVelocity: { a: 10 * r.cometronicsSphereSpeed, b: -10 * r.cometronicsSphereSpeed, c: 0 }
-          })"
-        ></a-entity> -->
-      <!-- </a-entity> -->
-
-      <!-- <a-text
-        :visible="r.cometonics.visible"
-        position="0 0 -20"
-        value="cometronics"
-        align="center"
-      ></a-text> -->
-
-      <!-- bigbang -->
-
-      <!-- <a-text
-        :visible="r.bigbang.visible"
-        position="0 0 -20"
-        value="bigbang"
-        align="center"
-      ></a-text> -->
 
       <!-- Planets -->
 
@@ -884,16 +658,8 @@
           </a-entity>
         </a-entity>
 
-        <!-- Messier -->
-        <!-- 
-        <a-torus
-          color="#fff"
-          arc="360"
-          radius="10"
-          radius-tubular="1"
-          opacity="0.5"
-        ></a-torus> -->
-
+        <!-- Cometonics -->
+  
         <a-entity
           :position="r.come.outerPosition"
           :rotation="r.come.outerRotation"
@@ -908,10 +674,7 @@
               gltf-model="#cometronics"
               :model-opacity="{opacity: r.come.opacity}"
             /></a-entity>
-            <a-entity
-              :sprite-particles="normalizeParticles(r.cometronicsStarfield2)"
-              scale="100 100 100"
-            ></a-entity>
+      
           </a-entity>
         </a-entity>
 
@@ -925,14 +688,11 @@
             :position="r.come.position"
             :rotation="r.come.rotation"
           >
-            <!-- <a-entity
+          <a-entity
             gltf-model="#cometronics"
             :model-opacity="{opacity: r.come.opacity}"
-          /></a-entity> -->
-            <!-- <a-entity
-              :sprite-particles="normalizeParticles(r.cometronicsStarfield3)"
-              scale="100 100 100"
-            ></a-entity> -->
+          /></a-entity> 
+           
           </a-entity>
         </a-entity>
 
@@ -1094,18 +854,6 @@
         style="margin-bottom: 8px; display: block"
       />
       Playback speed (ms) <input v-model.number="r.globalFrequency" />\
-      <!-- <pre>{{ r.planetsOrbits }}</pre> -->
-      <!-- <p>{{ r.getPlaybackRate() }}</p>
-      <pre>{{ r.particles }}</pre>
-      <pre>{{ { cometonics: r.cometonics } }}</pre>
-      <pre>-->
-      <!-- <pre>
-{{ Object.fromEntries(Object.keys(r.planets).map(key => [key,
-      r.planets[key].opacity])) }}</pre
-      > -->
-      <!--</pre>
-      <pre>{{ r.messier }}</pre>
-      <pre>{{ r.galactic }}</pre> -->
       <pre>{{ r.come }}</pre>
     </div>
 
@@ -1161,7 +909,7 @@
       font-family: sans-serif;
       color: white;
     }
-    @media only screen and (max-width: 900px) {
+    @media only screen and (max-width: 1024px) {
       .dev-overlay {
         display: none;
       }
@@ -1169,9 +917,9 @@
         display: block;
       }
     }
-    @media only screen and (min-width: 900px) {
+    @media only screen and (min-width: 1024px) {
       .dev-overlay {
-        display: none;
+        display: block;
       }
       .user-overlay {
         display: none;
