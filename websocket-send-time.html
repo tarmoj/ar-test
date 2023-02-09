@@ -41,7 +41,6 @@
         const playbackRate = 1000 / frequency;
 
         document.querySelector("#audio").playbackRate = playbackRate;
-        document.querySelector("#audio").play();
 
         const startTime =
           parseInt(document.querySelector("#minutes").value) * 60 +
@@ -49,6 +48,9 @@
 
         console.log("Start from second: ", startTime);
         console.log("Start with frequency (ms): ", frequency);
+
+        document.querySelector("#audio").currentTime = startTime;
+        document.querySelector("#audio").play();
 
         time = startTime;
         sendTime();
@@ -75,7 +77,7 @@
     </script>
   </head>
   <body>
-    <h2>TEST: Timetrip - Send time ...</h2>
+    <h2>Timetrip - Send time ...</h2>
     Start time from: <input id="minutes" type="text" size="2" value="00" /> :
     <input id="seconds" type="text" size="2" value="00" />
     <br />
