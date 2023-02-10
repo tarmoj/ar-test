@@ -23,6 +23,15 @@
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
+      const hash = new URL(document.URL).hash;
+      const isDev = hash === '#dev'
+      const overlays = document.querySelectorAll('.dev-overlay');
+      overlays.forEach(overlay => {
+        if (!isDev) {
+          overlay.style.opacity = 0
+        }
+      })
+
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
@@ -913,16 +922,10 @@
       .dev-overlay {
         display: none;
       }
-      .user-overlay {
-        display: block;
-      }
     }
     @media only screen and (min-width: 1024px) {
       .dev-overlay {
         display: block;
-      }
-      .user-overlay {
-        display: none;
       }
     }
     input[type="text"] {
