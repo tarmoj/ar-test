@@ -310,7 +310,7 @@
           animation({
             targets: Object.keys(r.planets).map((key) => r.planets[key]),
             opacity: 0,
-            duration: r.getDuration("01:00"),
+            duration: r.getDuration("00:30"),
             easing: "easeInOutSine",
           });
 
@@ -604,7 +604,6 @@
           });
           r.eventCounter++;
         } else if (r.time >= sec("27:30") && r.eventCounter < 60) {
-          r.bigbang.visible = true;
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = false;
           });
@@ -618,6 +617,7 @@
         } else if (r.time >= sec("27:30") && r.eventCounter < 61) {
           r.distanceMessage =
             "At the limit of the universe there is NOTHING on the other side, no TIME, no SPACE";
+          r.bigbang.visible = false;
         }
       };
 
