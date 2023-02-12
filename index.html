@@ -24,13 +24,13 @@
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
       const hash = new URL(document.URL).hash;
-      const isDev = hash === '#dev'
-      const overlays = document.querySelectorAll('.dev-overlay');
-      overlays.forEach(overlay => {
+      const isDev = hash === "#dev";
+      const overlays = document.querySelectorAll(".dev-overlay");
+      overlays.forEach((overlay) => {
         if (!isDev) {
-          overlay.style.opacity = 0
+          overlay.style.opacity = 0;
         }
-      })
+      });
 
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
@@ -56,7 +56,6 @@
       }
 
       const planets = generatePlanets();
-
 
       const defaultModelScale = 0.0045;
 
@@ -113,8 +112,9 @@
 
         particles,
 
-
         come,
+
+        distanceMessage: "",
       });
 
       const onMessage = (data) => {
@@ -123,7 +123,6 @@
           r.globalFrequency = data.frequency;
         }
         if (r.time >= 0 && r.eventCounter < 1) {
- 
           r.planets.earth.visible = true;
           animation({
             targets: r.planets.earth,
@@ -259,11 +258,9 @@
             easing: "easeInQuad",
           });
 
-
           r.planets.venus_v4.visible = true;
           r.eventCounter++;
         } else if (r.time >= sec("10:30") && r.eventCounter < 12) {
-
           // Hide the planets we faded your previously
 
           r.planets.saturn.visible = false;
@@ -293,7 +290,6 @@
           r.eventCounter++;
           //
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
-
           animation({
             targets: r.come,
             opacity: 0.5,
@@ -380,6 +376,7 @@
             easing: "easeInOutSine",
           });
         } else if (r.time >= sec("15:30") && r.eventCounter < 38) {
+          r.distanceMessage = "We are now one lightyear away from Earth";
           // Enable clusters and nebulas
           r.messier.clusters.visible = true;
           // Fade in clusters
@@ -415,12 +412,14 @@
           r.eventCounter++;
           //
         } else if (r.time >= sec("16:40") && r.eventCounter < 41) {
+          r.distanceMessage = "We are now ten lightyears away from Earth";
           // Nebulas are still playing...
           // Clusters done fading, hide
           r.messier.clusters.visible = false;
           r.eventCounter++;
           //
         } else if (r.time >= sec("17:50") && r.eventCounter < 42) {
+          r.distanceMessage = "We are now 100 lightyears away from Earth";
           // Enable clusters2
           r.messier.clusters2.visible = true;
           // Fade in clusters2
@@ -443,7 +442,11 @@
           // nebulas done fading, hide
           r.messier.nebulas.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("21:00") && r.eventCounter < 44) {
+        } else if (r.time >= sec("19:05") && r.eventCounter < 44) {
+          r.distanceMessage = "We are now 1000 lightyears away from Earth";
+        } else if (r.time >= sec("20:20") && r.eventCounter < 45) {
+          r.distanceMessage = "We are now 100 000 lightyears away from Earth";
+        } else if (r.time >= sec("21:00") && r.eventCounter < 46) {
           // Enable galaxies
           r.messier.galaxies.visible = true;
           // Fade in galaxies
@@ -461,12 +464,17 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("21:10") && r.eventCounter < 45) {
+        } else if (r.time >= sec("21:10") && r.eventCounter < 47) {
           // galaxies are still playing...
           // clusters2 done fading, hide
           r.messier.clusters2.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("23:40") && r.eventCounter < 46) {
+        } else if (r.time >= sec("21:30") && r.eventCounter < 48) {
+          r.distanceMessage = "We are now million lightyears away from Earth";
+        } else if (r.time >= sec("22:40") && r.eventCounter < 49) {
+          r.distanceMessage =
+            "We are now 10 million lightyears away from Earth";
+        } else if (r.time >= sec("23:40") && r.eventCounter < 50) {
           // Enable superclusters
           r.messier.superclusters.visible = true;
           // Fade in superclusters
@@ -484,12 +492,14 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("23:50") && r.eventCounter < 47) {
+        } else if (r.time >= sec("23:50") && r.eventCounter < 51) {
+          r.distanceMessage =
+            "We are now 100 million lightyears away from Earth";
           // superclusters are still playing...
           // galaxies done fading, hide
           r.messier.galaxies.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("24:50") && r.eventCounter < 48) {
+        } else if (r.time >= sec("24:50") && r.eventCounter < 52) {
           r.galactic.radiogalaxies.visible = true;
           // Fade in radiogalaxies
           animation({
@@ -506,14 +516,16 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("25:00") && r.eventCounter < 49) {
+        } else if (r.time >= sec("25:00") && r.eventCounter < 53) {
           // radiogalaxies are still playing...
           // superclusters done fading, hide
           r.messier.superclusters.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("25:30") && r.eventCounter < 50) {
+        } else if (r.time >= sec("25:05") && r.eventCounter < 54) {
+          r.distanceMessage = "We are now billion lightyears away from Earth";
+        } else if (r.time >= sec("25:30") && r.eventCounter < 55) {
           r.eventCounter++;
-        } else if (r.time >= sec("25:50") && r.eventCounter < 51) {
+        } else if (r.time >= sec("25:50") && r.eventCounter < 56) {
           r.galactic.quasars.visible = true;
           // Fade in quasars
           animation({
@@ -538,12 +550,15 @@
           });
 
           r.eventCounter++;
-        } else if (r.time >= sec("26:00") && r.eventCounter < 52) {
+        } else if (r.time >= sec("26:00") && r.eventCounter < 57) {
           // quasars  are still playing...
           // radiogalaxies done fading, hide
           r.galactic.radiogalaxies.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("26:45") && r.eventCounter < 53) {
+        } else if (r.time >= sec("26:20") && r.eventCounter < 58) {
+          r.distanceMessage =
+            "We are now 10 billion lightyears away from Earth";
+        } else if (r.time >= sec("26:45") && r.eventCounter < 59) {
           r.bigbang.visible = true;
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = true;
@@ -582,7 +597,7 @@
             });
           });
           r.eventCounter++;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 54) {
+        } else if (r.time >= sec("27:30") && r.eventCounter < 60) {
           r.bigbang.visible = true;
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = false;
@@ -594,7 +609,9 @@
             r.galactic[key].visible = true;
           });
           r.eventCounter++;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 55) {
+        } else if (r.time >= sec("27:30") && r.eventCounter < 61) {
+          r.distanceMessage =
+            "At the limit of the universe there is NOTHING on the other side, no TIME, no SPACE";
         }
       };
 
@@ -876,7 +893,8 @@
         z-index: 20000;
       "
     >
-      <p>{{ timestring(r.time) }}</p>
+    <p>{{ r.distanceMessage }}</p>
+    <p>{{ timestring(r.time) }}</p>
       <input
         type="range"
         v-model.number="r.userZMultipler"
