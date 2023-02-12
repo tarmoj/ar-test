@@ -107,7 +107,7 @@
         bigbang,
 
         globalRotation: 90,
-        globalScale: 1,
+        globalScale: 4,
         userZMultipler: 0,
 
         particles,
@@ -152,6 +152,14 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          // TODO: Move to 2:30
+          animation({
+            targets: r,
+            globalScale: 5,
+            globalRotation: 60,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("03:00") && r.eventCounter < 4) {
           r.planets.mars.visible = true;
@@ -159,6 +167,14 @@
             targets: r.planets.mars,
             opacity: 1,
             duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+           // TODO: Move to 3:30
+          animation({
+            targets: r,
+            globalScale: 6,
+            globalRotation: 40,
+            duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
           r.eventCounter++;
@@ -170,6 +186,14 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          // TODO: Move to 4:30
+          animation({
+            targets: r,
+            globalScale: 7,
+            globalRotation: 20,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("05:00") && r.eventCounter < 6) {
           r.planets.saturn.visible = true;
@@ -177,6 +201,14 @@
             targets: r.planets.saturn,
             opacity: 1,
             duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          // TODO: Move to 5:30
+          animation({
+            targets: r,
+            globalScale: 10,
+            globalRotation: 0,
+            duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
           r.eventCounter++;
@@ -196,6 +228,14 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          // TODO: orbiitide keskpunkt vaataja kohale
+          animation({
+            targets: r,
+            globalScale: 15,
+            globalRotation: 0,
+            duration: r.getDuration("00:10"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("07:00") && r.eventCounter < 8) {
           // 7:00
@@ -213,6 +253,13 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          animation({
+            targets: r,
+            globalScale: 7,
+            globalRotation: 5,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("08:00") && r.eventCounter < 9) {
           // 8:00
@@ -221,6 +268,12 @@
           animation({
             targets: [r.planets.mercury_m8, r.planets.saturn_s18],
             opacity: 1,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
+          animation({
+            targets: r,
+            globalRotation: 10,
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
@@ -237,7 +290,12 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-
+          animation({
+            targets: r,
+            globalRotation: 15,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("10:00") && r.eventCounter < 11) {
           animation({
@@ -259,6 +317,12 @@
           });
 
           r.planets.venus_v4.visible = true;
+          animation({
+            targets: r,
+            globalRotation: 20,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("10:30") && r.eventCounter < 12) {
           // Hide the planets we faded your previously
@@ -287,6 +351,14 @@
             easing: "easeInQuad",
           });
           //r.planets.venus_v4.visible = false;
+          // TODO: keskpunkt jälle endisse kohta tagasi
+          animation({
+            targets: r,
+            globalScale: 10,
+            globalRotation: 15,
+            duration: r.getDuration("00:10"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
           //
         } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
@@ -304,7 +376,14 @@
             easing: "linear",
             loop: true,
           });
-
+          // TODO: keskpunkt jälle endisse kohta tagasi
+          animation({
+            targets: r,
+            globalScale: 4,
+            globalRotation: 90,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
           animation({
@@ -315,7 +394,6 @@
           });
 
           r.come.visible = true;
-
           r.eventCounter++;
           // Placeholder events for cometonics
         } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
@@ -334,6 +412,13 @@
           Object.keys(r.planets).forEach(
             (key) => (r.planets[key].visible = false)
           );
+          animation({
+            targets: r,
+            globalScale: 5,
+            globalRotation: 90,
+            duration: r.getDuration("01:00"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("12:40") && r.eventCounter < 21) {
           r.eventCounter++;
@@ -441,10 +526,22 @@
           // clusters2 are still playing...
           // nebulas done fading, hide
           r.messier.nebulas.visible = false;
+          animation({
+            targets: r,
+            globalScale: 8,
+            duration: r.getDuration("00:20"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("19:05") && r.eventCounter < 44) {
           r.distanceMessage = "We are now 1000 lightyears away from Earth";
-          r.eventCounter++;
+          // TODO: Move to 18:20
+          animation({
+            targets: r,
+            globalScale: 4,
+            duration: r.getDuration("00:20"),
+            easing: "easeInQuad",
+          });   r.eventCounter++;
         } else if (r.time >= sec("20:20") && r.eventCounter < 45) {
           r.distanceMessage = "We are now 100 000 lightyears away from Earth";
           r.eventCounter++;
@@ -603,6 +700,7 @@
             });
           });
           r.eventCounter++;
+          // TODO: 27:00 Consider scale down global scale
         } else if (r.time >= sec("27:30") && r.eventCounter < 60) {
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = false;
