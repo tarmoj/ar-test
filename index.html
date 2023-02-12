@@ -444,8 +444,10 @@
           r.eventCounter++;
         } else if (r.time >= sec("19:05") && r.eventCounter < 44) {
           r.distanceMessage = "We are now 1000 lightyears away from Earth";
+          r.eventCounter++;
         } else if (r.time >= sec("20:20") && r.eventCounter < 45) {
           r.distanceMessage = "We are now 100 000 lightyears away from Earth";
+          r.eventCounter++;
         } else if (r.time >= sec("21:00") && r.eventCounter < 46) {
           // Enable galaxies
           r.messier.galaxies.visible = true;
@@ -471,9 +473,11 @@
           r.eventCounter++;
         } else if (r.time >= sec("21:30") && r.eventCounter < 48) {
           r.distanceMessage = "We are now million lightyears away from Earth";
+          r.eventCounter++;
         } else if (r.time >= sec("22:40") && r.eventCounter < 49) {
           r.distanceMessage =
             "We are now 10 million lightyears away from Earth";
+            r.eventCounter++;
         } else if (r.time >= sec("23:40") && r.eventCounter < 50) {
           // Enable superclusters
           r.messier.superclusters.visible = true;
@@ -523,6 +527,7 @@
           r.eventCounter++;
         } else if (r.time >= sec("25:05") && r.eventCounter < 54) {
           r.distanceMessage = "We are now billion lightyears away from Earth";
+          r.eventCounter++;
         } else if (r.time >= sec("25:30") && r.eventCounter < 55) {
           r.eventCounter++;
         } else if (r.time >= sec("25:50") && r.eventCounter < 56) {
@@ -558,6 +563,7 @@
         } else if (r.time >= sec("26:20") && r.eventCounter < 58) {
           r.distanceMessage =
             "We are now 10 billion lightyears away from Earth";
+            r.eventCounter++;
         } else if (r.time >= sec("26:45") && r.eventCounter < 59) {
           r.bigbang.visible = true;
           Object.keys(r.planets).forEach((key) => {
@@ -883,6 +889,21 @@
       <pre>{{ r.come }}</pre>
     </div>
 
+    <!-- Screen overlay -->
+    <div
+      :style="{opacity: r.eventCounter >= 60 ? 1 : 0}"
+      style="
+        transition: all 10s;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.9);
+        pointer-events: none;
+        opacity: 0;
+      ">
+    </div>
     <div
       class="user-overlay"
       style="
@@ -908,6 +929,12 @@
   </body>
 
   <style>
+    body {
+      font-family: monospace;
+      color: white;
+      font-size: 150%;
+      line-height: 175%;
+    }
     .overlay {
       position: fixed;
       top: 0;
@@ -931,10 +958,6 @@
       background-color: rgba(0, 0, 0, 0.8);
       padding: 40vh 20vw;
       line-height: 1.3em;
-    }
-    body {
-      font-family: sans-serif;
-      color: white;
     }
     @media only screen and (max-width: 1024px) {
       .dev-overlay {
@@ -975,5 +998,6 @@
       background: white;
       cursor: pointer;
     }
+    
   </style>
 </html>
