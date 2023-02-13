@@ -118,6 +118,7 @@
       });
 
       const onMessage = (data) => {
+        if (data.TT_time) {
         r.time = data.TT_time;
         if (data.frequency) {
           r.globalFrequency = data.frequency;
@@ -720,6 +721,7 @@
             "At the limit of the universe there is NOTHING on the other side, no TIME, no SPACE";
           r.bigbang.visible = false;
         }
+      }
       };
 
       doConnect(onMessage);
