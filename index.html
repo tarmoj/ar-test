@@ -81,7 +81,7 @@
         clusters2: { visible: false, scale: defaultModelScale, opacity: 0 },
         nebulas: { visible: false, scale: defaultModelScale, opacity: 0 },
         galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
-        superclusters: { visible: false, scale: defaultModelScale, opacity: 0 },
+        superclusters: { visible: false, scale: defaultModelScale * 0.8, opacity: 0 },
       };
 
       const galactic = {
@@ -118,7 +118,10 @@
       });
 
       const onMessage = (data) => {
-        r.time = data.TT_time;
+        //console.log('!!!', data.TT_time)
+        if (data.TT_time) {
+          r.time = data.TT_time;
+        }
         if (data.frequency) {
           r.globalFrequency = data.frequency;
         }
@@ -134,9 +137,10 @@
           r.eventCounter = 1;
           r.a = 360;
           r.a2 = 1;
-          r.eventCounter++;
+         // r.eventCounter++;
         } else if (r.time >= sec("01:00") && r.eventCounter < 2) {
           r.planets.venus.visible = true;
+          console.log('venus', r.planets.venus);
           animation({
             targets: r.planets.venus,
             opacity: 1,
@@ -146,6 +150,7 @@
           r.eventCounter++;
         } else if (r.time >= sec("02:00") && r.eventCounter < 3) {
           r.planets.mercury.visible = true;
+          console.log('mercury', r.planets.mercury);
           animation({
             targets: r.planets.mercury,
             opacity: 1,
@@ -390,7 +395,7 @@
           animation({
             targets: Object.keys(r.planets).map((key) => r.planets[key]),
             opacity: 0,
-            duration: r.getDuration("00:30"),
+            duration: r.getDuration("00:10"),
             easing: "easeInOutSine",
           });
 
@@ -415,12 +420,13 @@
           );
           animation({
             targets: r,
-            globalScale: 5,
+            globalScale: 4.5,
             globalRotation: 90,
             duration: r.getDuration("01:00"),
             easing: "easeInQuad",
           });
           r.eventCounter++;
+        // Remove unneccesary steps?
         } else if (r.time >= sec("12:40") && r.eventCounter < 24) {
           r.eventCounter++;
         } else if (r.time >= sec("12:50") && r.eventCounter < 25) {
@@ -529,7 +535,7 @@
           r.messier.nebulas.visible = false;
           animation({
             targets: r,
-            globalScale: 8,
+            globalScale: 5.5,
             duration: r.getDuration("00:20"),
             easing: "easeInQuad",
           });
@@ -943,7 +949,7 @@
           Back to start
         </button>
       </p>
-      <div>Time: {{ timestring(r.time) }}
+      <div>Time: {{ timestring(r.time) }} / {{ r.time }}
       <div>Event counter: {{ r.eventCounter }}</div>
       <p />
       <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.4}">
@@ -958,8 +964,9 @@
       </div>
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.4}">bigbang</div>
     </div>
+  </div>
 
-    <div
+  <div
       class="dev-overlay"
       style="
         position: fixed;
@@ -990,7 +997,7 @@
       Playback speed (ms) <input v-model.number="r.globalFrequency" />\
       <pre>{{ r.come }}</pre>
     </div>
-
+  </div>
     <!-- Screen overlay -->
     <div
       :style="{opacity: r.eventCounter >= 65 ? 1 : 0}"
@@ -1006,14 +1013,16 @@
         opacity: 0;
       ">
     </div>
+
+    <!-- User overlay -->
+
     <div
-      class="user-overlay"
       style="
         position: fixed;
         right: 16px;
         bottom: 16px;
         left: 16px;
-        z-index: 20000;
+        z-index: 200000;
       "
     >
     <p>{{ r.distanceMessage }}</p>
@@ -1034,11 +1043,6 @@
     body {
       color: white;
       font-family: sans-serif;
-    }
-    .user-overlay {
-      font-size: 150%;
-      line-height: 175%;
-      font-family: monospace;
     }
     .overlay {
       position: fixed;
