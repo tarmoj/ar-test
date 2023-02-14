@@ -719,10 +719,13 @@
             r.galactic[key].visible = true;
           });
           r.eventCounter++;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 66) {
+        } else if (r.time >= sec("27:40") && r.eventCounter < 66) {
           r.distanceMessage =
             "At the limit of the universe there is NOTHING on the other side, no TIME, no SPACE";
           r.bigbang.visible = false;
+          r.eventCounter++;
+        } else if (r.time >= sec("28:00") && r.eventCounter < 67) {
+          r.distanceMessage = "";
         }
       };
 
@@ -949,6 +952,7 @@
       </p>
       <div>Time: {{ timestring(r.time) }} / {{ r.time }}
       <div>Event counter: {{ r.eventCounter }}</div>
+      <div>Distance message: {{ r.distanceMessage || 'EMPTY' }}</div>
       <p />
       <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.4}">
         {{ key }}
@@ -1023,7 +1027,7 @@
         z-index: 200000;
       "
     >
-    <p>{{ r.distanceMessage }}</p>
+    <p style="transition: all 5s; opacity: 0;" :style="{opacity: r.distanceMessage ? 0.5 : 0}">{{ r.distanceMessage }}</p>
     <p>{{ timestring(r.time) }}</p>
       <input
         type="range"
