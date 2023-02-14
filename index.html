@@ -140,7 +140,6 @@
          // r.eventCounter++;
         } else if (r.time >= sec("01:00") && r.eventCounter < 2) {
           r.planets.venus.visible = true;
-          console.log('venus', r.planets.venus);
           animation({
             targets: r.planets.venus,
             opacity: 1,
@@ -150,7 +149,6 @@
           r.eventCounter++;
         } else if (r.time >= sec("02:00") && r.eventCounter < 3) {
           r.planets.mercury.visible = true;
-          console.log('mercury', r.planets.mercury);
           animation({
             targets: r.planets.mercury,
             opacity: 1,
