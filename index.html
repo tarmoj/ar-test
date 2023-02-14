@@ -23,6 +23,15 @@
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
+      const hash = new URL(document.URL).hash;
+      const isDev = hash === "#dev";
+      const overlays = document.querySelectorAll(".dev-overlay");
+      overlays.forEach((overlay) => {
+        if (!isDev) {
+          overlay.style.opacity = 0;
+        }
+      });
+
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
@@ -48,7 +57,6 @@
 
       const planets = generatePlanets();
 
-
       const defaultModelScale = 0.0045;
 
       // Cometonics
@@ -73,7 +81,7 @@
         clusters2: { visible: false, scale: defaultModelScale, opacity: 0 },
         nebulas: { visible: false, scale: defaultModelScale, opacity: 0 },
         galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
-        superclusters: { visible: false, scale: defaultModelScale, opacity: 0 },
+        superclusters: { visible: false, scale: defaultModelScale * 0.8, opacity: 0 },
       };
 
       const galactic = {
@@ -99,22 +107,25 @@
         bigbang,
 
         globalRotation: 90,
-        globalScale: 1,
+        globalScale: 4,
         userZMultipler: 0,
 
         particles,
 
-
         come,
+
+        distanceMessage: "",
       });
 
       const onMessage = (data) => {
-        r.time = data.TT_time;
+        //console.log('!!!', data.TT_time)
+        if (data.TT_time) {
+          r.time = data.TT_time;
+        }
         if (data.frequency) {
           r.globalFrequency = data.frequency;
         }
         if (r.time >= 0 && r.eventCounter < 1) {
- 
           r.planets.earth.visible = true;
           animation({
             targets: r.planets.earth,
@@ -126,7 +137,7 @@
           r.eventCounter = 1;
           r.a = 360;
           r.a2 = 1;
-          r.eventCounter++;
+         // r.eventCounter++;
         } else if (r.time >= sec("01:00") && r.eventCounter < 2) {
           r.planets.venus.visible = true;
           animation({
@@ -145,7 +156,16 @@
             easing: "easeInQuad",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("03:00") && r.eventCounter < 4) {
+        } else if (r.time >= sec("02:30") && r.eventCounter < 4) {
+          animation({
+            targets: r,
+            globalScale: 5,
+            globalRotation: 60,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
+          r.eventCounter++;
+        } else if (r.time >= sec("03:00") && r.eventCounter < 5) {
           r.planets.mars.visible = true;
           animation({
             targets: r.planets.mars,
@@ -154,7 +174,16 @@
             easing: "easeInQuad",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("04:00") && r.eventCounter < 5) {
+        } else if (r.time >= sec("03:30") && r.eventCounter < 6) {
+          animation({
+            targets: r,
+            globalScale: 6,
+            globalRotation: 40,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
+          r.eventCounter++;
+        } else if (r.time >= sec("04:00") && r.eventCounter < 7) {
           r.planets.jupiter.visible = true;
           animation({
             targets: r.planets.jupiter,
@@ -163,7 +192,16 @@
             easing: "easeInQuad",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("05:00") && r.eventCounter < 6) {
+        } else if (r.time >= sec("04:30") && r.eventCounter < 8) {
+          animation({
+            targets: r,
+            globalScale: 7,
+            globalRotation: 20,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
+          r.eventCounter++;
+        } else if (r.time >= sec("05:00") && r.eventCounter < 9) {
           r.planets.saturn.visible = true;
           animation({
             targets: r.planets.saturn,
@@ -172,7 +210,16 @@
             easing: "easeInQuad",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("06:00") && r.eventCounter < 7) {
+        } else if (r.time >= sec("05:30") && r.eventCounter < 10) {
+          animation({
+            targets: r,
+            globalScale: 10,
+            globalRotation: 0,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
+          r.eventCounter++;
+        } else if (r.time >= sec("06:00") && r.eventCounter < 11) {
           r.planets.mercury_m2.visible = true;
           r.planets.venus_v2.visible = true;
           r.planets.jupiter_j12.visible = true;
@@ -188,9 +235,16 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          // TODO: orbiitide keskpunkt vaataja kohale
+          animation({
+            targets: r,
+            globalScale: 15,
+            globalRotation: 0,
+            duration: r.getDuration("00:10"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
         } else if (r.time >= sec("07:00") && r.eventCounter < 8) {
-          // 7:00
           r.planets.mercury_m4.visible = true;
           r.planets.jupiter_j14.visible = true;
           r.planets.saturn_s14.visible = true;
@@ -205,8 +259,15 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          animation({
+            targets: r,
+            globalScale: 7,
+            globalRotation: 5,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("08:00") && r.eventCounter < 9) {
+        } else if (r.time >= sec("08:00") && r.eventCounter < 12) {
           // 8:00
           r.planets.mercury_m8.visible = true;
           r.planets.saturn_s18.visible = true;
@@ -216,8 +277,14 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
+          animation({
+            targets: r,
+            globalRotation: 10,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("09:00") && r.eventCounter < 10) {
+        } else if (r.time >= sec("09:00") && r.eventCounter < 13) {
           animation({
             targets: [
               r.planets.saturn,
@@ -229,9 +296,14 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-
+          animation({
+            targets: r,
+            globalRotation: 15,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("10:00") && r.eventCounter < 11) {
+        } else if (r.time >= sec("10:00") && r.eventCounter < 14) {
           animation({
             targets: [
               r.planets.venus_v2,
@@ -250,11 +322,15 @@
             easing: "easeInQuad",
           });
 
-
           r.planets.venus_v4.visible = true;
+          animation({
+            targets: r,
+            globalRotation: 20,
+            duration: r.getDuration("00:05"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("10:30") && r.eventCounter < 12) {
-
+        } else if (r.time >= sec("10:30") && r.eventCounter < 15) {
           // Hide the planets we faded your previously
 
           r.planets.saturn.visible = false;
@@ -280,11 +356,16 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          //r.planets.venus_v4.visible = false;
+          // TODO: keskpunkt jälle endisse kohta tagasi
+          animation({
+            targets: r,
+            globalScale: 10,
+            globalRotation: 15,
+            duration: r.getDuration("00:10"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-          //
-        } else if (r.time >= sec("11:00") && r.eventCounter < 13) {
-
+        } else if (r.time >= sec("11:00") && r.eventCounter < 16) {
           animation({
             targets: r.come,
             opacity: 0.5,
@@ -299,70 +380,84 @@
             easing: "linear",
             loop: true,
           });
-
+          // TODO: keskpunkt jälle endisse kohta tagasi
+          animation({
+            targets: r,
+            globalScale: 4,
+            globalRotation: 90,
+            duration: r.getDuration("00:30"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("11:30") && r.eventCounter < 14) {
+        } else if (r.time >= sec("11:30") && r.eventCounter < 17) {
           animation({
             targets: Object.keys(r.planets).map((key) => r.planets[key]),
             opacity: 0,
-            duration: r.getDuration("01:00"),
+            duration: r.getDuration("00:10"),
             easing: "easeInOutSine",
           });
 
           r.come.visible = true;
-
           r.eventCounter++;
           // Placeholder events for cometonics
-        } else if (r.time >= sec("11:40") && r.eventCounter < 15) {
+        } else if (r.time >= sec("11:40") && r.eventCounter < 18) {
           cometonics.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("11:50") && r.eventCounter < 16) {
+        } else if (r.time >= sec("11:50") && r.eventCounter < 19) {
           r.eventCounter++;
-        } else if (r.time >= sec("12:00") && r.eventCounter < 17) {
+        } else if (r.time >= sec("12:00") && r.eventCounter < 20) {
           // Messiermusics 0:00
           r.eventCounter++;
-        } else if (r.time >= sec("12:10") && r.eventCounter < 18) {
+        } else if (r.time >= sec("12:10") && r.eventCounter < 21) {
           r.eventCounter++;
-        } else if (r.time >= sec("12:20") && r.eventCounter < 19) {
+        } else if (r.time >= sec("12:20") && r.eventCounter < 22) {
           r.eventCounter++;
-        } else if (r.time >= sec("12:30") && r.eventCounter < 20) {
+        } else if (r.time >= sec("12:30") && r.eventCounter < 23) {
           Object.keys(r.planets).forEach(
             (key) => (r.planets[key].visible = false)
           );
+          animation({
+            targets: r,
+            globalScale: 4.5,
+            globalRotation: 90,
+            duration: r.getDuration("01:00"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("12:40") && r.eventCounter < 21) {
+        // Remove unneccesary steps?
+        } else if (r.time >= sec("12:40") && r.eventCounter < 24) {
           r.eventCounter++;
-        } else if (r.time >= sec("12:50") && r.eventCounter < 22) {
+        } else if (r.time >= sec("12:50") && r.eventCounter < 25) {
           r.eventCounter++;
-        } else if (r.time >= sec("13:00") && r.eventCounter < 23) {
+        } else if (r.time >= sec("13:00") && r.eventCounter < 26) {
           r.eventCounter++;
-        } else if (r.time >= sec("13:10") && r.eventCounter < 24) {
+        } else if (r.time >= sec("13:10") && r.eventCounter < 27) {
           r.eventCounter++;
-        } else if (r.time >= sec("13:20") && r.eventCounter < 25) {
+        } else if (r.time >= sec("13:20") && r.eventCounter < 28) {
           r.eventCounter++;
-        } else if (r.time >= sec("13:30") && r.eventCounter < 26) {
+        } else if (r.time >= sec("13:30") && r.eventCounter < 29) {
           r.eventCounter++;
-        } else if (r.time >= sec("13:40") && r.eventCounter < 27) {
+        } else if (r.time >= sec("13:40") && r.eventCounter < 30) {
           r.eventCounter++;
-        } else if (r.time >= sec("13:50") && r.eventCounter < 28) {
+        } else if (r.time >= sec("13:50") && r.eventCounter < 31) {
           r.eventCounter++;
-        } else if (r.time >= sec("14:00") && r.eventCounter < 29) {
+        } else if (r.time >= sec("14:00") && r.eventCounter < 33) {
           r.eventCounter++;
-        } else if (r.time >= sec("14:10") && r.eventCounter < 30) {
+        } else if (r.time >= sec("14:10") && r.eventCounter < 34) {
           r.eventCounter++;
-        } else if (r.time >= sec("14:20") && r.eventCounter < 31) {
+        } else if (r.time >= sec("14:20") && r.eventCounter < 35) {
           r.eventCounter++;
-        } else if (r.time >= sec("14:30") && r.eventCounter < 32) {
+        } else if (r.time >= sec("14:30") && r.eventCounter < 36) {
           r.eventCounter++;
-        } else if (r.time >= sec("14:40") && r.eventCounter < 33) {
+        } else if (r.time >= sec("14:40") && r.eventCounter < 37) {
           r.eventCounter++;
-        } else if (r.time >= sec("14:50") && r.eventCounter < 34) {
+        } else if (r.time >= sec("14:50") && r.eventCounter < 38) {
           r.eventCounter++;
-        } else if (r.time >= sec("15:00") && r.eventCounter < 35) {
+        } else if (r.time >= sec("15:00") && r.eventCounter < 39) {
           r.eventCounter++;
-        } else if (r.time >= sec("15:10") && r.eventCounter < 36) {
+        } else if (r.time >= sec("15:10") && r.eventCounter < 40) {
           r.eventCounter++;
-        } else if (r.time >= sec("15:20") && r.eventCounter < 37) {
+        } else if (r.time >= sec("15:20") && r.eventCounter < 41) {
           r.eventCounter++;
           animation({
             targets: r.come,
@@ -370,7 +465,8 @@
             duration: r.getDuration("00:10"),
             easing: "easeInOutSine",
           });
-        } else if (r.time >= sec("15:30") && r.eventCounter < 38) {
+        } else if (r.time >= sec("15:30") && r.eventCounter < 42) {
+          r.distanceMessage = "We are now one lightyear away from Earth";
           // Enable clusters and nebulas
           r.messier.clusters.visible = true;
           // Fade in clusters
@@ -381,12 +477,12 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("15:40") && r.eventCounter < 39) {
+        } else if (r.time >= sec("15:40") && r.eventCounter < 43) {
           // Clusters are still playing...
           // Cometronics sphere is gone
           //r.cometronicsSphere.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("16:30") && r.eventCounter < 40) {
+        } else if (r.time >= sec("16:30") && r.eventCounter < 44) {
           // Enable nebulas
           r.messier.nebulas.visible = true;
           // Fade in nebulas
@@ -405,13 +501,15 @@
           });
           r.eventCounter++;
           //
-        } else if (r.time >= sec("16:40") && r.eventCounter < 41) {
+        } else if (r.time >= sec("16:40") && r.eventCounter < 45) {
+          r.distanceMessage = "We are now ten lightyears away from Earth";
           // Nebulas are still playing...
           // Clusters done fading, hide
           r.messier.clusters.visible = false;
           r.eventCounter++;
           //
-        } else if (r.time >= sec("17:50") && r.eventCounter < 42) {
+        } else if (r.time >= sec("17:50") && r.eventCounter < 46) {
+          r.distanceMessage = "We are now 100 lightyears away from Earth";
           // Enable clusters2
           r.messier.clusters2.visible = true;
           // Fade in clusters2
@@ -429,12 +527,32 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("18:00") && r.eventCounter < 43) {
+        } else if (r.time >= sec("18:00") && r.eventCounter < 47) {
           // clusters2 are still playing...
           // nebulas done fading, hide
           r.messier.nebulas.visible = false;
+          animation({
+            targets: r,
+            globalScale: 5.5,
+            duration: r.getDuration("00:20"),
+            easing: "easeInQuad",
+          });
           r.eventCounter++;
-        } else if (r.time >= sec("21:00") && r.eventCounter < 44) {
+        } else if (r.time >= sec("18:30") && r.eventCounter < 48) {
+          animation({
+            targets: r,
+            globalScale: 4,
+            duration: r.getDuration("00:20"),
+            easing: "easeInQuad",
+          });  
+          r.eventCounter++;
+        } else if (r.time >= sec("19:05") && r.eventCounter < 49) {
+          r.distanceMessage = "We are now 1000 lightyears away from Earth";
+          r.eventCounter++;
+        } else if (r.time >= sec("20:20") && r.eventCounter < 50) {
+          r.distanceMessage = "We are now 100 000 lightyears away from Earth";
+          r.eventCounter++;
+        } else if (r.time >= sec("21:00") && r.eventCounter < 51) {
           // Enable galaxies
           r.messier.galaxies.visible = true;
           // Fade in galaxies
@@ -452,12 +570,19 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("21:10") && r.eventCounter < 45) {
+        } else if (r.time >= sec("21:10") && r.eventCounter < 52) {
           // galaxies are still playing...
           // clusters2 done fading, hide
           r.messier.clusters2.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("23:40") && r.eventCounter < 46) {
+        } else if (r.time >= sec("21:30") && r.eventCounter < 53) {
+          r.distanceMessage = "We are now million lightyears away from Earth";
+          r.eventCounter++;
+        } else if (r.time >= sec("22:40") && r.eventCounter < 54) {
+          r.distanceMessage =
+            "We are now 10 million lightyears away from Earth";
+            r.eventCounter++;
+        } else if (r.time >= sec("23:40") && r.eventCounter < 55) {
           // Enable superclusters
           r.messier.superclusters.visible = true;
           // Fade in superclusters
@@ -475,12 +600,14 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("23:50") && r.eventCounter < 47) {
+        } else if (r.time >= sec("23:50") && r.eventCounter < 56) {
+          r.distanceMessage =
+            "We are now 100 million lightyears away from Earth";
           // superclusters are still playing...
           // galaxies done fading, hide
           r.messier.galaxies.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("24:50") && r.eventCounter < 48) {
+        } else if (r.time >= sec("24:50") && r.eventCounter < 57) {
           r.galactic.radiogalaxies.visible = true;
           // Fade in radiogalaxies
           animation({
@@ -497,14 +624,17 @@
             easing: "linear",
           });
           r.eventCounter++;
-        } else if (r.time >= sec("25:00") && r.eventCounter < 49) {
+        } else if (r.time >= sec("25:00") && r.eventCounter < 58) {
           // radiogalaxies are still playing...
           // superclusters done fading, hide
           r.messier.superclusters.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("25:30") && r.eventCounter < 50) {
+        } else if (r.time >= sec("25:05") && r.eventCounter < 59) {
+          r.distanceMessage = "We are now billion lightyears away from Earth";
           r.eventCounter++;
-        } else if (r.time >= sec("25:50") && r.eventCounter < 51) {
+        } else if (r.time >= sec("25:30") && r.eventCounter < 60) {
+          r.eventCounter++;
+        } else if (r.time >= sec("25:50") && r.eventCounter < 61) {
           r.galactic.quasars.visible = true;
           // Fade in quasars
           animation({
@@ -529,12 +659,16 @@
           });
 
           r.eventCounter++;
-        } else if (r.time >= sec("26:00") && r.eventCounter < 52) {
+        } else if (r.time >= sec("26:00") && r.eventCounter < 62) {
           // quasars  are still playing...
           // radiogalaxies done fading, hide
           r.galactic.radiogalaxies.visible = false;
           r.eventCounter++;
-        } else if (r.time >= sec("26:45") && r.eventCounter < 53) {
+        } else if (r.time >= sec("26:20") && r.eventCounter < 63) {
+          r.distanceMessage =
+            "We are now 10 billion lightyears away from Earth";
+            r.eventCounter++;
+        } else if (r.time >= sec("26:45") && r.eventCounter < 64) {
           r.bigbang.visible = true;
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = true;
@@ -573,8 +707,8 @@
             });
           });
           r.eventCounter++;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 54) {
-          r.bigbang.visible = true;
+          // TODO: 27:00 Consider scale down global scale
+        } else if (r.time >= sec("27:30") && r.eventCounter < 65) {
           Object.keys(r.planets).forEach((key) => {
             r.planets[key].visible = false;
           });
@@ -585,7 +719,10 @@
             r.galactic[key].visible = true;
           });
           r.eventCounter++;
-        } else if (r.time >= sec("27:30") && r.eventCounter < 55) {
+        } else if (r.time >= sec("27:30") && r.eventCounter < 66) {
+          r.distanceMessage =
+            "At the limit of the universe there is NOTHING on the other side, no TIME, no SPACE";
+          r.bigbang.visible = false;
         }
       };
 
@@ -810,7 +947,8 @@
           Back to start
         </button>
       </p>
-      <div>{{ timestring(r.time) }} / {{ r.eventCounter }}</div>
+      <div>Time: {{ timestring(r.time) }} / {{ r.time }}
+      <div>Event counter: {{ r.eventCounter }}</div>
       <p />
       <div v-for="p,key in r.planets" :style="{opacity: p.visible ? 1 : 0.4}">
         {{ key }}
@@ -824,8 +962,9 @@
       </div>
       <div :style="{opacity: r.bigbang.visible ? 1 : 0.4}">bigbang</div>
     </div>
+  </div>
 
-    <div
+  <div
       class="dev-overlay"
       style="
         position: fixed;
@@ -856,18 +995,36 @@
       Playback speed (ms) <input v-model.number="r.globalFrequency" />\
       <pre>{{ r.come }}</pre>
     </div>
+  </div>
+    <!-- Screen overlay -->
+    <div
+      :style="{opacity: r.eventCounter >= 65 ? 1 : 0}"
+      style="
+        transition: all 10s;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.9);
+        pointer-events: none;
+        opacity: 0;
+      ">
+    </div>
+
+    <!-- User overlay -->
 
     <div
-      class="user-overlay"
       style="
         position: fixed;
         right: 16px;
         bottom: 16px;
         left: 16px;
-        z-index: 20000;
+        z-index: 200000;
       "
     >
-      <p>{{ timestring(r.time) }}</p>
+    <p>{{ r.distanceMessage }}</p>
+    <p>{{ timestring(r.time) }}</p>
       <input
         type="range"
         v-model.number="r.userZMultipler"
@@ -881,6 +1038,10 @@
   </body>
 
   <style>
+    body {
+      color: white;
+      font-family: sans-serif;
+    }
     .overlay {
       position: fixed;
       top: 0;
@@ -905,24 +1066,14 @@
       padding: 40vh 20vw;
       line-height: 1.3em;
     }
-    body {
-      font-family: sans-serif;
-      color: white;
-    }
     @media only screen and (max-width: 1024px) {
       .dev-overlay {
         display: none;
-      }
-      .user-overlay {
-        display: block;
       }
     }
     @media only screen and (min-width: 1024px) {
       .dev-overlay {
         display: block;
-      }
-      .user-overlay {
-        display: none;
       }
     }
     input[type="text"] {
@@ -954,5 +1105,6 @@
       background: white;
       cursor: pointer;
     }
+    
   </style>
 </html>
