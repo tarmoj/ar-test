@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>"Timetrip to Big Bang and Back" loading...</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
+    <script src="./lib/utils.js"></script>
+    <script src="./lib/websocket.js"></script>
+
+    <script type="module">
+      import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
+
+      const r = reactive({
+        minutes: {
+          first: false,
+          second: false,
+        },
+        time: 0,
+      });
+
+      const functions = {
+        _01_00() {
+          console.log("first minute done");
+          r.minutes.first = true;
+          r.minutes.second = false;
+        },
+        _02_00() {
+          console.log("second minute done");
+          r.minutes.first = false;
+          r.minutes.second = true;
+        },
+      };
+
+      const onMessage = (data) => {
+        if (data.TT_time) {
+          r.time = data.TT_time;
+          const functionName = `_${timestring(r.time).replace(":", "_")}`;
+          if (functions[functionName]) {
+            console.log("calling", functionName);
+            functions[functionName]();
+          }
+        }
+      };
+
+      doConnect(onMessage);
+
+      const onInput = (e) => onMessage({ TT_time: parseInt(e.target.value) });
+
+      createApp({
+        r,
+        onInput,
+      }).mount();
+    </script>
+  </head>
+
+  <body>
+    <div>
+      <input
+        type="range"
+        v-model.number="r.time"
+        @input="onInput"
+        :max="sec('27:30')"
+        style="width: 300px"
+      />
+      <p>Seconds: {{ r.time }}</p>
+      <p>Timestamp: {{ timestring(r.time) }}</p>
+      <p>Data:</p>
+      <pre>{{ r.minutes }}</pre>
+    </div>
+  </body>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      min-height: 100vh;
+      padding: 32px;
+    }
+    input[type="text"] {
+      display: block;
+      width: 50px;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: none;
+      border-radius: 3px;
+      margin-bottom: 1px;
+      padding: 4px;
+    }
+    input[type="range"] {
+      display: block;
+      -webkit-appearance: none;
+      background-color: rgba(0, 0, 0, 0.7);
+      height: 1px;
+      position: relative;
+      outline: none;
+      width: 100%;
+      margin: 16px 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      background-color: rgba(0, 0, 0, 1);
+      height: 24px;
+      width: 24px;
+      border-radius: 1000px;
+      cursor: pointer;
+    }
+  </style>
+</html>
