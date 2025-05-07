@@ -1,108 +1,106 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    <meta charset="utf-8"/>
     <title>Websocket send time</title>
     <script src="https://unpkg.com/reconnecting-websocket@4.4.0/dist/reconnecting-websocket-iife.min.js"></script>
     <script src="lib/websocket.js"></script>
     <script src="lib/utils.js"></script>
     <style>
-      body {
-        font-family: sans-serif;
-        margin: 0;
-        padding: 24px;
-      }
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 24px;
+        }
     </style>
     <script>
-      let time = 0,
+
         ticker = 0;
 
-      function wsOpenCallback() {
-        document.querySelector("#status").innerHTML = "connected";
-        stopClock();
-      }
-
-      function wsClosedCallback() {
-        document.querySelector("#status").innerHTML = "closed";
-        stopClock();
-      }
-
-      function sendTime() {
-        const frequency = parseInt(document.querySelector("#frequency").value);
-        doSend(JSON.stringify({ TT_time: time, frequency }));
-        document.querySelector("#timeLabel").innerHTML = time.toString();
-        document.querySelector("#timeLabel2").innerHTML = timestring(
-          time.toString()
-        );
-      }
-
-      function startClock() {
-        const frequency = parseInt(document.querySelector("#frequency").value);
-        const playbackRate = 1000 / frequency;
-
-        document.querySelector("#audio").playbackRate = playbackRate;
-
-        const startTime =
-          parseInt(document.querySelector("#minutes").value) * 60 +
-          parseInt(document.querySelector("#seconds").value);
-
-        console.log("Start from second: ", startTime);
-        console.log("Start with frequency (ms): ", frequency);
-
-        document.querySelector("#audio").currentTime = startTime;
-        document.querySelector("#audio").play();
-
-        time = startTime;
-        sendTime();
-        ticker = setInterval(() => {
-          time++;
-          sendTime();
-        }, frequency);
-      }
-
-      function stopClock() {
-        document.querySelector("#audio").pause();
-        document.querySelector("#audio").currentTime = 0;
-
-        document.querySelector("#timeLabel").innerHTML = "0";
-        document.querySelector("#timeLabel2").innerHTML = "00:00";
-
-        if (ticker > 0) {
-          clearInterval(ticker);
+        function wsOpenCallback() {
+            document.querySelector("#status").innerHTML = "connected";
         }
-        time = 0;
-      }
 
-      window.onload = () => doConnect();
+        function wsClosedCallback() {
+            document.querySelector("#status").innerHTML = "closed";
+        }
+
+        function setTimeOutput(time) {
+            document.querySelector("#timeLabel").innerHTML = time.toString();
+            document.querySelector("#timeLabel2").innerHTML = timestring(time.toString());
+        }
+
+        const onMessage = (data) => {
+            console.log('!!!', data);
+            if (typeof (data) === "object" && data !== null && data.TT_time) {
+                setTimeOutput(data.TT_time)
+            }
+            // if (data.frequency) {
+            //   deal with frequency
+            // }
+        }
+
+
+        function startClock() {
+            const frequency = parseInt(document.querySelector("#frequency").value);
+            const playbackRate = 1000 / frequency;
+
+            document.querySelector("#audio").playbackRate = playbackRate;
+
+            const startTime =
+                parseInt(document.querySelector("#minutes").value) * 60 +
+                parseInt(document.querySelector("#seconds").value);
+
+            console.log("Start from second: ", startTime);
+            console.log("Start with frequency (ms): ", frequency);
+
+            document.querySelector("#audio").currentTime = startTime;
+            document.querySelector("#audio").play();
+
+            websocket.send("start " + startTime);
+        }
+
+        function stopClock() {
+            document.querySelector("#audio").pause();
+            document.querySelector("#audio").currentTime = 0;
+
+            document.querySelector("#timeLabel").innerHTML = "0";
+            document.querySelector("#timeLabel2").innerHTML = "00:00";
+
+            websocket.send("stop");
+        }
+
+        window.onload = () => doConnect(onMessage);
     </script>
-  </head>
-  <body>
-    <h2>Timetrip - Send time ...</h2>
-    Start time from: <input id="minutes" type="text" size="2" value="00" /> :
-    <input id="seconds" type="text" size="2" value="00" />
-    <br />
-    <br />
-    Send frequency (ms)
-    <input id="frequency" type="text" size="4" value="1000" />
-    <br />
-    <br />
-    <button id="startButton" onclick="startClock()">Start</button>
-    <button id="stopButton" onclick="stopClock()">Stop</button>
-    <br />
-    <br />
-    <h1 id="timeLabel2">00:00</h1>
-    Sec: <span id="timeLabel">0</span>
-    <br />
-    <br />
-    Websocket status:<label id="status">unknown</label>
-    <br />
-    <br />
-    <audio
-      id="audio"
-      muted
-      src="https://elektron.fra1.cdn.digitaloceanspaces.com/assets/timetrip.mp3"
-      controls
-    />
-    <!-- <button id="connectButton" onclick="doConnect()">Connect</button> -->
-  </body>
+</head>
+
+<body>
+<h2>Timetrip - Start/Stop time ...</h2>
+Start time from: <input id="minutes" type="text" size="2" value="00"/> :
+<input id="seconds" type="text" size="2" value="00"/>
+<br/>
+<br/>
+Send frequency (ms)
+<input id="frequency" type="text" size="4" value="1000"/>
+<br/>
+<br/>
+<button id="startButton" onclick="startClock()">Start</button>
+<button id="stopButton" onclick="stopClock()">Stop</button>
+<br/>
+<br/>
+<h1 id="timeLabel2">00:00</h1>
+Sec: <span id="timeLabel">0</span>
+<br/>
+<br/>
+Websocket status:<label id="status">unknown</label>
+<br/>
+<br/>
+<audio
+        id="audio"
+        muted
+        src="https://elektron.fra1.cdn.digitaloceanspaces.com/assets/timetrip.mp3"
+        controls
+/>
+<!-- <button id="connectButton" onclick="doConnect()">Connect</button> -->
+</body>
 </html>

@@ -17,21 +17,22 @@
         embedded
         arjs='sourceType: webcam; debugUIEnabled: false;'>
     <a-assets>
-        <a-asset-item autoload id="messier" src="assets/clusters_anim.glb"></a-asset-item>
-        <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>
-        <img id="m92" src="images/m92.png">
-        <img  id="transparent1" src="images/heic0918a-transparent.png">
-        <img  id="M18" src="images/heic0918a.jpg">
+        <a-asset-item autoload id="object" src="../3d/nebula1.glb"></a-asset-item>
+<!--        <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>-->
+<!--        <img id="m92" src="images/m92.png">-->
+<!--        <img  id="transparent1" src="images/heic0918a-transparent.png">-->
+<!--        <img  id="M18" src="images/heic0918a.jpg">-->
 
     </a-assets>
 
 
 <!--    <a-sphere position="0 5 -80" material="color:red; opacity: 0.5"  radius="1" ></a-sphere>-->
     <a-text id="timeLabel" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>
-   <a-entity id="galaxy" gltf-model="#messier"
+   <a-entity id="galaxy" gltf-model="#object"
              rotation="0 0 0"
-             position="-20 5 -100"
-             scale="0.5 0.5 0.5">
+             position="0 0 0"
+             animation="property: rotation; to: 0 360 0; loop: true; dur: 60000; easing: linear"
+             scale="60 60 60">
    </a-entity>
 
 <!--    <a-image src="#transparent1"-->
