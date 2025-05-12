@@ -17,7 +17,7 @@
         embedded
         arjs='sourceType: webcam; debugUIEnabled: false;'>
     <a-assets>
-        <a-asset-item autoload id="object" src="../3d/nebula1.glb"></a-asset-item>
+        <a-asset-item autoload id="object" src="./3d/saturn_planet.glb"></a-asset-item>
 <!--        <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>-->
 <!--        <img id="m92" src="images/m92.png">-->
 <!--        <img  id="transparent1" src="images/heic0918a-transparent.png">-->
@@ -30,9 +30,9 @@
     <a-text id="timeLabel" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>
    <a-entity id="galaxy" gltf-model="#object"
              rotation="0 0 0"
-             position="0 0 0"
-             animation="property: rotation; to: 0 360 0; loop: true; dur: 60000; easing: linear"
-             scale="60 60 60">
+             position="-20 0 -50"
+             animation="property: rotation; to: 0 360 0; loop: true; dur: 1; easing: linear"
+             scale="5 5 5">
    </a-entity>
 
 <!--    <a-image src="#transparent1"-->
