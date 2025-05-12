@@ -20,6 +20,13 @@
     <script src="./lib/utils.js"></script>
     <script src="./lib/websocket.js"></script>
 
+<!--    global variables for testing only-->
+    <script>
+      let gPlanets = null;
+
+
+    </script>
+
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
@@ -56,6 +63,8 @@
       }
 
       const planets = generatePlanets();
+      // test:
+      gPlanets = planets;
 
       const defaultModelScale = 0.0045;
 
@@ -910,16 +919,12 @@
         <a-asset-item autoload id="earth" src="assets/earth.glb"></a-asset-item>
         <a-asset-item autoload id="mars" src="assets/mars.glb"></a-asset-item>
         <a-asset-item autoload id="venus" src="assets/venus.glb"></a-asset-item>
+
         <a-asset-item
           autoload
           id="saturn"
           src="assets/saturn.glb"
         ></a-asset-item>
-        <!-- <a-asset-item
-        autoload
-        id="saturn"
-        src="archive/planets/Saturn_1_120536.glb"
-        ></a-asset-item> -->
 
         <a-asset-item
           autoload
