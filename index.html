@@ -115,7 +115,7 @@
         galactic,
         bigbang,
 
-        globalRotation: 90,
+        globalRotation: 0, // was 90
         globalScale: 4,
         userZMultipler: 0,
 
@@ -169,7 +169,7 @@
           animation({
             targets: r,
             globalScale: 5,
-            globalRotation: 60,
+            //globalRotation: 60,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -187,7 +187,7 @@
           animation({
             targets: r,
             globalScale: 6,
-            globalRotation: 40,
+            //globalRotation: 40,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -205,7 +205,7 @@
           animation({
             targets: r,
             globalScale: 7,
-            globalRotation: 20,
+            // globalRotation: 20,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -223,7 +223,7 @@
           animation({
             targets: r,
             globalScale: 10,
-            globalRotation: 0,
+            // globalRotation: 0,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -248,7 +248,7 @@
           animation({
             targets: r,
             globalScale: 15,
-            globalRotation: 0,
+            // globalRotation: 0,
             duration: r.getDuration("00:10"),
             easing: "easeInQuad",
           });
@@ -792,9 +792,15 @@
     >
 
       <!-- Planets -->
+<!--          orig:-->
+<!--      <a-entity-->
+<!--              :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler)}"-->
+<!--              :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"-->
+<!--              :rotation="{x: r.globalRotation, y: 0, z: 0}"-->
+<!--      >-->
 
       <a-entity
-        :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler)}"
+        :position="{ x: 0, y: 0, z: 0"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
