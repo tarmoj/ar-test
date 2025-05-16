@@ -17,11 +17,25 @@
         embedded
         arjs='sourceType: webcam; debugUIEnabled: false;'>
     <a-assets>
-        <a-asset-item autoload id="object" src="./3d/earth.glb"></a-asset-item>
-<!--        <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>-->
+<!--        QUITE GOOD" Scale 300 or more-->
+        <a-asset-item autoload id="object" src="./3d/space_nebula_hdri_panorama_360_skydome 2.glb"></a-asset-item>
+
+        <!--   pigem ei - paras plörakas     <a-asset-item autoload id="object" src="./3d/space_nebula_hdri_panorama_360_skydome.glb"></a-asset-item>-->
+
+
+        <!--        <a-asset-item autoload id="testModel" src="planets/Test.glb"></a-asset-item>-->
 <!--        <img id="m92" src="images/m92.png">-->
-<!--        <img  id="transparent1" src="images/heic0918a-transparent.png">-->
-<!--        <img  id="M18" src="images/heic0918a.jpg">-->
+            <img  id="nebula" src="images/nebula-semitransparent.png">
+            <img  id="cluster" src="images/perseus_galaxy_cluster.jpg">
+            <img  id="cluster2" src="images/wild-duck-cluster-6000ly.jpg">
+            <img  id="nebula2" src="images/ant-nebula.jpg">
+            <img  id="nebula3" src="images/helix_nebula.jpg">
+
+
+
+
+
+        <!--        <img  id="M18" src="images/heic0918a.jpg">-->
 
     </a-assets>
 
@@ -29,10 +43,12 @@
 <!--    <a-sphere position="0 5 -80" material="color:red; opacity: 0.5"  radius="1" ></a-sphere>-->
     <a-text id="timeLabel" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>
    <a-entity id="galaxy" gltf-model="#object"
+             opacity="0.5"
+             visible="false"
              rotation="0 0 0"
              position="-20 0 -50"
-             animation="property: rotation; to: 0 360 0; loop: true; dur: 1000; easing: linear"
-             scale="5 5 5">
+             animation="property: rotation; to: 0 360 0; loop: true; dur: 60000; easing: linear"
+             scale="300 300 300">
    </a-entity>
 
 <!--    <a-image src="#transparent1"-->
@@ -42,6 +58,21 @@
 <!--             animation__move = "property:position; dur: 20000; to: 0 100 -999"-->
 <!--             animation__rotation = "property:rotation; dur: 30000; to: 45 0 360; loop:true; easing: linear"-->
 <!--    ></a-image>-->
+
+    <!--            animation="property: rotation; to: 0 360 0; loop: true; dur: 600000; easing: linear"-->
+
+<!--    cluster2 -  udune; ant-nebula ok väiksema suurendusega; nebula3 -  ei tule ringiks kokku  -->
+
+    <a-sphere
+            opacity="0.8"
+            src="#nebula2"
+            rotation="0 0 0"
+            animation="property: scale; to: 10 10 10; dur: 20000; easing: easeInOutQuad"
+            radius="10"
+            side="back"
+            scale="0.1 0.1 0.1"
+            position="0 0 0"
+    ></a-sphere>
 
 
 

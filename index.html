@@ -87,7 +87,7 @@
 
       const messier = {
         clusters: { visible: false, scale: defaultModelScale * 0.7, opacity: 0 },
-        clusters2: { visible: false, scale: defaultModelScale * 0.7, opacity: 0 },
+        clusters2: { visible: false, scale: defaultModelScale * 100, opacity: 0 },
         nebulas: { visible: false, scale: defaultModelScale, opacity: 0 },
         galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
         superclusters: { visible: false, scale: defaultModelScale * 0.8, opacity: 0 },
@@ -104,7 +104,7 @@
 
       const r = reactive({
         time: 0,
-        eventCounter: 0,
+        eventCounter: 46, // NB! FOR TESTING ONLY change to something else than 0
         globalFrequency: 1000,
         getDuration,
         getPlaybackRate,
@@ -126,6 +126,13 @@
         distanceMessage: "",
       });
 
+      // const eventTimeline = [
+      //   { time: 0, event: 1 },
+      //   { time: sec("01:00"), event: 2 },
+      //   { time: sec("02:00"), event: 3 },
+      //   { time: sec("03:00"), event: 4 },
+      // ];
+
       const onMessage = (data) => {
         //console.log('!!!', data.TT_time)
         if (data.TT_time) {
@@ -134,6 +141,8 @@
         if (data.frequency) {
           r.globalFrequency = data.frequency;
         }
+
+
         if (r.time >= 0 && r.eventCounter < 1) {
           r.planets.earth.visible = true;
           animation({
@@ -244,7 +253,6 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          // TODO: orbiitide keskpunkt vaataja kohale
           animation({
             targets: r,
             globalScale: 15,
@@ -365,7 +373,6 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          // TODO: keskpunkt jälle endisse kohta tagasi
           animation({
             targets: r,
             globalScale: 10,
@@ -800,7 +807,7 @@
 <!--      >-->
 
       <a-entity
-        :position="{ x: 0, y: 0, z: 20"
+        :position="{ x: 0, y: 0, z: 20 }"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
@@ -847,8 +854,7 @@
               gltf-model="#cometronics"
               :model-opacity="{opacity: r.come.opacity}"
             /></a-entity>
-      
-          </a-entity>
+                </a-entity>
         </a-entity>
 
         <a-entity
@@ -864,7 +870,7 @@
           <a-entity
             gltf-model="#cometronics"
             :model-opacity="{opacity: r.come.opacity}"
-          /></a-entity> 
+          /></a-entity>
            
           </a-entity>
         </a-entity>
@@ -877,6 +883,19 @@
             :model-opacity="{opacity: m.opacity}"
           ></a-entity>
         </a-entity>
+
+
+<!--      <a-sphere-->
+<!--              id="sky_sphere"-->
+<!--              opacity="0.8"-->
+<!--              src="#nebula2"-->
+<!--              rotation="0 0 0"-->
+<!--              animation="property: scale; to: 1 1 1; dur: 20000; easing: easeInOutQuad"-->
+<!--              radius="100"-->
+<!--              side="back"-->
+<!--              scale="0.1 0.1 0.1"-->
+<!--              position="0 0 0"-->
+<!--      ></a-sphere>-->
 
         <!-- Galactic -->
 
@@ -940,7 +959,7 @@
         <a-asset-item
           autoload
           id="clusters2"
-          src="assets/clusters2.glb"
+          src="assets/space_nebula.glb"
         ></a-asset-item>
         <a-asset-item
           autoload
@@ -969,7 +988,33 @@
         ></a-asset-item>
 
         <img id="blob" src="assets/blob.png" />
+
+        <img  id="nebula2" src="assets/ant-nebula.jpg">
+        <img  id="cluster2" src="assets/perseus_galaxy_cluster.jpg">
+        <img id="nebula3" src="assets/nebula-semitransparent.png">
+        <img id="nebula4" src="assets/nebula_x.jpeg">
+
       </a-assets>
+
+      <a-sky
+              id="sky"
+              opacity="0.8"
+              src="#nebula4"
+              rotation="0 0 0"
+              animation="property: rotation; to: 0 360 -90; loop: true; dur: 2000000; easing: linear"
+      >
+      </a-sky>
+<!--            <a-sphere-->
+<!--                    id="sky_sphere"-->
+<!--                    opacity="0.8"-->
+<!--                    src="#nebula3"-->
+<!--                    rotation="0 0 0"-->
+<!--                    animation="property: scale; to: 1 1 1; dur: 20000; easing: easeInOutQuad"-->
+<!--                    radius="5"-->
+<!--                    side="back"-->
+<!--                    scale="0.1 0.1 0.1"-->
+<!--                    position="0 0 0"-->
+<!--            ></a-sphere>-->
     </a-scene>
 
     <!-- Overlays -->
