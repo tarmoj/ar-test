@@ -30,20 +30,18 @@
             document.querySelector("#timeLabel2").innerHTML = timestring(time.toString());
         }
 
+
         const onMessage = (data) => {
             console.log('!!!', data);
             if (typeof (data) === "object" && data !== null && data.TT_time) {
                 setTimeOutput(data.TT_time)
             }
-            // if (data.frequency) {
-            //   deal with frequency
-            // }
         }
 
 
         function startClock() {
-            const frequency = parseInt(document.querySelector("#frequency").value);
-            const playbackRate = 1000 / frequency;
+           const speed =  parseInt(document.querySelector("#speed").value);
+           const playbackRate = speed;
 
             document.querySelector("#audio").playbackRate = playbackRate;
 
@@ -52,12 +50,12 @@
                 parseInt(document.querySelector("#seconds").value);
 
             console.log("Start from second: ", startTime);
-            console.log("Start with frequency (ms): ", frequency);
 
             document.querySelector("#audio").currentTime = startTime;
             document.querySelector("#audio").play();
 
             websocket.send("start " + startTime);
+            websocket.send("speed " + speed);
         }
 
         function stopClock() {
@@ -80,8 +78,8 @@ Start time from: <input id="minutes" type="text" size="2" value="00"/> :
 <input id="seconds" type="text" size="2" value="00"/>
 <br/>
 <br/>
-Send frequency (ms)
-<input id="frequency" type="text" size="4" value="1000"/>
+Speed
+<input id="speed" type="text" size="4" value="1"/>
 <br/>
 <br/>
 <button id="startButton" onclick="startClock()">Start</button>
