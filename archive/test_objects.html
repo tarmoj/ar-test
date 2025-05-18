@@ -63,16 +63,28 @@
 
 <!--    cluster2 -  udune; ant-nebula ok väiksema suurendusega; nebula3 -  ei tule ringiks kokku  -->
 
-    <a-sphere
+<!--    <a-sphere-->
+<!--            opacity="0.8"-->
+<!--            src="#nebula2"-->
+<!--            rotation="0 0 0"-->
+<!--            animation="property: scale; to: 10 10 10; dur: 20000; easing: easeInOutQuad"-->
+<!--            radius="10"-->
+<!--            side="back"-->
+<!--            scale="0.1 0.1 0.1"-->
+<!--            position="0 0 0"-->
+<!--    ></a-sphere>-->
+
+    <a-sky
+            id="sky"
             opacity="0.8"
-            src="#nebula2"
+            visible="true"
+            src="#nebula"
             rotation="0 0 0"
-            animation="property: scale; to: 10 10 10; dur: 20000; easing: easeInOutQuad"
-            radius="10"
-            side="back"
-            scale="0.1 0.1 0.1"
-            position="0 0 0"
-    ></a-sphere>
+            animation="property: rotation; to: 0 360 -90; loop: true; dur: 2000000; easing: linear"
+
+
+    >
+    </a-sky>
 
 
 
