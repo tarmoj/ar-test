@@ -164,12 +164,36 @@
         distanceMessage: "",
       });
 
-      // const eventTimeline = [
-      //   { time: 0, event: 1 },
-      //   { time: sec("01:00"), event: 2 },
-      //   { time: sec("02:00"), event: 3 },
-      //   { time: sec("03:00"), event: 4 },
-      // ];
+
+      // tryout for setting eventCounter by time
+      // necessary when reloading the page. Does not solve problem, which elements
+      // should be visible at the moment, but this is a compromize
+      // at the moment this is very messy and error prone....
+      const eventTimeline = [
+        // event counter must be one less than at the moment
+        { time: 0, event: 1 }, // plantes
+        { time: sec("11:00"), event: 15 }, // cometonics
+        { time: sec("12:30"), event: 22 }, // planets off
+        { time: sec("15:20"), event: 40 }, // cometonics fadeout
+        { time: sec("15:30"), event: 41 }, // "We are now one lightyear away from Earth"
+        { time: sec("15:40"), event: 42 }, // clear message
+        { time: sec("16:30"), event: 43 }, // nebulas && clusters visible
+        { time: sec("16:40"), event: 44 }, // "We are now ten lightyears away from Earth"
+
+      ];
+
+      function getEventCounter(currentTime) {
+        let count = 0;
+        for (let i = 0; i < eventTimeline.length; i++) {
+          if (currentTime >= eventTimeline[i].time) {
+            count = eventTimeline[i].event;
+          } else {
+            break;
+          }
+        }
+        //console.log("Time: ", timestring(currentTime), " eventCounter: ", count );
+        return count;
+      }
 
       const onMessage = (data) => {
         //console.log('!!!', data.TT_time)
@@ -179,6 +203,11 @@
         if (data.frequency) {
           r.globalFrequency = data.frequency;
         }
+
+        // test
+        // if (r.time>=sec("12:00")) { // if after planets, set the counter by time, not by +1
+        //   r.eventCounter = getEventCounter(r.time);
+        // }
 
 
         if (r.time >= 0 && r.eventCounter < 1) {
@@ -1112,15 +1141,15 @@
       "
     >
     <p style="transition: all 3s; opacity: 0" :style="{opacity: r.distanceMessage ? 1 : 0}">{{ r.distanceMessage }}</p>
-    <p id="status"></p>
-      <p>{{ timestring(r.time) }}</p>
+
+      <p>{{ timestring(r.time) }} <span id="status"></span></p>
       <input
         type="range"
         v-model.number="r.userZMultipler"
         min="-1"
         max="1"
         step="any"
-        style="width: 100%; display: block"
+        style="width: 100%; display: none"
       />
     </div>
     <!-- <div class="overlay"></div> -->
