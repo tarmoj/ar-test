@@ -106,36 +106,36 @@
         sky.setAttribute('src', asset);
       }
 
-      function showSky(fadeTime = 5) {
+      function showSky(fadeTime = 5000) { // in milliseconds
         if (!sky) return;
 
         // Ensure initial opacity is 0 and visible
-        sky.setAttribute('opacity', 0);
+        sky.setAttribute('opacity', "0");
         sky.setAttribute('visible', "true");
 
         sky.setAttribute('animation', {
           property: 'opacity',
           to: 0.8,
-          dur: fadeTime * 1000,
+          dur: fadeTime,
           easing: 'easeInOutQuad',
           loop: false
         });
       }
 
-      function hideSky(fadeTime = 5) {
+      function hideSky(fadeTime = 5000) { // time in ms
         if (!sky) return;
 
         sky.setAttribute('animation', {
           property: 'opacity',
           to: 0,
-          dur: fadeTime * 1000,
+          dur: fadeTime,
           easing: 'easeInOutQuad',
           loop: false
         });
 
         setTimeout(() => {
           sky.setAttribute('visible', false);
-        }, fadeTime * 1000);
+        }, fadeTime);
       }
 
       const r = reactive({
@@ -203,6 +203,7 @@
         if (data.frequency) {
           r.globalFrequency = data.frequency;
         }
+
 
         // test
         // if (r.time>=sec("12:00")) { // if after planets, set the counter by time, not by +1
@@ -645,19 +646,20 @@
         } else if (r.time >= sec("21:00") && r.eventCounter < 54) {
           // Enable galaxies
           setSky("#galaxy2");
-          showSky(10);
+          showSky(r.getDuration("00:10") );
           r.eventCounter++;
         } else if (r.time >= sec("21:10") && r.eventCounter < 55) {
           // galaxies are still playing...
           r.eventCounter++;
         } else if (r.time >= sec("21:30") && r.eventCounter < 56) {
           r.distanceMessage = "We are now million lightyears away from Earth";
+          // Fade out galaxies
+          hideSky(r.getDuration("00:30"));
           r.eventCounter++;
         } else if (r.time >= sec("22:40") && r.eventCounter < 57) {
           r.distanceMessage =
             "We are now 10 million lightyears away from Earth";
-          // Fade out galaxies
-          hideSky(10);
+
           r.eventCounter++;
         } else if (r.time >= sec("23:40") && r.eventCounter < 58) {
           // Enable superclusters
