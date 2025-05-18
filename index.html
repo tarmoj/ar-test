@@ -569,26 +569,9 @@
         } else if (r.time >= sec("17:50") && r.eventCounter < 47) {
           r.distanceMessage = "We are now 100 lightyears away from Earth";
           // Enable clusters2
-          //r.messier.clusters2.visible = true;
+          setSky("#clusters2");
+          showSky(r.getDuration("00:10"));
 
-          // sky.setAttribute('visible', 'true');
-          // sky.setAttribute('animation', {
-          //   property: 'opacity',
-          //   to: 0.8,
-          //   dur: r.getDuration("00:10"),
-          //   easing: 'easeInOutQuad'
-          // });
-
-          setSky("#nebula3");
-          showSky(10);
-
-          // Fade in clusters2
-          // animation({
-          //   targets: r.messier.clusters2,
-          //   opacity: 1,
-          //   duration: r.getDuration("00:10"),
-          //   easing: "linear",
-          // });
           // Fade out nebulas
           animation({
             targets: r.messier.nebulas,
@@ -619,7 +602,7 @@
           r.eventCounter++;
         } else if (r.time >= sec("19:05") && r.eventCounter < 50) {
           r.distanceMessage = "We are now 1000 lightyears away from Earth";
-          hideSky(10); // fade out nebula3-sky
+          hideSky(r.getDuration("00:10")); // fade out clusters2-sky
           r.eventCounter++;
         } else if (r.time >= sec("19:15") && r.eventCounter < 51) {
           r.distanceMessage = ""
@@ -632,31 +615,11 @@
           r.eventCounter++;
         } else if (r.time >= sec("21:00") && r.eventCounter < 54) {
           // Enable galaxies
-
           setSky("#galaxy2");
           showSky(10);
-
-          // r.messier.galaxies.visible = true;
-          // // Fade in galaxies
-          // animation({
-          //   targets: r.messier.galaxies,
-          //   opacity: 1,
-          //   duration: r.getDuration("00:10"),
-          //   easing: "linear",
-          // });
-          // Fade out nebulas
-          // animation({
-          //   targets: r.messier.clusters2,
-          //   opacity: 0,
-          //   duration: r.getDuration("00:10"),
-          //   easing: "linear",
-          // });
-
           r.eventCounter++;
         } else if (r.time >= sec("21:10") && r.eventCounter < 55) {
           // galaxies are still playing...
-          // clusters2 done fading, hide
-          // r.messier.clusters2.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("21:30") && r.eventCounter < 56) {
           r.distanceMessage = "We are now million lightyears away from Earth";
@@ -677,20 +640,11 @@
             duration: r.getDuration("00:10"),
             easing: "linear",
           });
-          // // Fade out galaxies - was here earlier
-          // animation({
-          //   targets: r.messier.galaxies,
-          //   opacity: 0,
-          //   duration: r.getDuration("00:10"),
-          //   easing: "linear",
-          // });
           r.eventCounter++;
         } else if (r.time >= sec("23:50") && r.eventCounter < 59) {
           r.distanceMessage =
             "We are now 100 million lightyears away from Earth";
           // superclusters are still playing...
-          // galaxies done fading, hide
-          //r.messier.galaxies.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("24:00") && r.eventCounter < 60) {
           r.distanceMessage = "";
@@ -817,7 +771,7 @@
           r.bigbang.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("28:00") && r.eventCounter < 72) {
-          r.distanceMessage = "";
+          r.distanceMessage = "You may close your phone now.";
         }
       };
 
@@ -892,21 +846,21 @@
                 id="clusters"
                 src="assets/clusters.glb"
         ></a-asset-item>
-        <a-asset-item
-                autoload
-                id="clusters2"
-                src="assets/space_nebula.glb"
-        ></a-asset-item>
+<!--        <a-asset-item-->
+<!--                autoload-->
+<!--                id="clusters2"-->
+<!--                src="assets/space_nebula.glb"-->
+<!--        ></a-asset-item>-->
         <a-asset-item
                 autoload
                 id="nebulas"
                 src="assets/nebulas.glb"
         ></a-asset-item>
-        <a-asset-item
-                autoload
-                id="galaxies"
-                src="assets/galaxies.glb"
-        ></a-asset-item>
+<!--        <a-asset-item-->
+<!--                autoload-->
+<!--                id="galaxies"-->
+<!--                src="assets/galaxies.glb"-->
+<!--        ></a-asset-item>-->
         <a-asset-item
                 autoload
                 id="superclusters"
@@ -925,9 +879,8 @@
 
         <img id="blob" src="assets/blob.png" />
 
-        <img  id="nebula2" src="assets/ant-nebula.jpg">
         <img  id="galaxy2" src="assets/perseus_galaxy_cluster.jpg">
-        <img id="nebula3" src="assets/nebula2.png">
+        <img id="clusters2" src="assets/nebula2.png">
         <img id="nebula4" src="assets/nebula_x.jpeg">
 
       </a-assets>
@@ -1159,7 +1112,8 @@
       "
     >
     <p style="transition: all 3s; opacity: 0" :style="{opacity: r.distanceMessage ? 1 : 0}">{{ r.distanceMessage }}</p>
-    <p>{{ timestring(r.time) }}</p>
+    <p id="status"></p>
+      <p>{{ timestring(r.time) }}</p>
       <input
         type="range"
         v-model.number="r.userZMultipler"
