@@ -20,12 +20,7 @@
     <script src="./lib/utils.js"></script>
     <script src="./lib/websocket.js"></script>
 
-<!--    global variables for testing only-->
-    <script>
-      let gPlanets = null;
 
-
-    </script>
 
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
@@ -63,8 +58,6 @@
       }
 
       const planets = generatePlanets();
-      // test:
-      gPlanets = planets;
 
       const defaultModelScale = 0.0045;
 
@@ -87,9 +80,9 @@
 
       const messier = {
         clusters: { visible: false, scale: defaultModelScale * 0.7, opacity: 0 },
-        clusters2: { visible: false, scale: defaultModelScale * 100, opacity: 0 },
+        // clusters2: { visible: false, scale: defaultModelScale * 100, opacity: 0 },
         nebulas: { visible: false, scale: defaultModelScale, opacity: 0 },
-        galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
+        //galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
         superclusters: { visible: false, scale: defaultModelScale * 0.8, opacity: 0 },
       };
 
@@ -147,7 +140,7 @@
 
       const r = reactive({
         time: 0,
-        eventCounter: 46, // 46 // NB! FOR TESTING ONLY change to something else than 0
+        eventCounter: 40, // 46 // NB! FOR TESTING ONLY change to something else than 0
         globalFrequency: 1000,
         getDuration,
         getPlaybackRate,
@@ -626,6 +619,7 @@
           r.eventCounter++;
         } else if (r.time >= sec("19:05") && r.eventCounter < 50) {
           r.distanceMessage = "We are now 1000 lightyears away from Earth";
+          hideSky(10); // fade out nebula3-sky
           r.eventCounter++;
         } else if (r.time >= sec("19:15") && r.eventCounter < 51) {
           r.distanceMessage = ""
@@ -638,14 +632,18 @@
           r.eventCounter++;
         } else if (r.time >= sec("21:00") && r.eventCounter < 54) {
           // Enable galaxies
-          r.messier.galaxies.visible = true;
-          // Fade in galaxies
-          animation({
-            targets: r.messier.galaxies,
-            opacity: 1,
-            duration: r.getDuration("00:10"),
-            easing: "linear",
-          });
+
+          setSky("#galaxy2");
+          showSky(10);
+
+          // r.messier.galaxies.visible = true;
+          // // Fade in galaxies
+          // animation({
+          //   targets: r.messier.galaxies,
+          //   opacity: 1,
+          //   duration: r.getDuration("00:10"),
+          //   easing: "linear",
+          // });
           // Fade out nebulas
           // animation({
           //   targets: r.messier.clusters2,
@@ -653,7 +651,7 @@
           //   duration: r.getDuration("00:10"),
           //   easing: "linear",
           // });
-          hideSky(10);
+
           r.eventCounter++;
         } else if (r.time >= sec("21:10") && r.eventCounter < 55) {
           // galaxies are still playing...
@@ -666,6 +664,8 @@
         } else if (r.time >= sec("22:40") && r.eventCounter < 57) {
           r.distanceMessage =
             "We are now 10 million lightyears away from Earth";
+          // Fade out galaxies
+          hideSky(10);
           r.eventCounter++;
         } else if (r.time >= sec("23:40") && r.eventCounter < 58) {
           // Enable superclusters
@@ -677,20 +677,20 @@
             duration: r.getDuration("00:10"),
             easing: "linear",
           });
-          // Fade out galaxies
-          animation({
-            targets: r.messier.galaxies,
-            opacity: 0,
-            duration: r.getDuration("00:10"),
-            easing: "linear",
-          });
+          // // Fade out galaxies - was here earlier
+          // animation({
+          //   targets: r.messier.galaxies,
+          //   opacity: 0,
+          //   duration: r.getDuration("00:10"),
+          //   easing: "linear",
+          // });
           r.eventCounter++;
         } else if (r.time >= sec("23:50") && r.eventCounter < 59) {
           r.distanceMessage =
             "We are now 100 million lightyears away from Earth";
           // superclusters are still playing...
           // galaxies done fading, hide
-          r.messier.galaxies.visible = false;
+          //r.messier.galaxies.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("24:00") && r.eventCounter < 60) {
           r.distanceMessage = "";
