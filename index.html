@@ -632,10 +632,11 @@
           r.eventCounter++;
         } else if (r.time >= sec("19:05") && r.eventCounter < 50) {
           r.distanceMessage = "We are now 1000 lightyears away from Earth";
-          hideSky(r.getDuration("00:10")); // fade out clusters2-sky
           r.eventCounter++;
         } else if (r.time >= sec("19:15") && r.eventCounter < 51) {
           r.distanceMessage = ""
+          hideSky(r.getDuration("00:30")); // fade out clusters2-sky
+
           r.eventCounter++;
         } else if (r.time >= sec("20:20") && r.eventCounter < 52) {
           r.distanceMessage = "We are now 100 000 lightyears away from Earth";
@@ -659,9 +660,14 @@
         } else if (r.time >= sec("22:40") && r.eventCounter < 57) {
           r.distanceMessage =
             "We are now 10 million lightyears away from Earth";
+          // Enable another sky
+          setSky("#nebula4");
+          showSky(r.getDuration("00:10") );
 
           r.eventCounter++;
         } else if (r.time >= sec("23:40") && r.eventCounter < 58) {
+          // Fade out sky
+          hideSky(r.getDuration("00:20"));
           // Enable superclusters
           r.messier.superclusters.visible = true;
           // Fade in superclusters
@@ -925,6 +931,9 @@
               animation="property: rotation; to: 0 360 -90; loop: true; dur: 2000000; easing: linear"
       >
       </a-sky>
+
+      <a-text id="deleteMe" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>
+
 
       <!-- Planets -->
 <!--          orig:-->
