@@ -67,14 +67,14 @@
       const come = {
         visible: true,
         scale: {
-          x: defaultModelScale * 0.5,
-          y: defaultModelScale * 0.5,
-          z: defaultModelScale * 0.5,
+          x: defaultModelScale, // *0.5
+          y: defaultModelScale,
+          z: defaultModelScale,
         },
         opacity: 0,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        outerPosition: { x: 0, y: 0, z: 0 },
+        outerPosition: { x: 0, y: 0, z: -20 },
         outerRotation: { x: 0, y: 0, z: 0 },
       };
 
