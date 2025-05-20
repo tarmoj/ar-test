@@ -74,7 +74,7 @@
         opacity: 0,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
-        outerPosition: { x: 0, y: 0, z: -20 },
+        outerPosition: { x: 0, y: 0, z: 0 },
         outerRotation: { x: 0, y: 0, z: 0 },
       };
 
@@ -928,7 +928,7 @@
               visible="false"
               src="#nebula4"
               rotation="0 0 0"
-              animation="property: rotation; to: 0 360 -90; loop: true; dur: 2000000; easing: linear"
+              animation="property: rotation; to: 0 360 -90; loop: true; dur: 1000000; easing: linear"
       >
       </a-sky>
 
@@ -944,7 +944,7 @@
 <!--      >-->
 
       <a-entity
-        :position="{ x: 0, y: 0, z: 20 }"
+        :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler) }"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
