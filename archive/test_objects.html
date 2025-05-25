@@ -11,6 +11,15 @@
 </head>
 
 <body style='margin: 0; overflow: hidden;'>
+
+<script>
+    function hideKasemets() { // NB! Hides all a-images. There is not other a-images than Kasemets at this point.
+        const images = document.querySelectorAll('a-image');
+        images.forEach(img => {
+            img.setAttribute('visible', 'false');
+        });
+    }
+</script>
 <a-scene
         id="scene"
         vr-mode-ui="enabled: false"
@@ -34,6 +43,7 @@
         <img  id="kasemets1" src="images/kasemets1.jpg">
         <img  id="kasemets2" src="images/kasemets2.jpg">
         <img  id="kasemets3" src="images/kasemets5.jpg">
+        <img  id="kasemets4" src="images/kasemets4.jpg">
 
 
 
@@ -57,7 +67,7 @@
              rotation="-10 0 -20"
              position="-100 5 -100"
              scale="50 50 50"
-             animation__move = "property:position; dir: alternate; dur: 20000; to: -50 -10 -300"
+             animation__move = "property:position; dir: alternate; dur: 20000; to: -150 -2 -300"
              animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
     ></a-image>
 
@@ -65,16 +75,24 @@
              rotation="0 0 -20"
              position="100 5 -100"
              scale="50 50 50"
-             animation__move = "property:position; dir: alternate; dur: 20000; to: 0 -150 -300"
+             animation__move = "property:position; dir: alternate; dur: 20000; to: 150 15 -300"
              animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
     ></a-image>
 
     <a-image src="#kasemets3"
-             rotation="-10 0 -20"
-             position="-20 5 100"
-             scale="50 50 50"
-             animation__move = "property:position; dir: alternate; dur: 20000; to: 0 -10 300"
-             animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
+             rotation="-10 90 -20"
+             position="-200 5 40"
+             scale="30 30 30"
+             animation__move = "property:position; dir: alternate; dur: 20000; to: -80 -5 0"
+             animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 90 20; loop:true; easing: easeInOutSine"
+    ></a-image>
+
+    <a-image src="#kasemets4"
+             rotation="-10 90 -20"
+             position="100 5 0"
+             scale="20 20 20"
+             animation__move = "property:position; dir: alternate; dur: 20000; to: 80 5 30"
+             animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 90 20; loop:true; easing: easeInOutSine"
     ></a-image>
 
     <!--            animation="property: rotation; to: 0 360 0; loop: true; dur: 600000; easing: linear"-->

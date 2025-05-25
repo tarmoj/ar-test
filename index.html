@@ -34,41 +34,14 @@
         }
       });
 
-      const imageIds = ['kasemets1', 'kasemets2', 'kasemets3', 'kasemets4', 'kasemets5'];
-
-      function createFloatingImages() {
-        const scene = document.querySelector('a-scene');
-        const radius = 2; // distance from center
-        const verticalHeight = 1.5; // roughly 30–45% up from viewer (adjust as needed)
-        const angleSpread = 240; // degrees (-120 to 120)
-        const angleStep = angleSpread / (imageIds.length - 1);
-
-        imageIds.forEach((id, index) => {
-          const angleDeg = -120 + index * angleStep;
-          const angleRad = angleDeg * (Math.PI / 180);
-          const x = radius * Math.sin(angleRad);
-          const z = -radius * Math.cos(angleRad); // in front of user
-
-          const plane = document.createElement('a-plane');
-          plane.setAttribute('src', `#${id}`);
-          plane.setAttribute('width', '1');
-          plane.setAttribute('height', '1');
-          plane.setAttribute('position', `${x} ${verticalHeight} ${z}`);
-          plane.setAttribute('rotation', `-10 ${angleDeg} 0`); // slight backward tilt
-
-          // Add floating animation
-          plane.setAttribute('animation', {
-            property: 'position',
-            dir: 'alternate',
-            dur: 3000 + Math.random() * 2000, // different timing per image
-            easing: 'easeInOutSine',
-            loop: true,
-            to: `${x} ${verticalHeight + 0.1} ${z}`
-          });
-
-          scene.appendChild(plane);
+      function hideKasemets() { // NB! Hides all a-images. There is not other a-images than Kasemets at this point.
+        const images = document.querySelectorAll('a-image');
+        images.forEach(img => {
+          img.setAttribute('visible', 'false');
         });
       }
+
+
 
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
@@ -246,6 +219,11 @@
         //   r.eventCounter = getEventCounter(r.time);
         // }
 
+        // if started hide sky and Kasemets images
+        if (r.time>=0 && r.eventCounter<1  ) {
+          hideKasemets();
+          hideSky();
+        }
 
         if (r.time >= 0 && r.eventCounter < 1) {
           r.planets.earth.visible = true;
@@ -869,7 +847,6 @@
         var scene = document.querySelector("a-scene");
         scene.addEventListener("loaded", function (e) {
           console.log("loaded");
-          createFloatingImages();
         });
       });
     </script>
@@ -969,13 +946,46 @@
 
       <a-sky
               id="sky"
-              opacity="0"
-              visible="false"
-              src="#nebula4"
+              opacity="0.7"
+              visible="true"
+              src="#clusters2"
               rotation="0 0 0"
-              animation="property: rotation; to: 0 360 -90; loop: true; dur: 1000000; easing: linear"
+              animation__rotation="property: rotation; to: 0 360 -90; loop: true; dur: 2000000; easing: linear"
       >
       </a-sky>
+
+<!--      Floating Kasemets images-->
+      <a-image src="#kasemets1"
+               rotation="-10 0 -20"
+               position="-100 5 -100"
+               scale="50 50 50"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: -150 -2 -300"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+      <a-image src="#kasemets2"
+               rotation="0 0 -20"
+               position="100 5 -100"
+               scale="50 50 50"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: 150 15 -300"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+      <a-image src="#kasemets3"
+               rotation="-10 90 -20"
+               position="-200 5 40"
+               scale="30 30 30"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: -80 -5 0"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 90 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+      <a-image src="#kasemets4"
+               rotation="-10 90 -20"
+               position="100 5 0"
+               scale="20 20 20"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: 80 5 30"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 90 20; loop:true; easing: easeInOutSine"
+      ></a-image>
 
 <!--      <a-text id="deleteMe" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>-->
 
