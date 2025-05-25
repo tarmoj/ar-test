@@ -20,6 +20,8 @@
     <script src="./lib/utils.js"></script>
     <script src="./lib/websocket.js"></script>
 
+
+
     <script type="module">
       import { createApp, reactive } from "https://unpkg.com/petite-vue?module";
 
@@ -31,6 +33,15 @@
           overlay.style.opacity = 0;
         }
       });
+
+      function hideKasemets() { // NB! Hides all a-images. There is not other a-images than Kasemets at this point.
+        const images = document.querySelectorAll('a-image');
+        images.forEach(img => {
+          img.setAttribute('visible', 'false');
+        });
+      }
+
+
 
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
@@ -65,9 +76,9 @@
       const come = {
         visible: true,
         scale: {
-          x: defaultModelScale * 0.5,
-          y: defaultModelScale * 0.5,
-          z: defaultModelScale * 0.5,
+          x: defaultModelScale, // *0.5
+          y: defaultModelScale,
+          z: defaultModelScale,
         },
         opacity: 0,
         position: { x: 0, y: 0, z: 0 },
@@ -77,10 +88,10 @@
       };
 
       const messier = {
-        clusters: { visible: false, scale: defaultModelScale * 0.7, opacity: 0 },
-        clusters2: { visible: false, scale: defaultModelScale * 0.7, opacity: 0 },
+        clusters: { visible: false, scale: defaultModelScale * 2, opacity: 0 },
+        // clusters2: { visible: false, scale: defaultModelScale * 100, opacity: 0 },
         nebulas: { visible: false, scale: defaultModelScale, opacity: 0 },
-        galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
+        //galaxies: { visible: false, scale: defaultModelScale, opacity: 0 },
         superclusters: { visible: false, scale: defaultModelScale * 0.8, opacity: 0 },
       };
 
@@ -93,9 +104,52 @@
         visible: false,
       };
 
+      const sky = document.querySelector("#sky");
+
+      function setSky(asset) { // NB# assetName must be given with #
+        if (!sky) return console.warn('Sky element not found.');
+
+        const assetEl = document.querySelector(asset);
+        if (!assetEl) return console.warn(`Asset ${asset} not found.`);
+
+        sky.setAttribute('src', asset);
+      }
+
+      function showSky(fadeTime = 5000) { // in milliseconds
+        if (!sky) return;
+
+        // Ensure initial opacity is 0 and visible
+        sky.setAttribute('opacity', "0");
+        sky.setAttribute('visible', "true");
+
+        sky.setAttribute('animation', {
+          property: 'opacity',
+          to: 0.8,
+          dur: fadeTime,
+          easing: 'easeInOutQuad',
+          loop: false
+        });
+      }
+
+      function hideSky(fadeTime = 5000) { // time in ms
+        if (!sky) return;
+
+        sky.setAttribute('animation', {
+          property: 'opacity',
+          to: 0,
+          dur: fadeTime,
+          easing: 'easeInOutQuad',
+          loop: false
+        });
+
+        setTimeout(() => {
+          sky.setAttribute('visible', false);
+        }, fadeTime);
+      }
+
       const r = reactive({
         time: 0,
-        eventCounter: 0,
+        eventCounter: 0, // 46 // NB! FOR TESTING ONLY change to something else than 0
         globalFrequency: 1000,
         getDuration,
         getPlaybackRate,
@@ -106,7 +160,9 @@
         galactic,
         bigbang,
 
-        globalRotation: 90,
+        sky,
+
+        globalRotation: 0, // was 90
         globalScale: 4,
         userZMultipler: 0,
 
@@ -117,6 +173,37 @@
         distanceMessage: "",
       });
 
+
+      // tryout for setting eventCounter by time
+      // necessary when reloading the page. Does not solve problem, which elements
+      // should be visible at the moment, but this is a compromize
+      // at the moment this is very messy and error prone....
+      const eventTimeline = [
+        // event counter must be one less than at the moment
+        { time: 0, event: 1 }, // plantes
+        { time: sec("11:00"), event: 15 }, // cometonics
+        { time: sec("12:30"), event: 22 }, // planets off
+        { time: sec("15:20"), event: 40 }, // cometonics fadeout
+        { time: sec("15:30"), event: 41 }, // "We are now one lightyear away from Earth"
+        { time: sec("15:40"), event: 42 }, // clear message
+        { time: sec("16:30"), event: 43 }, // nebulas && clusters visible
+        { time: sec("16:40"), event: 44 }, // "We are now ten lightyears away from Earth"
+
+      ];
+
+      function getEventCounter(currentTime) {
+        let count = 0;
+        for (let i = 0; i < eventTimeline.length; i++) {
+          if (currentTime >= eventTimeline[i].time) {
+            count = eventTimeline[i].event;
+          } else {
+            break;
+          }
+        }
+        //console.log("Time: ", timestring(currentTime), " eventCounter: ", count );
+        return count;
+      }
+
       const onMessage = (data) => {
         //console.log('!!!', data.TT_time)
         if (data.TT_time) {
@@ -125,6 +212,19 @@
         if (data.frequency) {
           r.globalFrequency = data.frequency;
         }
+
+
+        // test
+        // if (r.time>=sec("12:00")) { // if after planets, set the counter by time, not by +1
+        //   r.eventCounter = getEventCounter(r.time);
+        // }
+
+        // if started hide sky and Kasemets images
+        if (r.time>=0 && r.eventCounter<1  ) {
+          hideKasemets();
+          hideSky();
+        }
+
         if (r.time >= 0 && r.eventCounter < 1) {
           r.planets.earth.visible = true;
           animation({
@@ -160,7 +260,7 @@
           animation({
             targets: r,
             globalScale: 5,
-            globalRotation: 60,
+            //globalRotation: 60,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -178,7 +278,7 @@
           animation({
             targets: r,
             globalScale: 6,
-            globalRotation: 40,
+            //globalRotation: 40,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -196,7 +296,7 @@
           animation({
             targets: r,
             globalScale: 7,
-            globalRotation: 20,
+            // globalRotation: 20,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -214,7 +314,7 @@
           animation({
             targets: r,
             globalScale: 10,
-            globalRotation: 0,
+            // globalRotation: 0,
             duration: r.getDuration("00:30"),
             easing: "easeInQuad",
           });
@@ -235,11 +335,10 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          // TODO: orbiitide keskpunkt vaataja kohale
           animation({
             targets: r,
             globalScale: 15,
-            globalRotation: 0,
+            // globalRotation: 0,
             duration: r.getDuration("00:10"),
             easing: "easeInQuad",
           });
@@ -356,7 +455,6 @@
             duration: r.getDuration("00:05"),
             easing: "easeInQuad",
           });
-          // TODO: keskpunkt jälle endisse kohta tagasi
           animation({
             targets: r,
             globalScale: 10,
@@ -515,14 +613,9 @@
         } else if (r.time >= sec("17:50") && r.eventCounter < 47) {
           r.distanceMessage = "We are now 100 lightyears away from Earth";
           // Enable clusters2
-          r.messier.clusters2.visible = true;
-          // Fade in clusters2
-          animation({
-            targets: r.messier.clusters2,
-            opacity: 1,
-            duration: r.getDuration("00:10"),
-            easing: "linear",
-          });
+          setSky("#clusters2");
+          showSky(r.getDuration("00:10"));
+
           // Fade out nebulas
           animation({
             targets: r.messier.nebulas,
@@ -556,6 +649,8 @@
           r.eventCounter++;
         } else if (r.time >= sec("19:15") && r.eventCounter < 51) {
           r.distanceMessage = ""
+          hideSky(r.getDuration("00:30")); // fade out clusters2-sky
+
           r.eventCounter++;
         } else if (r.time >= sec("20:20") && r.eventCounter < 52) {
           r.distanceMessage = "We are now 100 000 lightyears away from Earth";
@@ -565,35 +660,28 @@
           r.eventCounter++;
         } else if (r.time >= sec("21:00") && r.eventCounter < 54) {
           // Enable galaxies
-          r.messier.galaxies.visible = true;
-          // Fade in galaxies
-          animation({
-            targets: r.messier.galaxies,
-            opacity: 1,
-            duration: r.getDuration("00:10"),
-            easing: "linear",
-          });
-          // Fade out nebulas
-          animation({
-            targets: r.messier.clusters2,
-            opacity: 0,
-            duration: r.getDuration("00:10"),
-            easing: "linear",
-          });
+          setSky("#galaxy2");
+          showSky(r.getDuration("00:10") );
           r.eventCounter++;
         } else if (r.time >= sec("21:10") && r.eventCounter < 55) {
           // galaxies are still playing...
-          // clusters2 done fading, hide
-          r.messier.clusters2.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("21:30") && r.eventCounter < 56) {
           r.distanceMessage = "We are now million lightyears away from Earth";
+          // Fade out galaxies
+          hideSky(r.getDuration("00:30"));
           r.eventCounter++;
         } else if (r.time >= sec("22:40") && r.eventCounter < 57) {
           r.distanceMessage =
             "We are now 10 million lightyears away from Earth";
+          // Enable another sky
+          setSky("#nebula4");
+          showSky(r.getDuration("00:10") );
+
           r.eventCounter++;
         } else if (r.time >= sec("23:40") && r.eventCounter < 58) {
+          // Fade out sky
+          hideSky(r.getDuration("00:20"));
           // Enable superclusters
           r.messier.superclusters.visible = true;
           // Fade in superclusters
@@ -603,20 +691,11 @@
             duration: r.getDuration("00:10"),
             easing: "linear",
           });
-          // Fade out galaxies
-          animation({
-            targets: r.messier.galaxies,
-            opacity: 0,
-            duration: r.getDuration("00:10"),
-            easing: "linear",
-          });
           r.eventCounter++;
         } else if (r.time >= sec("23:50") && r.eventCounter < 59) {
           r.distanceMessage =
             "We are now 100 million lightyears away from Earth";
           // superclusters are still playing...
-          // galaxies done fading, hide
-          r.messier.galaxies.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("24:00") && r.eventCounter < 60) {
           r.distanceMessage = "";
@@ -743,7 +822,7 @@
           r.bigbang.visible = false;
           r.eventCounter++;
         } else if (r.time >= sec("28:00") && r.eventCounter < 72) {
-          r.distanceMessage = "";
+          r.distanceMessage = "You may close your phone now.";
         }
       };
 
@@ -782,10 +861,145 @@
       arjs="sourceType: webcam; debugUIEnabled: false;"
     >
 
+      <!-- Assets -->
+
+      <a-assets>
+        <a-asset-item
+                autoload
+                id="cometronics"
+                src="assets/cometonics.glb"
+        ></a-asset-item>
+
+        <a-asset-item
+                autoload
+                id="mercury"
+                src="assets/mercury.glb"
+        ></a-asset-item>
+        <a-asset-item
+                autoload
+                id="jupiter"
+                src="assets/jupiter.glb"
+        ></a-asset-item>
+
+
+        <a-asset-item autoload id="earth" src="assets/earth.glb"></a-asset-item>
+        <a-asset-item autoload id="mars" src="assets/mars.glb"></a-asset-item>
+        <a-asset-item autoload id="venus" src="assets/venus.glb"></a-asset-item>
+
+        <a-asset-item
+                autoload
+                id="saturn"
+                src="assets/saturn.glb"
+        ></a-asset-item>
+
+        <a-asset-item
+                autoload
+                id="clusters"
+                src="assets/clusters.glb"
+        ></a-asset-item>
+<!--        <a-asset-item-->
+<!--                autoload-->
+<!--                id="clusters2"-->
+<!--                src="assets/space_nebula.glb"-->
+<!--        ></a-asset-item>-->
+        <a-asset-item
+                autoload
+                id="nebulas"
+                src="assets/nebulas.glb"
+        ></a-asset-item>
+<!--        <a-asset-item-->
+<!--                autoload-->
+<!--                id="galaxies"-->
+<!--                src="assets/galaxies.glb"-->
+<!--        ></a-asset-item>-->
+        <a-asset-item
+                autoload
+                id="superclusters"
+                src="assets/superclusters.glb"
+        ></a-asset-item>
+        <a-asset-item
+                autoload
+                id="radiogalaxies"
+                src="assets/radiogalaxies.glb"
+        ></a-asset-item>
+        <a-asset-item
+                autoload
+                id="quasars"
+                src="assets/quasars.glb"
+        ></a-asset-item>
+
+        <img id="blob" src="assets/blob.png" />
+
+        <img  id="galaxy2" src="assets/perseus_galaxy_cluster.jpg">
+        <img id="clusters2" src="assets/nebula2.png">
+        <img id="nebula4" src="assets/nebula_x.jpeg">
+
+        <img id="kasemets1" src="assets/kasemets1.jpg">
+        <img id="kasemets2" src="assets/kasemets2.jpg">
+        <img id="kasemets3" src="assets/kasemets3.jpg">
+        <img id="kasemets4" src="assets/kasemets4.jpg">
+        <img id="kasemets5" src="assets/kasemets5.jpg">
+
+
+
+      </a-assets>
+
+      <a-sky
+              id="sky"
+              opacity="0.7"
+              visible="true"
+              src="#clusters2"
+              rotation="0 0 0"
+              animation__rotation="property: rotation; to: 0 360 -90; loop: true; dur: 2000000; easing: linear"
+      >
+      </a-sky>
+
+<!--      Floating Kasemets images-->
+      <a-image src="#kasemets1"
+               rotation="-10 0 -20"
+               position="-100 5 -100"
+               scale="50 50 50"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: -150 -2 -300"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+      <a-image src="#kasemets2"
+               rotation="0 0 -20"
+               position="100 5 -100"
+               scale="50 50 50"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: 150 15 -300"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 0 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+      <a-image src="#kasemets3"
+               rotation="-10 90 -20"
+               position="-200 5 40"
+               scale="30 30 30"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: -80 -5 0"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 90 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+      <a-image src="#kasemets4"
+               rotation="-10 90 -20"
+               position="100 5 0"
+               scale="20 20 20"
+               animation__move = "property:position; dir: alternate; dur: 20000; to: 80 5 30"
+               animation__rotation = "property:rotation; dir: alternate; dur: 30000; to: 10 90 20; loop:true; easing: easeInOutSine"
+      ></a-image>
+
+<!--      <a-text id="deleteMe" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>-->
+
+
       <!-- Planets -->
+<!--          orig:-->
+<!--      <a-entity-->
+<!--              :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler)}"-->
+<!--              :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"-->
+<!--              :rotation="{x: r.globalRotation, y: 0, z: 0}"-->
+<!--      >-->
 
       <a-entity
-        :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler)}"
+        :position="{ x: 0, y: 0, z: -25 * (1 - r.userZMultipler) }"
         :scale="{x: r.globalScale, y: r.globalScale, z: r.globalScale}"
         :rotation="{x: r.globalRotation, y: 0, z: 0}"
       >
@@ -832,8 +1046,7 @@
               gltf-model="#cometronics"
               :model-opacity="{opacity: r.come.opacity}"
             /></a-entity>
-      
-          </a-entity>
+                </a-entity>
         </a-entity>
 
         <a-entity
@@ -849,8 +1062,8 @@
           <a-entity
             gltf-model="#cometronics"
             :model-opacity="{opacity: r.come.opacity}"
-          /></a-entity> 
-           
+          /></a-entity>
+
           </a-entity>
         </a-entity>
 
@@ -882,83 +1095,20 @@
 
       <a-camera></a-camera>
 
-      <!-- Assets -->
 
-      <a-assets>
-        <a-asset-item
-          autoload
-          id="cometronics"
-          src="assets/cometonics.glb"
-        ></a-asset-item>
 
-        <a-asset-item
-          autoload
-          id="mercury"
-          src="assets/mercury.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="jupiter"
-          src="assets/jupiter.glb"
-        ></a-asset-item>
 
-        <!-- <a-asset-item
-        autoload
-        id="jupiter"
-        src="archive/planets/Jupiter_1_142984.glb"
-      ></a-asset-item> -->
-        <a-asset-item autoload id="earth" src="assets/earth.glb"></a-asset-item>
-        <a-asset-item autoload id="mars" src="assets/mars.glb"></a-asset-item>
-        <a-asset-item autoload id="venus" src="assets/venus.glb"></a-asset-item>
-        <a-asset-item
-          autoload
-          id="saturn"
-          src="assets/saturn.glb"
-        ></a-asset-item>
-        <!-- <a-asset-item
-        autoload
-        id="saturn"
-        src="archive/planets/Saturn_1_120536.glb"
-        ></a-asset-item> -->
-
-        <a-asset-item
-          autoload
-          id="clusters"
-          src="assets/clusters.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="clusters2"
-          src="assets/clusters2.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="nebulas"
-          src="assets/nebulas.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="galaxies"
-          src="assets/galaxies.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="superclusters"
-          src="assets/superclusters.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="radiogalaxies"
-          src="assets/radiogalaxies.glb"
-        ></a-asset-item>
-        <a-asset-item
-          autoload
-          id="quasars"
-          src="assets/quasars.glb"
-        ></a-asset-item>
-
-        <img id="blob" src="assets/blob.png" />
-      </a-assets>
+<!--            <a-sphere-->
+<!--                    id="sky_sphere"-->
+<!--                    opacity="0.8"-->
+<!--                    src="#nebula3"-->
+<!--                    rotation="0 0 0"-->
+<!--                    animation="property: scale; to: 1 1 1; dur: 20000; easing: easeInOutQuad"-->
+<!--                    radius="5"-->
+<!--                    side="back"-->
+<!--                    scale="0.1 0.1 0.1"-->
+<!--                    position="0 0 0"-->
+<!--            ></a-sphere>-->
     </a-scene>
 
     <!-- Overlays -->
@@ -1057,14 +1207,15 @@
       "
     >
     <p style="transition: all 3s; opacity: 0" :style="{opacity: r.distanceMessage ? 1 : 0}">{{ r.distanceMessage }}</p>
-    <p>{{ timestring(r.time) }}</p>
+
+      <p>{{ timestring(r.time) }} <span id="status"></span></p>
       <input
         type="range"
         v-model.number="r.userZMultipler"
         min="-1"
         max="1"
         step="any"
-        style="width: 100%; display: block"
+        style="width: 100%; display: none"
       />
     </div>
     <!-- <div class="overlay"></div> -->
