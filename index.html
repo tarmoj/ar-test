@@ -34,6 +34,42 @@
         }
       });
 
+      const imageIds = ['kasemets1', 'kasemets2', 'kasemets3', 'kasemets4', 'kasemets5'];
+
+      function createFloatingImages() {
+        const scene = document.querySelector('a-scene');
+        const radius = 2; // distance from center
+        const verticalHeight = 1.5; // roughly 30–45% up from viewer (adjust as needed)
+        const angleSpread = 240; // degrees (-120 to 120)
+        const angleStep = angleSpread / (imageIds.length - 1);
+
+        imageIds.forEach((id, index) => {
+          const angleDeg = -120 + index * angleStep;
+          const angleRad = angleDeg * (Math.PI / 180);
+          const x = radius * Math.sin(angleRad);
+          const z = -radius * Math.cos(angleRad); // in front of user
+
+          const plane = document.createElement('a-plane');
+          plane.setAttribute('src', `#${id}`);
+          plane.setAttribute('width', '1');
+          plane.setAttribute('height', '1');
+          plane.setAttribute('position', `${x} ${verticalHeight} ${z}`);
+          plane.setAttribute('rotation', `-10 ${angleDeg} 0`); // slight backward tilt
+
+          // Add floating animation
+          plane.setAttribute('animation', {
+            property: 'position',
+            dir: 'alternate',
+            dur: 3000 + Math.random() * 2000, // different timing per image
+            easing: 'easeInOutSine',
+            loop: true,
+            to: `${x} ${verticalHeight + 0.1} ${z}`
+          });
+
+          scene.appendChild(plane);
+        });
+      }
+
       const particles = {
         //        color: "#00f..#fff,#fff,#fff",
         color: "#00f..#fff,#fff,#fff",
@@ -833,6 +869,7 @@
         var scene = document.querySelector("a-scene");
         scene.addEventListener("loaded", function (e) {
           console.log("loaded");
+          createFloatingImages();
         });
       });
     </script>
@@ -920,6 +957,14 @@
         <img id="clusters2" src="assets/nebula2.png">
         <img id="nebula4" src="assets/nebula_x.jpeg">
 
+        <img id="kasemets1" src="assets/kasemets1.jpg">
+        <img id="kasemets2" src="assets/kasemets2.jpg">
+        <img id="kasemets3" src="assets/kasemets3.jpg">
+        <img id="kasemets4" src="assets/kasemets4.jpg">
+        <img id="kasemets5" src="assets/kasemets5.jpg">
+
+
+
       </a-assets>
 
       <a-sky
@@ -932,7 +977,7 @@
       >
       </a-sky>
 
-      <a-text id="deleteMe" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>
+<!--      <a-text id="deleteMe" position="0 2.5 -10" value="Ees keskel" align="center"></a-text>-->
 
 
       <!-- Planets -->
